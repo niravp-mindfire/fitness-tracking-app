@@ -1,4 +1,3 @@
-```markdown
 # Full Stack Fitness Application
 
 This project is a full-stack fitness tracking application with both backend and frontend components. Users can register, log in, update their profiles, and set fitness goals. The application is built with a Node.js/Express backend and a React/MUI frontend.
