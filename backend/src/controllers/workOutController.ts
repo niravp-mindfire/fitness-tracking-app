@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import Workout from '../models/Workout';
+import WorkoutExercise from "../models/WorkoutExercises"
+import { errorResponse, successResponse } from '../config/responseFormat';
 
-export const getAllWorkouts = async (req: Request, res: Response) => {
+export const getAllWorkouts = async (req: any, res: Response) => {
   try {
     const {
-      userId,
       search,
       sort = 'date',
       order = 'desc',
@@ -13,6 +14,8 @@ export const getAllWorkouts = async (req: Request, res: Response) => {
       startDate,
       endDate,
     } = req.query;
+
+    const userId = req?.user?.userId;
 
     const query: any = { userId };
 
@@ -40,14 +43,140 @@ export const getAllWorkouts = async (req: Request, res: Response) => {
 
     const total = await Workout.countDocuments(query);
 
-    res.status(200).json({
+
+    res.status(200).json(successResponse({
       total,
       page: Number(page),
       limit: Number(limit),
       totalPages: Math.ceil(total / Number(limit)),
       workouts,
-    });
+    }, 'Workouts retrieved successfully'));
+
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err });
+    res.status(500).json(errorResponse('Server error', err));
+  }
+};
+
+export const createWorkout = async (req: any, res: Response) => {
+  try {
+    const { date, duration, notes } = req.body;
+
+    const userId = req?.user?.userId;
+
+    const newWorkout = new Workout({
+      userId,
+      date,
+      duration,
+      notes,
+    });
+
+    const savedWorkout = await newWorkout.save();
+    res.status(201).json(successResponse(savedWorkout, 'Workout created successfully'));
+  } catch (err) {
+    res.status(500).json(errorResponse('Error creating workout', err));
+  }
+};
+
+export const updateWorkout = async (req: any, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { date, duration, notes } = req.body;
+
+    const userId = req?.user?.userId;
+
+    const updatedWorkout = await Workout.findOneAndUpdate(
+      { _id: id, userId },
+      { date, duration, notes },
+      { new: true }
+    );
+
+    if (!updatedWorkout) {
+      return res.status(404).json({ message: 'Workout not found' });
+    }
+
+    res.status(200).json(successResponse(updatedWorkout, 'Workout updated successfully'));
+  } catch (err) {
+    res.status(500).json(errorResponse('Error updating workout', err));
+  }
+};
+
+export const deleteWorkout = async (req: any, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const userId = req?.user?.userId;
+
+    const deletedWorkout = await Workout.findOneAndDelete({
+      _id: id,
+      userId,
+    });
+
+    if (!deletedWorkout) {
+      return res.status(404).json({ message: 'Workout not found' });
+    }
+
+    res.status(200).json(successResponse(null, 'Workout deleted successfully'));
+  } catch (err) {
+    res.status(500).json(errorResponse('Error deleting workout', err));
+  }
+};
+
+// Add exercise to a workout
+export const addExerciseToWorkout = async (req: any, res: Response) => {
+  const { workoutId, exerciseId, sets, reps, weight } = req.body;
+  const userId = req?.user?.userId;
+
+  try {
+    const workoutExercise = new WorkoutExercise({
+      workoutId,
+      exerciseId,
+      sets,
+      reps,
+      weight,
+    });
+
+    await workoutExercise.save();
+
+    res.status(201).json(successResponse(workoutExercise, 'Exercise added to workout successfully'));
+  } catch (err) {
+    res.status(500).json(errorResponse('Error adding exercise to workout', err));
+  }
+};
+
+// Update an exercise within a workout
+export const updateWorkoutExercise = async (req: Request, res: Response) => {
+  const { id } = req.params; // workout exercise ID
+  const { sets, reps, weight } = req.body;
+
+  try {
+    const workoutExercise = await WorkoutExercise.findById(id);
+    if (!workoutExercise) {
+      return res.status(404).json(errorResponse('Workout exercise not found'));
+    }
+
+    workoutExercise.sets = sets || workoutExercise.sets;
+    workoutExercise.reps = reps || workoutExercise.reps;
+    workoutExercise.weight = weight || workoutExercise.weight;
+
+    await workoutExercise.save();
+    res.json(successResponse(workoutExercise, 'Workout exercise updated successfully'));
+  } catch (err) {
+    res.status(500).json(errorResponse('Error updating workout exercise', err));
+  }
+};
+
+// Remove an exercise from a workout
+export const removeExerciseFromWorkout = async (req: Request, res: Response) => {
+  const { id } = req.params; // workout exercise ID
+
+  try {
+    const workoutExercise = await WorkoutExercise.findByIdAndDelete(id);
+    if (!workoutExercise) {
+      return res.status(404).json(errorResponse('Workout exercise not found'));
+    }
+
+    res.json(successResponse(workoutExercise, 'Exercise removed from workout successfully'));
+  } catch (err) {
+    res.status(500).json(errorResponse('Error removing exercise from workout', err));
   }
 };

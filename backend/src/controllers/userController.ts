@@ -45,7 +45,7 @@ export const loginUser = async (req: Request, res: Response) => {
             return res.status(400).json(errorResponse('Invalid email or password'));
         }
 
-        const token = jwt.sign({ userId: user }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
         res.json(successResponse({ token }, 'Login successful'));
     } catch (error) {
         console.error(error);
@@ -64,10 +64,8 @@ export const forgetPassword = async (req: Request, res: Response) => {
         }
 
         const resetToken = crypto.randomBytes(20).toString('hex');
-        const resetPasswordExpires = new Date(Date.now() + 3600000);
-
         user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = resetPasswordExpires;
+        user.setResetPasswordExpires();  // Custom method
 
         await user.save();
 
@@ -83,10 +81,7 @@ export const forgetPassword = async (req: Request, res: Response) => {
             to: email,
             from: process.env.EMAIL_USER,
             subject: 'Password Reset Request',
-            text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
-                `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
-                `${req.headers.origin}/reset-password/${resetToken}\n\n` +
-                `If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+            text: `Please click the link to reset your password: ${req.headers.origin}/reset-password/${resetToken}`,
         };
 
         await transporter.sendMail(mailOptions);
@@ -97,10 +92,11 @@ export const forgetPassword = async (req: Request, res: Response) => {
     }
 };
 
+
 // Reset password
 export const resetPassword = async (req: Request, res: Response) => {
-    const { resetToken } = req.params;
     const { password } = req.body;
+    const { resetToken } = req.params;
 
     try {
         const user = await User.findOne({
@@ -109,14 +105,14 @@ export const resetPassword = async (req: Request, res: Response) => {
         });
 
         if (!user) {
-            return res.status(400).json(errorResponse('Invalid or expired token'));
+            return res.status(400).json(errorResponse('Password reset token is invalid or has expired'));
         }
 
         await user.setPassword(password);
         user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
-
         await user.save();
+
         res.json(successResponse(null, 'Password reset successfully'));
     } catch (error) {
         console.error(error);
@@ -124,49 +120,54 @@ export const resetPassword = async (req: Request, res: Response) => {
     }
 };
 
-// Edit user profile including fitness goals
+// Edit profile
 export const editProfile = async (req: any, res: Response) => {
-    const {
-        firstName,
-        lastName,
-        age,
-        gender,
-        height,
-        weight,
-        fitnessGoals
-    } = req.body;
-
+    const { firstName, lastName, age, gender, height, weight, fitnessGoals, dob } = req.body;
     const userId = req?.user?.userId;
 
     try {
-        // Create an update object and only include fields that are present in the request
-        const updateFields: any = {};
+        // Check if userId is provided
+        if (!userId) {
+            return res.status(400).json(errorResponse('User ID is required'));
+        }
 
-        if (firstName !== undefined) updateFields['profile.firstName'] = firstName;
-        if (lastName !== undefined) updateFields['profile.lastName'] = lastName;
-        if (age !== undefined) updateFields['profile.age'] = age;
-        if (gender !== undefined) updateFields['profile.gender'] = gender;
-        if (height !== undefined) updateFields['profile.height'] = height;
-        if (weight !== undefined) updateFields['profile.weight'] = weight;
-        if (fitnessGoals !== undefined) updateFields['fitnessGoals'] = fitnessGoals;
+        const user = await User.findById(userId);
 
-        // Update the user
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            {
-                ...updateFields,
-                updatedAt: Date.now() // Update timestamp
-            },
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedUser) {
+        if (!user) {
             return res.status(404).json(errorResponse('User not found'));
         }
 
-        res.json(successResponse(updatedUser, 'Profile updated successfully'));
+        // Update user profile
+        user.profile = { firstName, lastName, age, gender, height, weight, dob };
+        user.fitnessGoals = fitnessGoals || user.fitnessGoals;
+
+        await user.save();
+
+        res.json(successResponse(user, 'Profile updated successfully'));
     } catch (error) {
+        console.error(error);
         res.status(500).json(errorResponse('Error updating profile', error));
     }
 };
 
+// Get user profile based on token
+export const getMyProfile = async (req: any, res: Response) => {
+    const userId = req.user?.userId; // Get userId from the request
+
+    try {
+        // Check if userId is provided
+        if (!userId) {
+            return res.status(400).json(errorResponse('User ID is required'));
+        }
+
+        const user = await User.findById(userId).select('-password');
+        if (!user) {
+            return res.status(404).json(errorResponse('User not found'));
+        }
+
+        res.json(successResponse(user, 'User profile retrieved successfully'));
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(errorResponse('Error retrieving user profile', error));
+    }
+};
