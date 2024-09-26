@@ -16,7 +16,7 @@ This project is a full-stack fitness tracking application with both backend and 
 - [License](#license)
 
 ## Project Structure
-
+```markdown
 /root-directory
 │
 ├── /backend/
