@@ -19,14 +19,14 @@ export const authenticateToken = (req: any, res: Response, next: NextFunction) =
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
-        if(decoded) {
-            req.user = { userId: decoded?.userId };
+        if (decoded) {
+            req.user = { userId: decoded.userId }; // No TypeScript error here
             next();
         } else {
-            return res.status(403).json(errorResponse('Invalid or expired token'));
+            return res.status(401).json(errorResponse('Invalid or expired token'));
         }
     } catch (error) {
         console.error(error);
-        return res.status(403).json(errorResponse('Invalid or expired token', error));
+        return res.status(401).json(errorResponse('Invalid or expired token', error));
     }
 };

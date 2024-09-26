@@ -1,22 +1,17 @@
-export interface ApiResponse<T> {
-    success: boolean;
-    message: string;
-    data?: T;
-    error?: any;
-}
+// responseFormat.ts
 
-export const successResponse = <T>(data: T, message: string = 'Operation successful'): ApiResponse<T> => {
+export const successResponse = (data: any, message: string) => {
     return {
-        success: true,
+        status: 'success',
         message,
         data,
     };
 };
 
-export const errorResponse = (message: string, error?: any): ApiResponse<null> => {
+export const errorResponse = (message: string, error: any = null) => {
     return {
-        success: false,
+        status: 'error',
         message,
-        error,
+        error: error?.message || null, // Add error details if available
     };
 };

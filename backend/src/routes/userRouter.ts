@@ -1,13 +1,39 @@
 import { Router } from 'express';
-import { registerUser, loginUser, forgetPassword, resetPassword, editProfile } from '../controllers/userController';
+import {
+    registerUser,
+    loginUser,
+    forgetPassword,
+    resetPassword,
+    editProfile,
+    getMyProfile
+} from '../controllers/userController';
 import { authenticateToken } from '../middleware/authMiddleware';
+import {
+    validateRegisterUser,
+    validateLoginUser,
+    validateForgetPassword,
+    validateResetPassword,
+    validateEditProfile
+} from '../middleware/userValidation';
 
 const userRouter = Router();
 
-userRouter.post('/register', registerUser);
-userRouter.post('/login', loginUser);
-userRouter.post('/forget-password', forgetPassword);
-userRouter.post('/reset-password/:resetToken', authenticateToken, resetPassword);
-userRouter.put('/edit-profile', authenticateToken, editProfile);
+// User registration
+userRouter.post('/register', validateRegisterUser, registerUser);
+
+// User login
+userRouter.post('/login', validateLoginUser, loginUser);
+
+// Forget password
+userRouter.post('/forget-password', validateForgetPassword, forgetPassword);
+
+// Reset password
+userRouter.post('/reset-password/:resetToken', validateResetPassword, resetPassword);
+
+// Edit profile
+userRouter.put('/edit-profile', authenticateToken, validateEditProfile, editProfile);
+
+// Get My Profile
+userRouter.get('/my-profile', authenticateToken, getMyProfile); 
 
 export default userRouter;
