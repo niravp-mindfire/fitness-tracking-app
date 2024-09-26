@@ -16,6 +16,7 @@ This project is a full-stack fitness tracking application with both backend and 
 - [License](#license)
 
 ## Project Structure
+
 ```markdown
 /root-directory
 │
@@ -39,6 +40,7 @@ This project is a full-stack fitness tracking application with both backend and 
 │   ├── package.json        # Frontend project metadata
 │   ├── README.md           # Main documentation file
 │   └── tsconfig.json       # TypeScript configuration for the frontend
+```
 
 ## Features
 
