@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
-import { Home, People, Settings, ExitToApp } from '@mui/icons-material';
+import { Home, Settings, ExitToApp, FitnessCenter } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
 const sidebarWidth = 240;
@@ -11,9 +11,9 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
   const menuItems = [
-    { text: 'Dashboard', icon: <Home />, path: '/admin/dashboard' },
-    { text: 'Users', icon: <People />, path: '/admin/users' },
-    { text: 'Settings', icon: <Settings />, path: '/my-profile' },
+    { text: 'Dashboard', icon: <Home />, path: '/dashboard' },
+    { text: 'Workout', icon: <FitnessCenter />, path: '/workout' },
+    { text: 'My Profile', icon: <Settings />, path: '/my-profile' },
     { text: 'Logout', icon: <ExitToApp />, action: handleLogout }, // Use action instead of path for logout
   ];
 

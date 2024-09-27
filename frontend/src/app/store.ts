@@ -3,11 +3,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import authReducer, { initializeAuth } from '../features/auth/authSlice';
 import profileReducer from "../features/profile/profileSlice"
+import workoutReducer from '../features/workout/workoutSlice';
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    profile: profileReducer
+    profile: profileReducer,
+    workout: workoutReducer
   },
 });
 

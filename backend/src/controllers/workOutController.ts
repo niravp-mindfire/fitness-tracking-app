@@ -19,30 +19,29 @@ export const getAllWorkouts = async (req: any, res: Response) => {
 
     const query: any = { userId };
 
+    // Apply search only for notes
     if (search) {
-      query.$or = [
-        { notes: { $regex: search, $options: 'i' } },
-        { duration: { $regex: search, $options: 'i' } }
-      ];
+      query.notes = { $regex: search, $options: 'i' }; // Case-insensitive search for notes
     }
 
+    // Date filters
     if (startDate || endDate) {
       query.date = {};
       if (startDate) query.date.$gte = new Date(startDate as string);
       if (endDate) query.date.$lte = new Date(endDate as string);
     }
 
+    // Pagination and sorting
     const skip = (Number(page) - 1) * Number(limit);
-
     const sortOrder = order === 'asc' ? 1 : -1;
 
+    // Fetch workouts from the database
     const workouts = await Workout.find(query)
       .sort({ [sort as string]: sortOrder })
       .skip(skip)
       .limit(Number(limit));
 
     const total = await Workout.countDocuments(query);
-
 
     res.status(200).json(successResponse({
       total,
@@ -54,6 +53,25 @@ export const getAllWorkouts = async (req: any, res: Response) => {
 
   } catch (err) {
     res.status(500).json(errorResponse('Server error', err));
+  }
+};
+
+export const getWorkoutById = async (req: any, res: Response) => {
+  const { id } = req.params;  // Extract workout ID from request parameters
+  const userId = req?.user?.userId;  // Get the user ID from the request (if using authentication)
+
+  try {
+    // Find the workout by its ID and ensure it belongs to the logged-in user
+    const workout = await Workout.findOne({ _id: id, userId });
+
+    if (!workout) {
+      return res.status(404).json(errorResponse('Workout not found'));
+    }
+
+    // Return the workout data in the response
+    res.status(200).json(successResponse(workout, 'Workout retrieved successfully'));
+  } catch (err) {
+    res.status(500).json(errorResponse('Error retrieving workout', err));
   }
 };
 
