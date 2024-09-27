@@ -1,31 +1,31 @@
-// src/App.tsx
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
 import { CircularProgress } from '@mui/material';
 import { selectIsAuthenticated } from './features/auth/authSlice';
 import store from './app/store';
-import MyProfile from './components/MyProfile';
-import AdminLayout from './components/AdminLayout'; // Import your AdminLayout
+import MyProfile from './pages/MyProfile';
+import AdminLayout from './pages/AdminLayout';
+import WorkoutList from './pages/workout/WorkoutList';
+import WorkoutForm from './pages/workout/WorkoutForm';
+import { appPath } from './utils/appPath';
 
-// Lazy-loaded components
-const Login = lazy(() => import('./components/Login'));
-const Register = lazy(() => import('./components/Register'));
-const Dashboard = lazy(() => import('./components/Dashboard'));
-const ForgetPassword = lazy(() => import('./components/ForgetPassword'));
-// const Users = lazy(() => import('./components/Users')); // Example admin component
-// const Settings = lazy(() => import('./components/Settings')); // Example admin component
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const ForgetPassword = lazy(() => import('./pages/ForgetPassword'));
 
 // Route configuration
 const routes = [
-  { path: '/', element: <Login /> },
-  { path: '/register', element: <Register /> },
-  { path: '/forgot-password', element: <ForgetPassword /> },
-  { path: '/dashboard', element: <Dashboard />, isPrivate: true },
-  { path: '/my-profile', element: <MyProfile />, isPrivate: true },
+  { path: appPath.HOME, element: <Login /> },
+  { path: appPath.REGISTER, element: <Register /> },
+  { path: appPath.FORGET_PASSWORD, element: <ForgetPassword /> },
   // Admin routes
-  { path: '/admin/dashboard', element: <Dashboard />, isPrivate: true }, // Replace with actual admin dashboard component
-  // { path: '/admin/users', element: <Users />, isPrivate: true },
+  { path: appPath.DASHBOARD, element: <Dashboard />, isPrivate: true },
+  { path: appPath.MY_PROFILE, element: <MyProfile />, isPrivate: true },
+  { path: appPath.WORKOUT, element: <WorkoutList />, isPrivate: true },
+  { path: `${appPath.WORKOUT}/add`, element: <WorkoutForm />, isPrivate: true },
+  { path: `${appPath.WORKOUT}/edit/:id`, element: <WorkoutForm />, isPrivate: true },
   // { path: '/admin/settings', element: <Settings />, isPrivate: true },
 ];
 
