@@ -4,5 +4,7 @@ export const appPath = {
     FORGET_PASSWORD: "/forgot-password",
     DASHBOARD: "/dashboard",
     MY_PROFILE: "/my-profile",
-    WORKOUT: "/workout"
+    WORKOUT: "/workouts",
+    EXERCISE: "/exercises",
+    WORKOUT_EXERCISE: "/workout-exercise"
 }

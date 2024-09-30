@@ -9,6 +9,10 @@ import AdminLayout from './pages/AdminLayout';
 import WorkoutList from './pages/workout/WorkoutList';
 import WorkoutForm from './pages/workout/WorkoutForm';
 import { appPath } from './utils/appPath';
+import ExerciseList from './pages/exercises/Exercises';
+import ExerciseForm from './pages/exercises/ExerciseForm';
+import WorkoutExerciseForm from './pages/workoutExercise/WorkoutExerciseForm';
+import WorkoutExerciseList from './pages/workoutExercise/WorkoutExerciseList';
 
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
@@ -26,7 +30,12 @@ const routes = [
   { path: appPath.WORKOUT, element: <WorkoutList />, isPrivate: true },
   { path: `${appPath.WORKOUT}/add`, element: <WorkoutForm />, isPrivate: true },
   { path: `${appPath.WORKOUT}/edit/:id`, element: <WorkoutForm />, isPrivate: true },
-  // { path: '/admin/settings', element: <Settings />, isPrivate: true },
+  { path: appPath.EXERCISE, element: <ExerciseList />, isPrivate: true },
+  { path: `${appPath.EXERCISE}/add`, element: <ExerciseForm />, isPrivate: true },
+  { path: `${appPath.EXERCISE}/edit/:id`, element: <ExerciseForm />, isPrivate: true },
+  { path: appPath.WORKOUT_EXERCISE, element: <WorkoutExerciseList />, isPrivate: true },
+  { path: `${appPath.WORKOUT_EXERCISE}/add`, element: <WorkoutExerciseForm />, isPrivate: true },
+  { path: `${appPath.WORKOUT_EXERCISE}/edit/:id`, element: <WorkoutExerciseForm />, isPrivate: true },
 ];
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {

@@ -37,7 +37,7 @@ const WorkoutList = () => {
   };
 
   const handleAddWorkout = () => {
-    navigate('/workout/add');
+    navigate(`${appPath.WORKOUT}/add`);
   };
 
   const handleEditWorkout = (id: any) => {

@@ -4,12 +4,16 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import authReducer, { initializeAuth } from '../features/auth/authSlice';
 import profileReducer from "../features/profile/profileSlice"
 import workoutReducer from '../features/workout/workoutSlice';
+import ExerciseSlice from '../features/exercise/exerciseSlice';
+import workoutExerciseSlice from '../features/workoutExercise/workoutExerciseSlice';
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     profile: profileReducer,
-    workout: workoutReducer
+    workout: workoutReducer,
+    exercise: ExerciseSlice,
+    workoutExercise: workoutExerciseSlice
   },
 });
 

@@ -29,8 +29,8 @@ export const fetchWorkouts = createAsyncThunk<{
         params: { page, limit, search, sort, order },
       });
       return {
-        workouts: response.data.data.workouts,
-        totalCount: response.data.data.total,
+        workouts: response?.data?.data?.workouts,
+        totalCount: response?.data?.data?.total,
       };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch workouts');
