@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
-import { Home, Settings, ExitToApp, FitnessCenter, Fitbit, AllInclusive } from '@mui/icons-material';
+import { Home, Settings, ExitToApp, FitnessCenter, Fitbit, AllInclusive, NextPlan } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { appPath } from '../utils/appPath';
 
@@ -16,6 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
     { text: 'Workout', icon: <Fitbit />, path: appPath.WORKOUT },
     { text: 'Exercise', icon: <FitnessCenter />, path: appPath.EXERCISE },
     { text: 'Workout Exercise', icon: <AllInclusive />, path: appPath.WORKOUT_EXERCISE },
+    { text: 'Workout Plan', icon: <NextPlan />, path: appPath.WORKOUT_PLAN },
     { text: 'My Profile', icon: <Settings />, path: appPath.MY_PROFILE },
     { text: 'Logout', icon: <ExitToApp />, action: handleLogout }, // Use action instead of path for logout
   ];

@@ -6,5 +6,6 @@ export const appPath = {
     MY_PROFILE: "/my-profile",
     WORKOUT: "/workouts",
     EXERCISE: "/exercises",
-    WORKOUT_EXERCISE: "/workout-exercise"
+    WORKOUT_EXERCISE: "/workout-exercise",
+    WORKOUT_PLAN: "/workout-plan"
 }

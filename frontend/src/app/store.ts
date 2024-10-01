@@ -6,6 +6,7 @@ import profileReducer from "../features/profile/profileSlice"
 import workoutReducer from '../features/workout/workoutSlice';
 import ExerciseSlice from '../features/exercise/exerciseSlice';
 import workoutExerciseSlice from '../features/workoutExercise/workoutExerciseSlice';
+import workoutPlanSlice from '../features/workoutPlan/workoutPlanSlice';
 
 const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
     profile: profileReducer,
     workout: workoutReducer,
     exercise: ExerciseSlice,
-    workoutExercise: workoutExerciseSlice
+    workoutExercise: workoutExerciseSlice,
+    workoutPlan: workoutPlanSlice
   },
 });
 

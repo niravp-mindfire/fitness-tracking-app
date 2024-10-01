@@ -49,3 +49,24 @@ export const ExerciseSchema = Yup.object().shape({
   description: Yup.string().required('Description is required'),
   category: Yup.string().required('Category is required'),
 });
+
+export const WorkoutPlanSchema = Yup.object({
+  name: Yup.string().required("Name is required"),
+  description: Yup.string().required("Description is required"),
+  duration: Yup.number()
+    .required("Duration is required")
+    .positive("Duration must be a positive number"),
+  exercises: Yup.array()
+    .of(
+      Yup.object({
+        exerciseId: Yup.string().required("Exercise is required"),
+        sets: Yup.number()
+          .required("Sets are required")
+          .min(1, "Sets must be at least 1"),
+        reps: Yup.number()
+          .required("Reps are required")
+          .min(1, "Reps must be at least 1"),
+      })
+    )
+    .min(1, "At least one exercise must be added"),
+});

@@ -22,6 +22,7 @@ import { fetchExercises } from "../../features/exercise/exerciseSlice";
 import { RootState, useAppDispatch } from "../../app/store";
 import { appPath } from "../../utils/appPath";
 import BreadcrumbsComponent from "../../component/BreadcrumbsComponent";
+import { defaultPagination } from "../../utils/common";
 
 const WorkoutExerciseForm = () => {
   const dispatch = useAppDispatch();
@@ -31,15 +32,6 @@ const WorkoutExerciseForm = () => {
   const workoutExercise = useSelector((state: RootState) => state.workoutExercise.currentWorkoutExercise);
   const workouts = useSelector((state: RootState) => state.workout.workouts);
   const exercises = useSelector((state: RootState) => state.exercise.exercises);
-
-  // Default pagination parameters
-  const defaultPagination: any = {
-    page: -1,
-    limit: -1,
-    search: "",
-    sort: "createdAt",
-    order: "asc",
-  };
 
   useEffect(() => {
     dispatch(fetchWorkouts(defaultPagination));

@@ -2,7 +2,6 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
 import { CircularProgress } from '@mui/material';
-import { selectIsAuthenticated } from './features/auth/authSlice';
 import store from './app/store';
 import MyProfile from './pages/MyProfile';
 import AdminLayout from './pages/AdminLayout';
@@ -13,11 +12,13 @@ import ExerciseList from './pages/exercises/Exercises';
 import ExerciseForm from './pages/exercises/ExerciseForm';
 import WorkoutExerciseForm from './pages/workoutExercise/WorkoutExerciseForm';
 import WorkoutExerciseList from './pages/workoutExercise/WorkoutExerciseList';
-
-const Login = lazy(() => import('./pages/Login'));
-const Register = lazy(() => import('./pages/Register'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const ForgetPassword = lazy(() => import('./pages/ForgetPassword'));
+import WorkoutPlanList from './pages/workoutPlan/WorkoutPlanList';
+import WorkoutPlanForm from './pages/workoutPlan/WorkoutPlanForm';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgetPassword from './pages/ForgetPassword';
+import Dashboard from './pages/Dashboard';
+import Private from './private';
 
 // Route configuration
 const routes = [
@@ -36,14 +37,13 @@ const routes = [
   { path: appPath.WORKOUT_EXERCISE, element: <WorkoutExerciseList />, isPrivate: true },
   { path: `${appPath.WORKOUT_EXERCISE}/add`, element: <WorkoutExerciseForm />, isPrivate: true },
   { path: `${appPath.WORKOUT_EXERCISE}/edit/:id`, element: <WorkoutExerciseForm />, isPrivate: true },
+  { path: appPath.WORKOUT_PLAN, element: <WorkoutPlanList />, isPrivate: true },
+  { path: `${appPath.WORKOUT_PLAN}/add`, element: <WorkoutPlanForm />, isPrivate: true },
+  { path: `${appPath.WORKOUT_PLAN}/edit/:id`, element: <WorkoutPlanForm />, isPrivate: true },
 ];
 
-const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  return isAuthenticated ? children : <Navigate to="/" />;
-};
 
-const App: React.FC = () => {
+const app: React.FC = () => {
   return (
     <Provider store={store}>
       <Router>
@@ -51,9 +51,9 @@ const App: React.FC = () => {
           <Routes>
             {routes.map(({ path, element, isPrivate }, index) => {
               const routeElement = isPrivate ? (
-                <PrivateRoute>
+                <Private>
                   <AdminLayout>{element}</AdminLayout>
-                </PrivateRoute>
+                </Private>
               ) : (
                 element
               );
@@ -69,4 +69,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default app;

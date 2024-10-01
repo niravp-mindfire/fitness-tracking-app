@@ -6,5 +6,6 @@ export const apiUrl = {
     MY_PROFILE: "/my-profile",
     WORKOUTS: "/workouts",
     EXERCISES: '/exercises',
-    WORKOUT_EXERCISES: "/workout-exercise"
+    WORKOUT_EXERCISES: "/workout-exercise",
+    WORKOUT_PLANS: "/workout-plan"
 }

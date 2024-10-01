@@ -8,4 +8,12 @@ export const calculateAge = (dob: string) => {
 
 export const formatDateForInput = (date: string) => {
     return date ? new Date(date).toISOString().split('T')[0] : '';
-  };
+};
+
+export const defaultPagination: any = {
+    page: -1,
+    limit: -1,
+    search: "",
+    sort: "createdAt",
+    order: "asc",
+};

@@ -130,3 +130,31 @@ export interface WorkoutExerciseState {
   order: 'asc' | 'desc';                // Sort order
   search: string;                       // Search query
 }
+
+// WorkoutPlan type
+interface ExerciseEntry {
+  exerciseId: string;
+  sets: number;
+  reps: number;
+}
+
+export interface WorkoutPlan {
+  _id?: string; // Optional if you're creating a new workout plan
+  title: string;
+  description: string;
+  duration: number;
+  exercises: ExerciseEntry[]; // Ensure this property is included
+}
+// WorkoutPlanState type
+export interface WorkoutPlanState {
+  workoutPlans: WorkoutPlan[];    // Array of workout plans
+  loading: boolean;               // Loading state for fetching data
+  error: string | null;           // Error message if something goes wrong
+  totalCount: number;             // Total count of workout plans (for pagination)
+  currentWorkoutPlan: WorkoutPlan | null; // Current workout plan being viewed or edited
+  page: number;                   // Current page for pagination
+  limit: number;                  // Number of records per page
+  sort: string;                   // Column to sort by
+  order: 'asc' | 'desc';          // Sorting order
+  search: string;                 // Search query
+}
