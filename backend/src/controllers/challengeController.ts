@@ -3,7 +3,6 @@ import Challenge from '../models/Challenges';
 import { errorResponse, successResponse } from '../config/responseFormat';
 import { validationResult } from 'express-validator';
 
-// GET all challenges (with optional pagination, sorting, and date filtering)
 export const getAllChallenges = async (req: Request, res: Response) => {
     try {
         const { 
@@ -12,14 +11,23 @@ export const getAllChallenges = async (req: Request, res: Response) => {
             sort = 'startDate', 
             order = 'asc',
             startDate, 
-            endDate 
+            endDate, 
+            search 
         } = req.query;
 
         const query: any = {};
 
+        // Search by title or description (case-insensitive)
+        if (search) {
+            query.$or = [
+                { title: { $regex: search as string, $options: 'i' } },
+                { description: { $regex: search as string, $options: 'i' } }
+            ];
+        }
+
         // Date filters
         if (startDate) query.startDate = { $gte: new Date(startDate as string) };
-        if (endDate) query.endDate = { $lte: new Date(endDate as string) };
+        if (endDate) query.endDate = { ...query.startDate, $lte: new Date(endDate as string) };
 
         const skip = (Number(page) - 1) * Number(limit);
         const sortOrder = order === 'asc' ? 1 : -1;
@@ -43,6 +51,34 @@ export const getAllChallenges = async (req: Request, res: Response) => {
         res.status(500).json(errorResponse('Error fetching challenges', error));
     }
 };
+
+
+// GET a challenge by ID
+export const getChallengeById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const challenge = await Challenge.findById(id).populate('participants');
+        if (!challenge) {
+            return res.status(404).json(errorResponse('Challenge not found'));
+        }
+        const challengeResponse = {
+            _id: challenge._id,
+            title: challenge.title,
+            description: challenge.description,
+            startDate: challenge.startDate,
+            endDate: challenge.endDate,
+            participants: challenge.participants.map((p: any) => ({
+                _id: p._id,
+                fullName: `${p.profile.firstName} ${p.profile.lastName}`,
+            })),
+        }
+        res.json(successResponse(challengeResponse, 'Challenge retrieved successfully'));
+    } catch (error) {
+        res.status(500).json(errorResponse('Error fetching challenge', error));
+    }
+};
+
 
 // POST a new challenge
 export const createChallenge = async (req: Request, res: Response) => {

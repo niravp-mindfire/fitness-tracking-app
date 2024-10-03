@@ -8,5 +8,6 @@ export const path = {
     EXERCISE: "/exercises",
     WORKOUT_EXERCISE: "/workout-exercise",
     WORKOUT_PLAN: "/workout-plan",
-    CHALLENGE: "/challenges"
+    CHALLENGE: "/challenges",
+    FOOD_ITEM: "/food-items"
 }

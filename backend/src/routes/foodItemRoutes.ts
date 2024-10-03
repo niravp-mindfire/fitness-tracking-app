@@ -5,16 +5,17 @@ import {
     createFoodItem,
     updateFoodItem,
     deleteFoodItem,
+    getFoodItemById,
 } from '../controllers/foodItemController';
-import { foodItemValidationRules } from '../middleware/foodItemValidation';
 import { authenticateToken } from '../middleware/authMiddleware';
 
-const router = Router();
+const foodItemRoutes = Router();
 
 // Routes for food items
-router.get('/', authenticateToken, getAllFoodItems); // GET all food items
-router.post('/', authenticateToken, foodItemValidationRules, createFoodItem); // CREATE a food item
-router.put('/:id', authenticateToken, foodItemValidationRules, updateFoodItem); // UPDATE a food item
-router.delete('/:id', authenticateToken, deleteFoodItem); // DELETE a food item
+foodItemRoutes.get('/', authenticateToken, getAllFoodItems);
+foodItemRoutes.get('/:id', authenticateToken, getFoodItemById);
+foodItemRoutes.post('/', authenticateToken, createFoodItem);
+foodItemRoutes.put('/:id', authenticateToken, updateFoodItem);
+foodItemRoutes.delete('/:id', authenticateToken, deleteFoodItem);
 
-export default router;
+export default foodItemRoutes;

@@ -7,5 +7,8 @@ export const apiUrl = {
     WORKOUTS: "/workouts",
     EXERCISES: '/exercises',
     WORKOUT_EXERCISES: "/workout-exercise",
-    WORKOUT_PLANS: "/workout-plan"
+    WORKOUT_PLANS: "/workout-plan",
+    ALL_USERS: "/users",
+    CHALLENGES: "/challenges",
+    FOOD_ITEMS: "/food-items"
 }

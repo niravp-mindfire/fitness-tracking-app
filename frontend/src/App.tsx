@@ -21,6 +21,8 @@ import Dashboard from './pages/Dashboard';
 import Private from './private';
 import ChallengeList from './pages/challenges/list';
 import ChallengeForm from './pages/challenges/form';
+import FoodItemList from './pages/foodItem/list';
+import FoodItemForm from './pages/foodItem/form';
 
 // Route configuration
 const routes = [
@@ -45,6 +47,9 @@ const routes = [
   { path: path.CHALLENGE, element: <ChallengeList />, isPrivate: true },
   { path: `${path.CHALLENGE}/add`, element: <ChallengeForm />, isPrivate: true },
   { path: `${path.CHALLENGE}/edit/:id`, element: <ChallengeForm />, isPrivate: true },
+  { path: path.FOOD_ITEM, element: <FoodItemList />, isPrivate: true },
+  { path: `${path.FOOD_ITEM}/add`, element: <FoodItemForm />, isPrivate: true },
+  { path: `${path.FOOD_ITEM}/edit/:id`, element: <FoodItemForm />, isPrivate: true },
 ];
 
 

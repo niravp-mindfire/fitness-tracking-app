@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
-import { TextField, Button, Box, Typography, Card, CardContent, CircularProgress, AppBar, Toolbar } from '@mui/material';
+import { TextField, Button, Box, Typography, Card, CardContent, CircularProgress, AppBar, Toolbar, Select, MenuItem, InputLabel, FormControl, Chip } from '@mui/material';
 import { createChallenge, updateChallenge, fetchChallengeById, resetCurrentChallenge } from '../../features/challenges/challenge';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import BreadcrumbsComponent from '../../component/BreadcrumbsComponent';
 import { path } from '../../utils/path';
 import { ChallengeSchema } from '../../utils/validationSchema';
+import { getAllUsers } from '../../features/profile/profileSlice';
 
 const ChallengeForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
   const existingChallenge = useAppSelector(state => state.challenge.currentChallenge);
+  const allUsers = useAppSelector(state => state.profile.users);
   const [loading, setLoading] = useState(false);
-
+  console.log(existingChallenge);
+  
   useEffect(() => {
     if (id && !existingChallenge) {
       dispatch(fetchChallengeById(id));
@@ -22,6 +25,7 @@ const ChallengeForm: React.FC = () => {
   }, [id, existingChallenge, dispatch]);
 
   useEffect(() => {
+    dispatch(getAllUsers());
     return () => {
       dispatch(resetCurrentChallenge());
     };
@@ -32,15 +36,16 @@ const ChallengeForm: React.FC = () => {
     initialValues: {
       title: existingChallenge?.title || '',
       description: existingChallenge?.description || '',
-      startDate: existingChallenge?.startDate || '',
-      endDate: existingChallenge?.endDate || '',
+      startDate: existingChallenge?.startDate?.split('T')[0] || '',
+      endDate: existingChallenge?.endDate?.split('T')[0] || '',
+      participants: existingChallenge?.participants.map((p: any) => p._id) || [],
     },
     validationSchema: ChallengeSchema,
     onSubmit: async (values) => {
       setLoading(true);
       try {
         if (id) {
-          await dispatch(updateChallenge({ id: id as string, challengeData: values })).unwrap(); // Fix: use 'challengeData'
+          await dispatch(updateChallenge({ id: id as string, challengeData: values })).unwrap();
         } else {
           await dispatch(createChallenge(values)).unwrap();
         }
@@ -50,7 +55,7 @@ const ChallengeForm: React.FC = () => {
       } finally {
         setLoading(false);
       }
-    },    
+    },
   });
 
   return (
@@ -109,6 +114,33 @@ const ChallengeForm: React.FC = () => {
               helperText={formik.touched.endDate && formik.errors.endDate ? String(formik.errors.endDate) : ''}
               sx={{ mt: 2 }}
             />
+
+            {/* Multi-select Dropdown for Users */}
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel id="users-select-label">Select Users</InputLabel>
+              <Select
+                labelId="users-select-label"
+                id="participants-select"
+                multiple
+                value={formik.values.participants}
+                onChange={(event) => formik.setFieldValue('participants', event.target.value)}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((userId: any) => {
+                      const user = allUsers.find(user => user._id === userId);
+                      return <Chip key={userId} label={user?.profile.firstName + ' ' + user?.profile.lastName} />;
+                    })}
+                  </Box>
+                )}
+              >
+                {allUsers.map((user) => (
+                  <MenuItem key={user._id} value={user._id}>
+                    {user.profile.firstName} {user.profile.lastName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <Button
               color="primary"
               variant="contained"

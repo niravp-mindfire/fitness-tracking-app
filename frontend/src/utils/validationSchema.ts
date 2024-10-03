@@ -88,3 +88,11 @@ export const ChallengeSchema = Yup.object().shape({
     .min(Yup.ref('startDate'), 'End date must be after the start date')
     .nullable(),
 });
+
+export const FoodItemSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required'),
+  calories: Yup.number().required('Calories are required').min(0, 'Calories cannot be negative'),
+  proteins: Yup.number().required('Protein is required').min(0, 'Protein cannot be negative'),
+  carbohydrates: Yup.number().required('Carbohydrates are required').min(0, 'Carbohydrates cannot be negative'),
+  fats: Yup.number().required('Fat is required').min(0, 'Fat cannot be negative'),
+});

@@ -171,3 +171,19 @@ export const getMyProfile = async (req: any, res: Response) => {
         res.status(500).json(errorResponse('Error retrieving user profile', error));
     }
 };
+
+export const getAllUsers = async (req: any, res: Response) => {
+    try {
+        // Check if userId is provide
+
+        const user = await User.find({ role: 'user' }).select('-password');
+        if (!user) {
+            return res.status(404).json(errorResponse('Users not found'));
+        }
+
+        res.json(successResponse(user, 'Users retrieved successfully'));
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(errorResponse('Error retrieving users', error));
+    }
+}
