@@ -20,7 +20,7 @@ import {
 import { fetchWorkouts } from "../../features/workout/workoutSlice";
 import { fetchExercises } from "../../features/exercise/exerciseSlice";
 import { RootState, useAppDispatch } from "../../app/store";
-import { appPath } from "../../utils/appPath";
+import { path } from "../../utils/path";
 import BreadcrumbsComponent from "../../component/BreadcrumbsComponent";
 import { defaultPagination } from "../../utils/common";
 
@@ -57,7 +57,7 @@ const WorkoutExerciseForm = () => {
       } else {
         await dispatch(createWorkoutExercise(values));
       }
-      navigate(appPath.WORKOUT_EXERCISE);
+      navigate(path.WORKOUT_EXERCISE);
     },
   });
 
@@ -80,7 +80,7 @@ const WorkoutExerciseForm = () => {
         <Toolbar>
           <BreadcrumbsComponent
             items={[
-              { label: "Workouts", path: appPath.WORKOUT_EXERCISE },
+              { label: "Workouts", path: path.WORKOUT_EXERCISE },
               { label: id ? "Edit Workout" : "Add Workout Exercise" },
             ]}
           />

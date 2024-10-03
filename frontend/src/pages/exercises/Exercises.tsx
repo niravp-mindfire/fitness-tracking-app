@@ -17,7 +17,7 @@ import {
 import DataTable from "../../component/Datatable";
 import { TableColumn } from "../../utils/types";
 import { useNavigate } from "react-router-dom";
-import { appPath } from "../../utils/appPath";
+import { path } from "../../utils/path";
 
 const ExerciseList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -105,12 +105,12 @@ const ExerciseList: React.FC = () => {
 
   // Handle adding a new exercise
   const handleAddExercise = () => {
-    navigate(`${appPath.EXERCISE}/add`);
+    navigate(`${path.EXERCISE}/add`);
   };
 
   // Handle editing an existing exercise
   const handleEditExercise = (id: string) => {
-    navigate(`${appPath.EXERCISE}/edit/${id}`);
+    navigate(`${path.EXERCISE}/edit/${id}`);
   };
 
   // Date filter submit

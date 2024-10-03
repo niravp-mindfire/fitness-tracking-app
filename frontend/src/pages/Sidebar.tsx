@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { Home, Settings, ExitToApp, FitnessCenter, Fitbit, AllInclusive, NextPlan } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
-import { appPath } from '../utils/appPath';
+import { path } from '../utils/path';
 
 const sidebarWidth = 240;
 
@@ -12,12 +12,13 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
   const menuItems = [
-    { text: 'Dashboard', icon: <Home />, path: appPath.DASHBOARD },
-    { text: 'Workout', icon: <Fitbit />, path: appPath.WORKOUT },
-    { text: 'Exercise', icon: <FitnessCenter />, path: appPath.EXERCISE },
-    { text: 'Workout Exercise', icon: <AllInclusive />, path: appPath.WORKOUT_EXERCISE },
-    { text: 'Workout Plan', icon: <NextPlan />, path: appPath.WORKOUT_PLAN },
-    { text: 'My Profile', icon: <Settings />, path: appPath.MY_PROFILE },
+    { text: 'Dashboard', icon: <Home />, path: path.DASHBOARD },
+    { text: 'Workout', icon: <Fitbit />, path: path.WORKOUT },
+    { text: 'Exercise', icon: <FitnessCenter />, path: path.EXERCISE },
+    { text: 'Workout Exercise', icon: <AllInclusive />, path: path.WORKOUT_EXERCISE },
+    { text: 'Workout Plan', icon: <NextPlan />, path: path.WORKOUT_PLAN },
+    { text: 'Challenges', icon: <NextPlan />, path: path.CHALLENGE },
+    { text: 'My Profile', icon: <Settings />, path: path.MY_PROFILE },
     { text: 'Logout', icon: <ExitToApp />, action: handleLogout }, // Use action instead of path for logout
   ];
 

@@ -5,6 +5,7 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
   token: string | null;
+  role: string | null;
 }
 
 export interface RegisterFormValues {

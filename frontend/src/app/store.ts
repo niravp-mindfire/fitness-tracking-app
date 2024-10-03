@@ -1,12 +1,13 @@
 // src/app/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import authReducer, { initializeAuth } from '../features/auth/authSlice';
+import authReducer, { initializeAuth } from '../features/auth/auth';
 import profileReducer from "../features/profile/profileSlice"
 import workoutReducer from '../features/workout/workoutSlice';
 import ExerciseSlice from '../features/exercise/exerciseSlice';
 import workoutExerciseSlice from '../features/workoutExercise/workoutExerciseSlice';
 import workoutPlanSlice from '../features/workoutPlan/workoutPlanSlice';
+import challenge from '../features/challenges/challenge';
 
 const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
     workout: workoutReducer,
     exercise: ExerciseSlice,
     workoutExercise: workoutExerciseSlice,
-    workoutPlan: workoutPlanSlice
+    workoutPlan: workoutPlanSlice,
+    challenge: challenge
   },
 });
 

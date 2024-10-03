@@ -18,7 +18,7 @@ export const registerUser = async (req: Request, res: Response) => {
             return res.status(400).json(errorResponse('Email already exists'));
         }
 
-        const newUser = new User({ username, email, profile });
+        const newUser = new User({ username, email, profile, role: 'user' });
         await newUser.setPassword(password);
         await newUser.save();
 
@@ -46,7 +46,7 @@ export const loginUser = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-        res.json(successResponse({ token }, 'Login successful'));
+        res.json(successResponse({ token, role: user?.role }, 'Login successful'));
     } catch (error) {
         console.error(error);
         res.status(500).json(errorResponse('Error logging in', error));

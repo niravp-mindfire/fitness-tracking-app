@@ -27,7 +27,7 @@ import {
   clearError,
   selectWorkoutPlanError,
 } from "../../features/workoutPlan/workoutPlanSlice";
-import { appPath } from "../../utils/appPath";
+import { path } from "../../utils/path";
 import BreadcrumbsComponent from "../../component/BreadcrumbsComponent";
 import { fetchExercises } from "../../features/exercise/exerciseSlice";
 import { defaultPagination } from "../../utils/common";
@@ -122,7 +122,7 @@ const WorkoutPlanForm = () => {
         } else {
           await dispatch(createWorkoutPlan(values)).unwrap();
         }
-        navigate(appPath.WORKOUT_PLAN); // Navigate on success
+        navigate(path.WORKOUT_PLAN); // Navigate on success
       } catch (error) {
         setSnackbarOpen(true); // Open snackbar on error
       }
@@ -173,7 +173,7 @@ const WorkoutPlanForm = () => {
         <Toolbar>
           <BreadcrumbsComponent
             items={[
-              { label: "Workout Plans", path: appPath.WORKOUT_PLAN },
+              { label: "Workout Plans", path: path.WORKOUT_PLAN },
               { label: id ? "Edit Workout Plan" : "Add Workout Plan" },
             ]}
           />

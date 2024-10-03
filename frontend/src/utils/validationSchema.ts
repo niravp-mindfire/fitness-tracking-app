@@ -70,3 +70,21 @@ export const WorkoutPlanSchema = Yup.object({
     )
     .min(1, "At least one exercise must be added"),
 });
+
+export const ChallengeSchema = Yup.object().shape({
+  title: Yup.string()
+    .required('Title is required')
+    .min(3, 'Title must be at least 3 characters long'),
+  description: Yup.string()
+    .required('Description is required')
+    .min(10, 'Description must be at least 10 characters long'),
+  startDate: Yup.date()
+    .required('Start date is required')
+    .typeError('Invalid date format')
+    .nullable(),
+  endDate: Yup.date()
+    .required('End date is required')
+    .typeError('Invalid date format')
+    .min(Yup.ref('startDate'), 'End date must be after the start date')
+    .nullable(),
+});

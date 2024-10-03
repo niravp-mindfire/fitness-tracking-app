@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks'; 
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { registerUser, selectAuthError, selectAuthLoading } from '../features/auth/authSlice'; 
+import { registerUser, selectAuthError, selectAuthLoading } from '../features/auth/auth'; 
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, CircularProgress, TextField, Typography, Container, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { RegisterFormValues } from '../utils/types';

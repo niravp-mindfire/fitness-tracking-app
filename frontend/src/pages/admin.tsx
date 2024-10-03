@@ -1,14 +1,14 @@
 import React, { ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../features/auth/authSlice'; // Adjust the import based on your structure
+import { logout } from '../features/auth/auth'; // Adjust the import based on your structure
 import Sidebar from './Sidebar'; // Adjust the import based on your structure
 
-interface AdminLayoutProps {
+interface AdminProps {
   children: ReactNode; // Define children prop type
 }
 
-const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
+const Admin: React.FC<AdminProps> = ({ children }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -27,4 +27,4 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   );
 };
 
-export default AdminLayout;
+export default Admin;

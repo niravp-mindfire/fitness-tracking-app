@@ -8,7 +8,7 @@ import DataTable from "../../component/Datatable";
 import { RootState, useAppDispatch } from "../../app/store";
 import { Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { appPath } from "../../utils/appPath";
+import { path } from "../../utils/path";
 
 const WorkoutPlanList = () => {
   const dispatch = useAppDispatch();
@@ -91,7 +91,7 @@ const WorkoutPlanList = () => {
   }));
 
   const handleEditWorkoutPlan = (id: any) => {
-    navigate(`${appPath.WORKOUT_PLAN}/edit/${id}`);
+    navigate(`${path.WORKOUT_PLAN}/edit/${id}`);
   };
 
   return (
@@ -105,7 +105,7 @@ const WorkoutPlanList = () => {
           onChange={handleSearchChange}
           sx={{ width: "300px" }}
         />
-        <Button variant="contained" onClick={() => navigate(`${appPath.WORKOUT_PLAN}/add`)}>
+        <Button variant="contained" onClick={() => navigate(`${path.WORKOUT_PLAN}/add`)}>
           Add Workout Plan
         </Button>
       </Box>

@@ -5,7 +5,7 @@ import { createExercise, updateExercise, fetchExerciseById, resetCurrentExercise
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import BreadcrumbsComponent from '../../component/BreadcrumbsComponent';
-import { appPath } from '../../utils/appPath';
+import { path } from '../../utils/path';
 import { ExerciseSchema } from '../../utils/validationSchema';
 
 const ExerciseForm: React.FC = () => {
@@ -45,7 +45,7 @@ const ExerciseForm: React.FC = () => {
         } else {
           await dispatch(createExercise(values)).unwrap();
         }
-        navigate(appPath.EXERCISE);
+        navigate(path.EXERCISE);
       } catch (error) {
         console.error('Failed to save exercise:', error);
       } finally {
@@ -61,7 +61,7 @@ const ExerciseForm: React.FC = () => {
         <Toolbar>
           <BreadcrumbsComponent
             items={[
-              { label: 'Exercises', path: appPath.EXERCISE },
+              { label: 'Exercises', path: path.EXERCISE },
               { label: id ? 'Edit Exercise' : 'Add Exercise' },
             ]}
           />

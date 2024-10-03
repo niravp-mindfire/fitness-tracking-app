@@ -16,7 +16,7 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import { appPath } from "../../utils/appPath";
+import { path } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
 
 const WorkoutExerciseList = () => {
@@ -104,7 +104,7 @@ const WorkoutExerciseList = () => {
   }));
 
   const handleEditWorkout = (id: any) => {
-    navigate(`${appPath.WORKOUT_EXERCISE}/edit/${id}`);
+    navigate(`${path.WORKOUT_EXERCISE}/edit/${id}`);
   };
 
   return (
@@ -122,7 +122,7 @@ const WorkoutExerciseList = () => {
           variant="contained"
           color="primary"
           onClick={() =>
-            navigate(`${appPath.WORKOUT_EXERCISE}/add`)
+            navigate(`${path.WORKOUT_EXERCISE}/add`)
           }
         >
           Add Workout

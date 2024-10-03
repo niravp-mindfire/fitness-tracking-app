@@ -10,14 +10,15 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loading: false,
   error: null,
-  token: null,
+  token: localStorage.getItem('token') ? localStorage.getItem('token') : null,
+  role: localStorage.getItem('role') ? localStorage.getItem('role') : null,
 };
 
 // Async thunk for user registration
 export const registerUser = createAsyncThunk<
-  { token: string }, // The type of the return value on success
-  { username: string; email: string; password: string; profile: any }, // The type of the argument to the thunk
-  { rejectValue: string } // The type of the value returned if the thunk is rejected
+  { token: string },
+  { username: string; email: string; password: string; profile: any },
+  { rejectValue: string }
 >(
   'auth/registerUser',
   async (userData, { rejectWithValue }) => {
@@ -32,17 +33,17 @@ export const registerUser = createAsyncThunk<
 
 // Async thunk for user login
 export const loginUser = createAsyncThunk<
-  { token: string }, // The type of the return value on success
-  { email: string; password: string }, // The type of the argument to the thunk
-  { rejectValue: string } // The type of the value returned if the thunk is rejected
+  { token: string },
+  { email: string; password: string },
+  { rejectValue: string }
 >(
   'auth/loginUser',
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(apiUrl.LOGIN, userData);
-      return response.data.data; // Adjust based on your API response structure
+      return response.data.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data.message || 'Login failed'); // Handle errors
+      return rejectWithValue(error.response.data.message || 'Login failed');
     }
   }
 );
@@ -52,9 +53,9 @@ export const forgetPassword = createAsyncThunk(
   async (values: { email: string }, { rejectWithValue }) => {
     try {
     const response = await axiosInstance.post(apiUrl.FORGET_PASSWORD, values);
-    return response.data.data; // Adjust based on your API response structure
+    return response.data.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data.message || 'Login failed'); // Handle errors
+      return rejectWithValue(error.response.data.message || 'Login failed');
     }
   }
 );
@@ -66,8 +67,9 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.isAuthenticated = false;
-      state.token = null; // Clear token on logout
-      localStorage.removeItem('token'); // Remove token from local storage
+      state.token = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
     },
     // Action to set authenticated state based on token
     initializeAuth: (state, action: PayloadAction<{ token: string }>) => {
@@ -78,50 +80,50 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
-        state.loading = true; // Set loading state when the request is initiated
+        state.loading = true;
       })
       .addCase(registerUser.fulfilled, (state) => {
-        state.loading = false; // Reset loading on success
-        state.error = null; // Clear any existing errors
+        state.loading = false;
+        state.error = null;
       })
       .addCase(registerUser.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false; // Reset loading on failure
-        state.error = action.payload || 'Registration failed'; // Set error state
+        state.loading = false;
+        state.error = action.payload || 'Registration failed';
       })
       .addCase(loginUser.pending, (state) => {
-        state.loading = true; // Set loading state when the request is initiated
+        state.loading = true;
       })
-      .addCase(loginUser.fulfilled, (state, action: PayloadAction<{ token: string }>) => {
-        state.loading = false; // Reset loading on success
-        state.isAuthenticated = true; // Set authenticated state
-        state.token = action.payload.token; // Store the token
-        localStorage.setItem('token', action.payload.token); // Store token in local storage
-        state.error = null; // Clear any existing errors
+      .addCase(loginUser.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.token = action.payload.token;
+        localStorage.setItem('token', action.payload.token);
+        localStorage.setItem('role', action.payload.role);
+        state.error = null;
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false; // Reset loading on failure
-        state.error = action.payload || 'Login failed'; // Set error state
+        state.loading = false;
+        state.error = action.payload || 'Login failed';
       }).addCase(forgetPassword.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(forgetPassword.fulfilled, (state, action) => {
         state.loading = false;
-        // Handle success, e.g. store user info
       })
       .addCase(forgetPassword.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || ""; // Capture error message
+        state.error = action.error.message || "";
       });;
   },
 });
 
 // Export the actions and reducer
-export const { logout, initializeAuth } = authSlice.actions; // Export both actions
+export const { logout, initializeAuth } = authSlice.actions; 
 export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;
 export const selectAuthLoading = (state: RootState) => state.auth.loading;
 export const selectAuthError = (state: RootState) => state.auth.error;
-export const selectAuthToken = (state: RootState) => state.auth.token; // Selector for token
+export const selectAuthToken = (state: RootState) => state.auth.token;
 
-export default authSlice.reducer; // Default export of the reducer
+export default authSlice.reducer;
 

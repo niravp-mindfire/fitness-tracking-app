@@ -1,4 +1,4 @@
-export const appPath = {
+export const path = {
     HOME: "/",
     REGISTER: "/register",
     FORGET_PASSWORD: "/forgot-password",
@@ -7,5 +7,6 @@ export const appPath = {
     WORKOUT: "/workouts",
     EXERCISE: "/exercises",
     WORKOUT_EXERCISE: "/workout-exercise",
-    WORKOUT_PLAN: "/workout-plan"
+    WORKOUT_PLAN: "/workout-plan",
+    CHALLENGE: "/challenges"
 }

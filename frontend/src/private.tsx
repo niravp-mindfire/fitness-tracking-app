@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { selectIsAuthenticated } from "./features/auth/authSlice";
+import { selectIsAuthenticated } from "./features/auth/auth";
 
 const Private: React.FC<{ children: JSX.Element }> = ({ children }) => {
     const isAuthenticated = useSelector(selectIsAuthenticated);

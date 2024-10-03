@@ -5,7 +5,7 @@ import DataTable from '../../component/Datatable';
 import { Workout } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-import { appPath } from '../../utils/appPath';
+import { path } from '../../utils/path';
 
 const WorkoutList = () => {
     const dispatch = useAppDispatch();
@@ -37,11 +37,11 @@ const WorkoutList = () => {
   };
 
   const handleAddWorkout = () => {
-    navigate(`${appPath.WORKOUT}/add`);
+    navigate(`${path.WORKOUT}/add`);
   };
 
   const handleEditWorkout = (id: any) => {
-    navigate(`${appPath.WORKOUT}/edit/${id}`);
+    navigate(`${path.WORKOUT}/edit/${id}`);
   };
 
   const handleDeleteWorkout = (id: string) => {

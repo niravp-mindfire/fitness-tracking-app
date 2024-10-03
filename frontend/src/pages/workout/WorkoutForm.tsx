@@ -7,7 +7,7 @@ import { createWorkout, updateWorkout, fetchWorkoutById, selectWorkoutById, rese
 import { useParams, useNavigate } from 'react-router-dom';
 import { RootState, useAppDispatch } from '../../app/store';
 import BreadcrumbsComponent from '../../component/BreadcrumbsComponent';
-import { appPath } from '../../utils/appPath';
+import { path } from '../../utils/path';
 
 // Validation schema
 const validationSchema = Yup.object({
@@ -52,7 +52,7 @@ const WorkoutForm: React.FC = () => {
         } else {
           await dispatch(createWorkout(values)).unwrap();
         }
-        navigate(appPath.WORKOUT);
+        navigate(path.WORKOUT);
       } catch (error) {
         console.error('Failed to save workout:', error);
       } finally {
@@ -67,7 +67,7 @@ const WorkoutForm: React.FC = () => {
       <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
         <Toolbar>
           <BreadcrumbsComponent items={[
-            { label: 'Workouts', path: appPath.WORKOUT },
+            { label: 'Workouts', path: path.WORKOUT },
             { label: id ? 'Edit Workout' : 'Add Workout' }
           ]} />
         </Toolbar>
