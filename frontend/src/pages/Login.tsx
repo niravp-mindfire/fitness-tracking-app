@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { loginUser, selectAuthLoading, selectAuthError } from '../features/auth/authSlice';
+import { loginUser, selectAuthLoading, selectAuthError } from '../features/auth/auth';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, CircularProgress, TextField, Typography, Container, Grid } from '@mui/material';
 import { AppDispatch } from '../app/store'; // Import the AppDispatch type

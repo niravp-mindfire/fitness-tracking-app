@@ -31,17 +31,24 @@ export const getAllWorkouts = async (req: any, res: Response) => {
       if (endDate) query.date.$lte = new Date(endDate as string);
     }
 
-    // Pagination and sorting
-    const skip = (Number(page) - 1) * Number(limit);
-    const sortOrder = order === 'asc' ? 1 : -1;
-
-    // Fetch workouts from the database
-    const workouts = await Workout.find(query)
-      .sort({ [sort as string]: sortOrder })
-      .skip(skip)
-      .limit(Number(limit));
-
+    // Pagination logic
+    let workouts;
     const total = await Workout.countDocuments(query);
+
+    if (Number(page) === -1 && Number(limit) === -1) {
+      // If both page and limit are -1, fetch all workouts
+      workouts = await Workout.find(query).sort({ [sort as string]: order === 'asc' ? 1 : -1 });
+    } else {
+      // Calculate skip and apply limit
+      const skip = (Number(page) - 1) * Number(limit);
+      const sortOrder = order === 'asc' ? 1 : -1;
+
+      // Fetch workouts with pagination and sorting
+      workouts = await Workout.find(query)
+        .sort({ [sort as string]: sortOrder })
+        .skip(skip)
+        .limit(Number(limit));
+    }
 
     res.status(200).json(successResponse({
       total,
@@ -55,6 +62,7 @@ export const getAllWorkouts = async (req: any, res: Response) => {
     res.status(500).json(errorResponse('Server error', err));
   }
 };
+
 
 export const getWorkoutById = async (req: any, res: Response) => {
   const { id } = req.params;  // Extract workout ID from request parameters
@@ -139,6 +147,35 @@ export const deleteWorkout = async (req: any, res: Response) => {
   }
 };
 
+export const getWorkoutExercises = async (req: Request, res: Response) => {
+  const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc', search = '' } = req.query;
+  
+  const searchQuery = search
+    ? {
+        $or: [
+          { sets: { $regex: search, $options: 'i' } },
+          { reps: { $regex: search, $options: 'i' } },
+        ],
+      }
+    : {};
+
+  try {
+    const skip = (Number(page) - 1) * Number(limit);
+    const workoutExercises = await WorkoutExercise.find(searchQuery)
+      .populate('workoutId')
+      .populate('exerciseId')
+      .sort({ [String(sortBy)]: sortOrder === 'asc' ? 1 : -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const totalCount = await WorkoutExercise.countDocuments(searchQuery);
+
+    res.json(successResponse({ workoutExercises, totalCount }, 'Workout exercises fetched successfully'));
+  } catch (err) {
+    res.status(500).json(errorResponse('Error fetching workout exercises', err));
+  }
+};
+
 // Add exercise to a workout
 export const addExerciseToWorkout = async (req: any, res: Response) => {
   const { workoutId, exerciseId, sets, reps, weight } = req.body;
@@ -196,5 +233,24 @@ export const removeExerciseFromWorkout = async (req: Request, res: Response) => 
     res.json(successResponse(workoutExercise, 'Exercise removed from workout successfully'));
   } catch (err) {
     res.status(500).json(errorResponse('Error removing exercise from workout', err));
+  }
+};
+
+export const getWorkoutExerciseById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+      const workoutExercise = await WorkoutExercise.findById(id)
+          .populate('workoutId') // Populate workout details if needed
+          .populate('exerciseId'); // Populate exercise details if needed
+
+      if (!workoutExercise) {
+          return res.status(404).json({ message: 'Workout Exercise not found' });
+      }
+
+      return res.status(200).json(workoutExercise);
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Server error' });
   }
 };

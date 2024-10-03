@@ -30,16 +30,23 @@ export const getAllExercises = async (req: Request, res: Response) => {
         }
 
         // Pagination logic
-        const skip = (Number(page) - 1) * Number(limit);
-        const sortOrder = order === 'asc' ? 1 : -1;
-
-        // Find exercises with the query, sorted and paginated
-        const exercises = await Exercise.find(query)
-            .sort({ [sort as string]: sortOrder })
-            .skip(skip)
-            .limit(Number(limit));
-
+        let exercises;
         const total = await Exercise.countDocuments(query); // Total number of documents
+
+        if (Number(page) === -1 && Number(limit) === -1) {
+            // If both page and limit are -1, fetch all exercises
+            exercises = await Exercise.find(query).sort({ [sort as string]: order === 'asc' ? 1 : -1 });
+        } else {
+            // Calculate skip and apply limit
+            const skip = (Number(page) - 1) * Number(limit);
+            const sortOrder = order === 'asc' ? 1 : -1;
+
+            // Find exercises with the query, sorted and paginated
+            exercises = await Exercise.find(query)
+                .sort({ [sort as string]: sortOrder })
+                .skip(skip)
+                .limit(Number(limit));
+        }
 
         // Return the response
         res.status(200).json(successResponse({
@@ -53,6 +60,25 @@ export const getAllExercises = async (req: Request, res: Response) => {
         res.status(500).json(errorResponse('Error fetching exercises', error));
     }
 };
+
+export const getExerciseById = async (req: any, res: Response) => {
+    const { id } = req.params;  // Extract exercise ID from request parameters
+    const userId = req?.user?.userId;  // Get the user ID from the request (if using authentication)
+  
+    try {
+      // Find the exercise by its ID and ensure it belongs to the logged-in user
+      const exercise = await Exercise.findOne({ _id: id });
+  
+      if (!exercise) {
+        return res.status(404).json(errorResponse('Exercise not found'));
+      }
+  
+      // Return the Exercise data in the response
+      res.status(200).json(successResponse(exercise, 'Exercise retrieved successfully'));
+    } catch (err) {
+      res.status(500).json(errorResponse('Error retrieving Exercise', err));
+    }
+  };
 
 // POST a new exercise
 export const createExercise = async (req: Request, res: Response) => {

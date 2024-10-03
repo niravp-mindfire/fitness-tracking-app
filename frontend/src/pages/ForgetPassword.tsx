@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { forgetPassword as forgetPasswordAction, selectAuthError, selectAuthLoading } from '../features/auth/authSlice';
+import { forgetPassword as forgetPasswordAction, selectAuthError, selectAuthLoading } from '../features/auth/auth';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, CircularProgress, TextField, Typography, Container } from '@mui/material';
 import { ForgetPasswordFormValues } from '../utils/types';

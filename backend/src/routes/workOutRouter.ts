@@ -14,7 +14,7 @@ const workOutRouter = Router();
 workOutRouter.use(authenticateToken);
 
 // Route to get all workouts with query param validation
-workOutRouter.get('/', validateGetAllWorkouts, authenticateToken, getAllWorkouts);
+workOutRouter.get('/', authenticateToken, getAllWorkouts);
 
 // Route to get workout by id
 workOutRouter.get('/:id', authenticateToken, getWorkoutById)

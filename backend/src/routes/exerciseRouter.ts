@@ -3,7 +3,8 @@ import {
     getAllExercises,
     createExercise,
     updateExercise,
-    deleteExercise
+    deleteExercise,
+    getExerciseById
 } from '../controllers/exerciseController';
 import { authenticateToken } from '../middleware/authMiddleware';
 import { validateCreateExercise, validateUpdateExercise } from '../middleware/exerciseValidation';
@@ -12,6 +13,8 @@ const exerciseRouter = Router();
 
 // GET all exercises (requires token authentication)
 exerciseRouter.get('/', authenticateToken, getAllExercises);
+
+exerciseRouter.get('/:id', authenticateToken, getExerciseById)
 
 // POST a new exercise (requires token authentication & validation)
 exerciseRouter.post('/', authenticateToken, validateCreateExercise, createExercise);
