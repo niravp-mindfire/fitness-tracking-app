@@ -21,7 +21,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
+app.get('/test', (req, res) => {
+  res.json("Hello world")
+})
 app.use('/api', userRouter);
 app.use('/api/workouts', workOutRouter);
 app.use('/api/workout-exercise', workoutExerciseRouter);
