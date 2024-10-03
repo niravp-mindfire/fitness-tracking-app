@@ -48,7 +48,7 @@ const routes = [
 ];
 
 
-const app: React.FC = () => {
+const App: React.FC = () => {
   return (
     <Provider store={store}>
       <Router>
@@ -74,4 +74,4 @@ const app: React.FC = () => {
   );
 };
 
-export default app;
+export default App;
