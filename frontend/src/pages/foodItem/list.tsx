@@ -11,29 +11,29 @@ import {
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
-  fetchChallenges,
-  deleteChallenge,
-} from "../../features/challenges/challenge";
+  fetchFoodItems,
+  deleteFoodItem,
+} from "../../features/foodItem/foodItem";
 import DataTable from "../../component/Datatable";
 import { TableColumn } from "../../utils/types";
 import { useNavigate } from "react-router-dom";
 import { path } from "../../utils/path";
 
-const ChallengeList: React.FC = () => {
+const FoodItemList: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { challenges, totalCount, loading } = useAppSelector(
-    (state) => state.challenge
+  const { foodItems, totalCount, loading } = useAppSelector(
+    (state) => state.foodItem
   );
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<string>("title");
+  const [orderBy, setOrderBy] = useState<string>("name");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
+  const [selectedFoodItemId, setSelectedFoodItemId] = useState<string | null>(
     null
   );
 
@@ -43,7 +43,7 @@ const ChallengeList: React.FC = () => {
 
   const getAllData = () => {
     dispatch(
-      fetchChallenges({
+      fetchFoodItems({
         search: searchTerm,
         page: page + 1,
         limit: rowsPerPage,
@@ -67,14 +67,15 @@ const ChallengeList: React.FC = () => {
   };
 
   const handleDeleteClick = (id: string) => {
-    setSelectedChallengeId(id);
+    setSelectedFoodItemId(id);
     setDialogOpen(true);
-    getAllData()
   };
 
   const handleConfirmDelete = () => {
-    if (selectedChallengeId) {
-      dispatch(deleteChallenge(selectedChallengeId));
+    if (selectedFoodItemId) {
+      dispatch(deleteFoodItem(selectedFoodItemId)).then(res => {
+        getAllData()
+      });
     }
     setDialogOpen(false);
   };
@@ -83,34 +84,35 @@ const ChallengeList: React.FC = () => {
     setDialogOpen(false);
   };
 
-  const handleAddChallenge = () => {
-    navigate(`${path.CHALLENGE}/add`);
+  const handleAddFoodItem = () => {
+    navigate(`${path.FOOD_ITEM}/add`);
   };
 
-  const handleEditChallenge = (id: string) => {
-    navigate(`${path.CHALLENGE}/edit/${id}`);
+  const handleEditFoodItem = (id: string) => {
+    navigate(`${path.FOOD_ITEM}/edit/${id}`);
   };
 
   const columns: TableColumn[] = [
-    { field: "title", headerName: "Title", sorting: true },
-    { field: "description", headerName: "Description", sorting: false },
-    { field: "startDate", headerName: "Start Date", sorting: true },
-    { field: "endDate", headerName: "End Date", sorting: true },
+    { field: "name", headerName: "Name", sorting: true },
+    { field: "calories", headerName: "Calories", sorting: true },
+    { field: "protein", headerName: "Protein(g)", sorting: true },
+    { field: "carbs", headerName: "Carbohydrates(g)", sorting: true },
+    { field: "fat", headerName: "Fat(g)", sorting: true },
   ];
 
   return (
     <div>
-      <h1>Challenge List</h1>
+      <h1>Food Item List</h1>
       <Box display="flex" justifyContent="space-between" mb={2}>
         <TextField
           value={searchTerm}
           onChange={handleSearchChange}
-          label="Search Challenge"
+          label="Search Food Item"
           variant="outlined"
           sx={{ width: "300px" }}
         />
-        <Button variant="contained" color="primary" onClick={handleAddChallenge}>
-          Add Challenge
+        <Button variant="contained" color="primary" onClick={handleAddFoodItem}>
+          Add Food Item
         </Button>
       </Box>
 
@@ -119,18 +121,19 @@ const ChallengeList: React.FC = () => {
       ) : (
         <DataTable
           columns={columns}
-          data={challenges.map((challenge: any) => ({
-            id: challenge._id,
-            title: challenge.title,
-            description: challenge.description,
-            startDate: challenge?.startDate?.split('T')[0],
-            endDate: challenge?.endDate?.split('T')[0],
+          data={foodItems.map((item: any) => ({
+            id: item._id,
+            name: item.name,
+            calories: item.calories,
+            protein: item?.macronutrients?.proteins,
+            carbs: item?.macronutrients?.carbohydrates,
+            fat: item?.macronutrients?.fats,
           }))}
           onSort={handleSort}
           totalCount={totalCount}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
-          handleEdit={handleEditChallenge}
+          handleEdit={handleEditFoodItem}
           handleDelete={handleDeleteClick}
         />
       )}
@@ -139,7 +142,7 @@ const ChallengeList: React.FC = () => {
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this challenge?
+            Are you sure you want to delete this food item?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -153,4 +156,4 @@ const ChallengeList: React.FC = () => {
   );
 };
 
-export default ChallengeList;
+export default FoodItemList;

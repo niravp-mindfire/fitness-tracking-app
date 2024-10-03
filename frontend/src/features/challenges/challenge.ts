@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../utils/axiosInstance';
+import { apiUrl } from '../../utils/apiUrl';
 
 interface ChallengeState {
   challenges: any[];
@@ -23,10 +24,10 @@ export const fetchChallenges = createAsyncThunk(
     'challenges/fetchChallenges',
     async (params: any, { rejectWithValue }) => {
       try {
-        const response = await axiosInstance.get('/challenges', { params });
+        const response = await axiosInstance.get(`${apiUrl.CHALLENGES}`, { params });
         return {
-          challenges: response.data.challenges,  // Adjust this to your API response structure
-          totalCount: response.data.totalCount,  // Ensure this is returned by the API
+          challenges: response.data.data.challenges,
+          totalCount: response.data.data.total,
         };
       } catch (error: any) {
         return rejectWithValue(error.response.data);
@@ -38,8 +39,8 @@ export const fetchChallengeById = createAsyncThunk(
   'challenges/fetchChallengeById',
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/challenges/${id}`);
-      return response.data;
+      const response = await axiosInstance.get(`${apiUrl.CHALLENGES}/${id}`);
+      return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
@@ -50,7 +51,7 @@ export const createChallenge = createAsyncThunk(
   'challenges/createChallenge',
   async (challengeData: any, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post('/challenges', challengeData);
+      const response = await axiosInstance.post(`${apiUrl.CHALLENGES}`, challengeData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -62,7 +63,7 @@ export const updateChallenge = createAsyncThunk(
   'challenges/updateChallenge',
   async ({ id, challengeData }: { id: string; challengeData: any }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put(`/challenges/${id}`, challengeData);
+      const response = await axiosInstance.put(`${apiUrl.CHALLENGES}/${id}`, challengeData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -74,7 +75,7 @@ export const deleteChallenge = createAsyncThunk(
   'challenges/deleteChallenge',
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(`/challenges/${id}`);
+      const response = await axiosInstance.delete(`${apiUrl.CHALLENGES}/${id}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);

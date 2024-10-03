@@ -5,7 +5,8 @@ import {
     forgetPassword,
     resetPassword,
     editProfile,
-    getMyProfile
+    getMyProfile,
+    getAllUsers
 } from '../controllers/userController';
 import { authenticateToken } from '../middleware/authMiddleware';
 import {
@@ -35,5 +36,7 @@ userRouter.put('/edit-profile', authenticateToken, validateEditProfile, editProf
 
 // Get My Profile
 userRouter.get('/my-profile', authenticateToken, getMyProfile); 
+
+userRouter.get('/users', authenticateToken, getAllUsers)
 
 export default userRouter;

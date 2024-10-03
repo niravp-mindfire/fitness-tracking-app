@@ -38,6 +38,22 @@ export const getAllFoodItems = async (req: Request, res: Response) => {
     }
 };
 
+export const getFoodItemById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const foodItem = await FoodItem.findById(id);
+
+        if (!foodItem) {
+            return res.status(404).json(errorResponse('Food item not found'));
+        }
+
+        res.status(200).json(successResponse(foodItem, 'Food item retrieved successfully'));
+    } catch (err) {
+        res.status(500).json(errorResponse('Error fetching food item', err));
+    }
+};
+
 // CREATE a new food item
 export const createFoodItem = async (req: Request, res: Response) => {
     // Handle validation result

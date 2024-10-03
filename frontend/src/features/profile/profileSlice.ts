@@ -5,9 +5,10 @@ import { apiUrl } from '../../utils/apiUrl';
 
 // Define the initial state type
 interface ProfileState {
-  data: ProfileFormValues | null; // Assuming you want to keep the structure of ProfileFormValues
+  data: ProfileFormValues | null;
   loading: boolean;
-  error: string | null; // Change here to allow string errors
+  error: string | null;
+  users: Array<any>
 }
 
 // Async thunk to update user profile
@@ -22,6 +23,18 @@ export const updateUserProfile = createAsyncThunk(
     }
   }
 );
+
+export const getAllUsers = createAsyncThunk(
+  'profile/getAllUsers',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(apiUrl.ALL_USERS);
+      return response.data.data;
+    } catch(error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
 
 export const getProfile = createAsyncThunk(
   'profile/getProfile',
@@ -41,6 +54,7 @@ const profileSlice = createSlice({
     data: null,
     loading: false,
     error: null,
+    users: []
   } as ProfileState, // Use the defined state type
   reducers: {},
   extraReducers: (builder) => {
@@ -68,6 +82,9 @@ const profileSlice = createSlice({
       .addCase(getProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.users = action.payload as any
       });
 
   },
