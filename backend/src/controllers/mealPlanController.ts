@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import MealPlan from '../models/MealPlans';
 import { errorResponse, successResponse } from '../config/responseFormat';
 import { validationResult } from 'express-validator';
+import FoodItem from '../models/FoodItem';
 
 // GET all meal plans with optional search, pagination, and sorting
 export const getAllMealPlans = async (req: any, res: Response) => {
@@ -29,11 +30,16 @@ export const getAllMealPlans = async (req: any, res: Response) => {
         const skip = (Number(page) - 1) * Number(limit);
         const sortOrder = order === 'asc' ? 1 : -1;
 
-        // Query meal plans
+        // Query meal plans and populate meals with food data
         const mealPlans = await MealPlan.find(query)
             .sort({ [sort as string]: sortOrder })
             .skip(skip)
-            .limit(Number(limit));
+            .limit(Number(limit))
+            .populate({
+                path: 'meals.foodItems.foodId', // This is the nested population
+                model: FoodItem,   // Assuming you have a Food model
+                select: 'name' // Specify the fields you want to retrieve from the Food model
+            });
 
         const total = await MealPlan.countDocuments(query);
 

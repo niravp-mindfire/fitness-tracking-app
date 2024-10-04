@@ -10,5 +10,6 @@ export const apiUrl = {
     WORKOUT_PLANS: "/workout-plan",
     ALL_USERS: "/users",
     CHALLENGES: "/challenges",
-    FOOD_ITEMS: "/food-items"
+    FOOD_ITEMS: "/food-items",
+    MEAL_PLANS: "/meal-plans"
 }

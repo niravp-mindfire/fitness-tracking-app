@@ -80,14 +80,19 @@ export interface TableColumn {
 
 export interface DataTableProps {
   columns: TableColumn[];
-  data: any;
+  data: any; // You might want to replace `any` with a more specific type for better type safety
   onSort: (field: string, order: 'asc' | 'desc') => void;
   onPageChange: (newPage: number) => void;
   totalCount: number;
   rowsPerPage: number;
-  handleEdit: (id: any) => void,
-  handleDelete: (id: any) => void
+  handleEdit: (id: any) => void;
+  handleDelete: (id: any) => void;
+  expandable?: boolean;
+  expandedRows?: string[]; // Add this line to define expanded rows
+  toggleRow?: (id: string) => void; // Add this line to define the toggle function
+  renderExpandableRow?: (row: any) => JSX.Element; // Specify that this function returns a JSX element
 }
+
 
 export interface Exercise {
   _id?: string;
@@ -158,4 +163,48 @@ export interface WorkoutPlanState {
   sort: string;                   // Column to sort by
   order: 'asc' | 'desc';          // Sorting order
   search: string;                 // Search query
+}
+export interface FoodItem {
+  foodId: string; // Represents the ID of the food item
+  quantity: number | ''; // Quantity of the food item
+}
+
+export interface Meal {
+  mealType: string; // Change from mealName to mealType as per your current implementation
+  foodItems: Array<{
+    foodId: string; // Assuming foodId represents the ID of the food item
+    quantity: number; // Quantity should be a number
+  }>;
+}
+
+export interface MealPlan {
+  _id: string; // ID of the meal plan
+  userId: string; // ID of the user associated with the meal plan
+  title: string; // Title of the meal plan
+  description?: string; // Optional description
+  duration: number; // Duration in days
+  meals: Array<Meal>; // Use the updated Meal interface
+  createdAt: string; // Creation timestamp
+  updatedAt: string; // Update timestamp
+}
+
+// Define a type for form input
+export interface MealPlanFormValues {
+  title: string; // Title of the meal plan
+  description?: string; // Optional description
+  duration: number | ''; // Duration in days
+  meals: Meal[]; // Array of meals in the meal plan
+}
+
+export interface MealPlanState {
+  mealPlans: MealPlan[]; // List of meal plans
+  loading: boolean; // Loading state
+  error: string | null; // Error message
+  totalCount: number; // Total count of meal plans
+  currentMealPlan: MealPlan | null; // Currently selected meal plan
+  page: number; // Current page for pagination
+  limit: number; // Limit of meal plans per page
+  sort: string; // Current sort field
+  order: 'asc' | 'desc'; // Sort order
+  search: string; // Search query
 }

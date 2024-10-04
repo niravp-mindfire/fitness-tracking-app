@@ -15,16 +15,25 @@ export const getAllFoodItems = async (req: Request, res: Response) => {
             query.name = { $regex: search, $options: 'i' };
         }
 
-        // Pagination
-        const skip = (Number(page) - 1) * Number(limit);
+        // Sorting
         const sortOrder = order === 'asc' ? 1 : -1;
 
-        const foodItems = await FoodItem.find(query)
-            .sort({ [sort as string]: sortOrder })
-            .skip(skip)
-            .limit(Number(limit));
+        // Handle -1 for page and limit to return all data
+        let foodItems;
+        let total = await FoodItem.countDocuments(query);
 
-        const total = await FoodItem.countDocuments(query);
+        if (Number(page) === -1 && Number(limit) === -1) {
+            // If page and limit are -1, retrieve all food items
+            foodItems = await FoodItem.find(query).sort({ [sort as string]: sortOrder });
+        } else {
+            // Pagination
+            const skip = (Number(page) - 1) * Number(limit);
+
+            foodItems = await FoodItem.find(query)
+                .sort({ [sort as string]: sortOrder })
+                .skip(skip)
+                .limit(Number(limit));
+        }
 
         res.status(200).json(successResponse({
             total,
@@ -37,6 +46,7 @@ export const getAllFoodItems = async (req: Request, res: Response) => {
         res.status(500).json(errorResponse('Server error', err));
     }
 };
+
 
 export const getFoodItemById = async (req: Request, res: Response) => {
     const { id } = req.params;

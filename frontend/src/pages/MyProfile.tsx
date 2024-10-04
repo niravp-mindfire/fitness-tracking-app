@@ -69,10 +69,6 @@ const MyProfile = () => {
     [dispatch]
   );
 
-  if (loading) {
-    return <CircularProgress />;
-  }
-
   return (
     <Container maxWidth="sm">
       <Box
@@ -306,7 +302,7 @@ const MyProfile = () => {
                 disabled={isSubmitting}
                 sx={{ mt: 3, mb: 2 }}
               >
-                {loading ? "Updating..." : "Update Profile"}
+                Update Profile {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
               </Button>
 
               {error && <Typography color="error">{error}</Typography>}

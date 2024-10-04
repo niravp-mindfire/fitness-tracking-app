@@ -47,7 +47,7 @@ const Register = () => {
           validationSchema={registerSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, errors }) => (
             <Form>
               <Box sx={{ mt: 1 }}>
                 {/* Profile Fields */}
@@ -60,6 +60,7 @@ const Register = () => {
                   label="First Name"
                   name="profile.firstName"
                   helperText={<ErrorMessage name="profile.firstName" />}
+                  error={!!error || errors?.profile?.firstName}
                 />
 
                 <Field
@@ -71,6 +72,7 @@ const Register = () => {
                   label="Last Name"
                   name="profile.lastName"
                   helperText={<ErrorMessage name="profile.lastName" />}
+                  error={!!error || errors?.profile?.lastName}
                 />
                 <Field
                   as={TextField}
@@ -81,6 +83,7 @@ const Register = () => {
                   label="Username"
                   name="username"
                   helperText={<ErrorMessage name="username" />}
+                  error={!!error || errors?.username}
                 />
 
                 <Field
@@ -92,6 +95,7 @@ const Register = () => {
                   label="Email Address"
                   name="email"
                   helperText={<ErrorMessage name="email" />}
+                  error={!!error || errors?.email}
                 />
 
                 <Field
@@ -105,6 +109,7 @@ const Register = () => {
                   id="password"
                   autoComplete="current-password"
                   helperText={<ErrorMessage name="password" />}
+                  error={!!error || errors?.password}
                 />
 
                 <Field
@@ -120,6 +125,7 @@ const Register = () => {
                     shrink: true,
                   }}
                   helperText={<ErrorMessage name="profile.dob" />}
+                  error={!!error || errors?.profile?.dob}
                 />
 
                 {/* Gender Dropdown */}
@@ -132,6 +138,7 @@ const Register = () => {
                     name="profile.gender"
                     label="Gender"
                     helperText={<ErrorMessage name="profile.gender" />}
+                    error={!!error || errors?.profile?.gender}
                   >
                     <MenuItem value="Male">Male</MenuItem>
                     <MenuItem value="Female">Female</MenuItem>
@@ -148,6 +155,7 @@ const Register = () => {
                   name="profile.height"
                   type="number"
                   helperText={<ErrorMessage name="profile.height" />}
+                  error={!!error || errors?.profile?.height}
                 />
 
                 <Field
@@ -160,9 +168,8 @@ const Register = () => {
                   name="profile.weight"
                   type="number"
                   helperText={<ErrorMessage name="profile.weight" />}
+                  error={!!error || errors?.profile?.weight}
                 />
-
-                {loading && <CircularProgress />}
                 <Button
                   type="submit"
                   fullWidth
@@ -171,7 +178,7 @@ const Register = () => {
                   disabled={isSubmitting || loading}
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  {loading ? 'Registering...' : 'Register'}
+                  Register {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
                 </Button>
                 {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
 

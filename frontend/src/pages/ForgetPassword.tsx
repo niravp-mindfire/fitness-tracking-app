@@ -42,7 +42,7 @@ const ForgetPassword = () => {
           validationSchema={forgetPasswordSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, errors }) => (
             <Form>
               <Box sx={{ mt: 1 }}>
                 <Field
@@ -55,16 +55,12 @@ const ForgetPassword = () => {
                   name="email"
                   autoComplete="email"
                   autoFocus
+                  error={!!error || errors.email}
+                  helperText={<ErrorMessage name="email" />}
+                  InputProps={{
+                    style: { height: '56px' }, // Consistent height
+                  }}
                 />
-                <ErrorMessage name="email">
-                  {msg => (
-                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                      {msg}
-                    </Typography>
-                  )}
-                </ErrorMessage>
-
-                {loading && <CircularProgress />}
                 <Button
                   type="submit"
                   fullWidth
@@ -73,7 +69,7 @@ const ForgetPassword = () => {
                   disabled={isSubmitting || loading}
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  {loading ? 'Sending...' : 'Send Reset Link'}
+                  Send Reset Link {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
                 </Button>
                 {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
               </Box>

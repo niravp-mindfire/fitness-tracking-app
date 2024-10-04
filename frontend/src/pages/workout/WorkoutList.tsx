@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { fetchWorkouts, selectAllWorkouts, selectWorkoutLoading, selectTotalWorkouts, updateSort, deleteWorkout } from '../../features/workout/workoutSlice';
 import DataTable from '../../component/Datatable';
@@ -8,78 +8,89 @@ import { Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogConte
 import { path } from '../../utils/path';
 
 const WorkoutList = () => {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-    const workouts = useAppSelector(selectAllWorkouts);
-    const loading = useAppSelector(selectWorkoutLoading);
-    const totalCount = useAppSelector(selectTotalWorkouts);
-    const sortField = useAppSelector((state) => state.workout.sort);
-    const sortOrder = useAppSelector((state) => state.workout.order);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [deleteId, setDeleteId] = useState<string | null>(null);
-    const [dialogOpen, setDialogOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const workouts = useAppSelector(selectAllWorkouts);
+  const loading = useAppSelector(selectWorkoutLoading);
+  const totalCount = useAppSelector(selectTotalWorkouts);
+  const sortField = useAppSelector((state) => state.workout.sort);
+  const sortOrder = useAppSelector((state) => state.workout.order);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
+  // Only fetch data when search term, sort field, or order changes
   useEffect(() => {
-    dispatch(fetchWorkouts({ page: 1, limit: 10, sort: sortField, order: sortOrder }));
-  }, [dispatch, sortField, sortOrder]);
-
-  const handleSort = (field: any) => {
-    dispatch(updateSort(field)); // Only pass the field to toggle the order
-    dispatch(fetchWorkouts({ page: 1, limit: 10, sort: field, order: sortOrder }));
-  };
-
-  const handlePageChange = (newPage: number) => {
-    dispatch(fetchWorkouts({ page: newPage + 1, limit: 10, sort: sortField, order: sortOrder }));
-  };
-
-  const handleSearch = (searchTerm: string) => {
     dispatch(fetchWorkouts({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
-  };
+  }, [dispatch, searchTerm, sortField, sortOrder]);
 
-  const handleAddWorkout = () => {
+  const handleSort = useCallback(
+    (field: any) => {
+      dispatch(updateSort(field));
+    },
+    [dispatch]
+  );
+
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      dispatch(fetchWorkouts({ page: newPage + 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+    },
+    [dispatch, searchTerm, sortField, sortOrder]
+  );
+
+  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  }, []);
+
+  const handleAddWorkout = useCallback(() => {
     navigate(`${path.WORKOUT}/add`);
-  };
+  }, [navigate]);
 
-  const handleEditWorkout = (id: any) => {
-    navigate(`${path.WORKOUT}/edit/${id}`);
-  };
+  const handleEditWorkout = useCallback(
+    (id: any) => {
+      navigate(`${path.WORKOUT}/edit/${id}`);
+    },
+    [navigate]
+  );
 
-  const handleDeleteWorkout = (id: string) => {
-    setDeleteId(id); // Set the workout ID to delete
-    setDialogOpen(true); // Open the confirmation dialog
-  };
+  const handleDeleteWorkout = useCallback((id: string) => {
+    setDeleteId(id);
+    setDialogOpen(true);
+  }, []);
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     if (deleteId) {
       await dispatch(deleteWorkout(deleteId));
-      setDialogOpen(false); // Close dialog after deletion
-      setDeleteId(null); // Clear the deleteId
-      dispatch(fetchWorkouts({ page: 1, limit: 10, sort: sortField, order: sortOrder }));
+      setDialogOpen(false);
+      setDeleteId(null);
+      dispatch(fetchWorkouts({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
     }
-  };
+  }, [deleteId, dispatch, searchTerm, sortField, sortOrder]);
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = useCallback(() => {
     setDialogOpen(false);
-    setDeleteId(null); // Reset the selected delete ID
-  };
+    setDeleteId(null);
+  }, []);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-    handleSearch(event.target.value);
-  };
+  const columns = useMemo(
+    () => [
+      { field: 'date', headerName: 'Date', sorting: true },
+      { field: 'duration', headerName: 'Duration', sorting: true },
+      { field: 'notes', headerName: 'Notes', sorting: false },
+    ],
+    []
+  );
 
-  const columns = [
-    { field: 'date', headerName: 'Date', sorting: true },
-    { field: 'duration', headerName: 'Duration', sorting: true },
-    { field: 'notes', headerName: 'Notes', sorting: false },
-  ];
-
-  const tableData = workouts.map((workout: Workout) => ({
-    id: workout._id,
-    date: new Date(workout.date).toLocaleDateString(),
-    duration: workout.duration,
-    notes: workout.notes,
-  }));
+  const tableData = useMemo(
+    () =>
+      workouts.map((workout: Workout) => ({
+        id: workout._id,
+        date: new Date(workout.date).toLocaleDateString(),
+        duration: workout.duration,
+        notes: workout.notes,
+      })),
+    [workouts]
+  );
 
   return (
     <div>
@@ -92,11 +103,7 @@ const WorkoutList = () => {
           onChange={handleSearchChange}
           sx={{ width: '300px' }}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddWorkout}
-        >
+        <Button variant="contained" color="primary" onClick={handleAddWorkout}>
           Add Workout
         </Button>
       </Box>
@@ -132,4 +139,4 @@ const WorkoutList = () => {
   );
 };
 
-export default WorkoutList;
+export default React.memo(WorkoutList);
