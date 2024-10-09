@@ -9,6 +9,7 @@ import {
   TableSortLabel,
   TablePagination,
   Button,
+  Typography, // Import Typography for styling
 } from '@mui/material';
 import { DataTableProps, TableColumn } from '../utils/types';
 import EditIcon from '@mui/icons-material/Edit';
@@ -72,39 +73,49 @@ const DataTable: React.FC<DataTableProps> = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row: any) => (
-            <React.Fragment key={row.id}>
-              <TableRow>
-                {/* Expand/Collapse Button Column */}
-                <TableCell>
-                  {expandable && (
-                    <Button onClick={() => toggleRow && toggleRow(row.id)}>
-                      {expandedRows?.includes(row.id) ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
-                    </Button>
-                  )}
-                </TableCell>
-                {/* Other Data Columns */}
-                {columns.map((column: TableColumn) => (
-                  <TableCell key={column.field}>{row[column.field]}</TableCell>
-                ))}
-                <TableCell>
-                  <Button onClick={() => handleEdit(row.id)}>
-                    <EditIcon />
-                  </Button>
-                  <Button onClick={() => handleDelete(row.id)}>
-                    <DeleteIcon color='error' />
-                  </Button>
-                </TableCell>
-              </TableRow>
-              {expandable && expandedRows?.includes(row.id) && (
+          {data.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={columns.length + 2} align="center">
+                <Typography variant="body2" color="textSecondary">
+                  No data found
+                </Typography>
+              </TableCell>
+            </TableRow>
+          ) : (
+            data.map((row: any) => (
+              <React.Fragment key={row.id}>
                 <TableRow>
-                  <TableCell colSpan={columns.length + 2} sx={{ padding: 0 }}>
-                    {renderExpandableRow && renderExpandableRow(row)}
+                  {/* Expand/Collapse Button Column */}
+                  <TableCell>
+                    {expandable && (
+                      <Button onClick={() => toggleRow && toggleRow(row.id)}>
+                        {expandedRows?.includes(row.id) ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
+                      </Button>
+                    )}
+                  </TableCell>
+                  {/* Other Data Columns */}
+                  {columns.map((column: TableColumn) => (
+                    <TableCell key={column.field}>{row[column.field]}</TableCell>
+                  ))}
+                  <TableCell>
+                    <Button onClick={() => handleEdit(row.id)}>
+                      <EditIcon />
+                    </Button>
+                    <Button onClick={() => handleDelete(row.id)}>
+                      <DeleteIcon color="error" />
+                    </Button>
                   </TableCell>
                 </TableRow>
-              )}
-            </React.Fragment>
-          ))}
+                {expandable && expandedRows?.includes(row.id) && (
+                  <TableRow>
+                    <TableCell colSpan={columns.length + 2} sx={{ padding: 0 }}>
+                      {renderExpandableRow && renderExpandableRow(row)}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
+            ))
+          )}
         </TableBody>
       </Table>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>

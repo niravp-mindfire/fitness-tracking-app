@@ -4,6 +4,9 @@ import {
   updateProgressTracking,
   deleteProgressTracking,
   getUserProgressTracking,
+  getAllProgressTracking,
+  getProgressTrackingById,
+  trackProgress,
 } from '../controllers/progressTrackingController';
 import { authenticateToken } from '../middleware/authMiddleware';
 import {
@@ -11,18 +14,21 @@ import {
   validateUpdateProgressTracking,
 } from '../middleware/progressValidation';
 
-const router = Router();
+const progressTrackingRouter = Router();
 
+progressTrackingRouter.get('/', authenticateToken, getAllProgressTracking);
+progressTrackingRouter.get('/:id', authenticateToken, getProgressTrackingById);
+progressTrackingRouter.get('/track/progress', authenticateToken, trackProgress)
 // Add progress tracking
-router.post('', authenticateToken, validateAddProgressTracking, addProgressTracking);
+progressTrackingRouter.post('/', authenticateToken, validateAddProgressTracking, addProgressTracking);
 
 // Update progress tracking
-router.put('/:id', authenticateToken, validateUpdateProgressTracking, updateProgressTracking);
+progressTrackingRouter.put('/:id', authenticateToken, validateUpdateProgressTracking, updateProgressTracking);
 
 // Delete progress tracking
-router.delete('/:id', authenticateToken, deleteProgressTracking);
+progressTrackingRouter.delete('/:id', authenticateToken, deleteProgressTracking);
 
 // Get user progress tracking
-router.get('/:userId', authenticateToken, getUserProgressTracking);
+progressTrackingRouter.get('/user/:userId', authenticateToken, getUserProgressTracking);
 
-export default router;
+export default progressTrackingRouter;

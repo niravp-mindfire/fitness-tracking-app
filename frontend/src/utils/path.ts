@@ -10,5 +10,8 @@ export const path = {
     WORKOUT_PLAN: "/workout-plan",
     CHALLENGE: "/challenges",
     FOOD_ITEM: "/food-items",
-    MEAL_PLAN: "/meal-plans"
+    MEAL_PLAN: "/meal-plans",
+    NUTRITION: "/nutritions",
+    NUTRITION_MEAL: "/nutrition-meals",
+    PROGRESS_TRACKINGS: "/progress-tracking"
 }

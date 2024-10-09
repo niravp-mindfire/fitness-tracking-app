@@ -10,6 +10,9 @@ import workoutPlanSlice from '../features/workoutPlan/workoutPlanSlice';
 import challenge from '../features/challenges/challenge';
 import foodItem from '../features/foodItem/foodItem';
 import mealPlanSlice from '../features/mealPlan/mealPlanSlice';
+import nutritionSlice from '../features/nutrition/nutritionSlice';
+import nutritionMealReducer from "../features/nutritionMeal/nutritionMealSlice"
+import progressTrackingReducer from "../features/progressTracking/progressTrackingSlice"
 
 const store = configureStore({
   reducer: {
@@ -21,7 +24,10 @@ const store = configureStore({
     workoutPlan: workoutPlanSlice,
     challenge: challenge,
     foodItem: foodItem,
-    mealPlan: mealPlanSlice
+    mealPlan: mealPlanSlice,
+    nutrition: nutritionSlice,
+    nutritionMeal: nutritionMealReducer,
+    progressTracking: progressTrackingReducer
   },
 });
 

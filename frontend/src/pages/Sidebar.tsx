@@ -28,6 +28,9 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
     { text: 'Challenges', icon: <EmojiEvents />, path: path.CHALLENGE },
     { text: 'Food Items', icon: <FoodBank />, path: path.FOOD_ITEM },
     { text: 'Meal Plans', icon: <MenuBook />, path: path.MEAL_PLAN },
+    { text: 'Nutritions', icon: <MenuBook />, path: path.NUTRITION },
+    { text: 'Nutrition Meals', icon: <MenuBook />, path: path.NUTRITION_MEAL },
+    { text: 'Progress Tracking', icon: <MenuBook />, path: path.PROGRESS_TRACKINGS },
     { text: 'My Profile', icon: <Settings />, path: path.MY_PROFILE },
     { text: 'Logout', icon: <ExitToApp />, action: handleLogout },
   ];

@@ -25,6 +25,9 @@ import FoodItemList from './pages/foodItem/list';
 import FoodItemForm from './pages/foodItem/form';
 import MealPlanList from './pages/mealPlan/list'
 import MealPlanForm from './pages/mealPlan/form';
+import NutritionList from './pages/nutritions/NutritionList';
+import NutritionMealList from './pages/nutritionMeal/NutritionMealList';
+import ProgressTrackingList from './pages/progressTracking/ProgressTrackingList';
 // Route configuration
 const routes = [
   { path: path.HOME, element: <Login /> },
@@ -54,6 +57,9 @@ const routes = [
   { path: path.MEAL_PLAN, element: <MealPlanList />, isPrivate: true },
   { path: `${path.MEAL_PLAN}/add`, element: <MealPlanForm />, isPrivate: true },
   { path: `${path.MEAL_PLAN}/edit/:id`, element: <MealPlanForm />, isPrivate: true },
+  { path: path.NUTRITION, element: <NutritionList />, isPrivate: true },
+  { path: path.NUTRITION_MEAL, element: <NutritionMealList />, isPrivate: true },
+  { path: path.PROGRESS_TRACKINGS, element: <ProgressTrackingList />, isPrivate: true },
 ];
 
 
