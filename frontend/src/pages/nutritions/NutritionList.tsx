@@ -1,27 +1,44 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchWorkouts, selectAllWorkouts, selectWorkoutLoading, selectTotalWorkouts, updateSort, deleteWorkout } from '../../features/workout/workoutSlice';
+import { fetchNutritionEntries, selectAllNutritionEntries, selectNutritionLoading, selectTotalNutritionEntries, updateSort, deleteNutrition } from '../../features/nutrition/nutritionSlice';
 import DataTable from '../../component/Datatable';
-import { Workout } from '../../utils/types';
+import { Nutrition } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { path } from '../../utils/path';
+import NutritionForm from './NutritionForm';
 
-const WorkoutList = () => {
+const NutritionList = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const workouts = useAppSelector(selectAllWorkouts);
-  const loading = useAppSelector(selectWorkoutLoading);
-  const totalCount = useAppSelector(selectTotalWorkouts);
-  const sortField = useAppSelector((state) => state.workout.sort);
-  const sortOrder = useAppSelector((state) => state.workout.order);
+  const nutritions: any = useAppSelector(selectAllNutritionEntries);
+  const loading = useAppSelector(selectNutritionLoading);
+  const totalCount: number = useAppSelector(selectTotalNutritionEntries);
+  const sortField = useAppSelector((state) => state.nutrition.sort);
+  const sortOrder = useAppSelector((state) => state.nutrition.order);
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [editNutrition, setEditNutrition] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
-  // Only fetch data when search term, sort field, or order changes
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = (type = false) => {
+    setOpenModal(false);
+    setEditNutrition(undefined)
+    if(type) {
+        getAllNutritions()
+    }
+  };
+  const getAllNutritions = () => {
+    dispatch(fetchNutritionEntries({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+  }
+  // Fetch data when search term, sort field, or order changes
   useEffect(() => {
-    dispatch(fetchWorkouts({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+    getAllNutritions()
   }, [dispatch, searchTerm, sortField, sortOrder]);
 
   const handleSort = useCallback(
@@ -33,7 +50,7 @@ const WorkoutList = () => {
 
   const handlePageChange = useCallback(
     (newPage: number) => {
-      dispatch(fetchWorkouts({ page: newPage + 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+      dispatch(fetchNutritionEntries({ page: newPage + 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
     },
     [dispatch, searchTerm, sortField, sortOrder]
   );
@@ -42,28 +59,22 @@ const WorkoutList = () => {
     setSearchTerm(event.target.value);
   }, []);
 
-  const handleAddWorkout = useCallback(() => {
-    navigate(`${path.WORKOUT}/add`);
-  }, [navigate]);
+  const handleEditNutrition = (id: any) => {
+    setEditNutrition(id)
+    handleOpenModal()
+  };
 
-  const handleEditWorkout = useCallback(
-    (id: any) => {
-      navigate(`${path.WORKOUT}/edit/${id}`);
-    },
-    [navigate]
-  );
-
-  const handleDeleteWorkout = useCallback((id: string) => {
+  const handleDeleteNutrition = useCallback((id: string) => {
     setDeleteId(id);
     setDialogOpen(true);
   }, []);
 
   const handleConfirmDelete = useCallback(async () => {
     if (deleteId) {
-      await dispatch(deleteWorkout(deleteId));
+      await dispatch(deleteNutrition(deleteId));
       setDialogOpen(false);
       setDeleteId(null);
-      dispatch(fetchWorkouts({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+      dispatch(fetchNutritionEntries({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
     }
   }, [deleteId, dispatch, searchTerm, sortField, sortOrder]);
 
@@ -75,26 +86,26 @@ const WorkoutList = () => {
   const columns = useMemo(
     () => [
       { field: 'date', headerName: 'Date', sorting: true },
-      { field: 'duration', headerName: 'Duration', sorting: true },
       { field: 'notes', headerName: 'Notes', sorting: false },
+      { field: 'createdAt', headerName: 'Created At', sorting: true },
     ],
     []
   );
 
   const tableData = useMemo(
     () =>
-      workouts.map((workout: Workout) => ({
-        id: workout._id,
-        date: new Date(workout.date).toLocaleDateString(),
-        duration: workout.duration,
-        notes: workout.notes,
+      nutritions?.map((nutrition: Nutrition) => ({
+        id: nutrition._id,
+        date: new Date(nutrition.date).toLocaleDateString(),
+        notes: nutrition.notes,
+        createdAt: nutrition?.createdAt ? new Date(nutrition?.createdAt).toLocaleDateString() : '-',
       })),
-    [workouts]
+    [nutritions]
   );
 
   return (
     <div>
-      <h1>Workout List</h1>
+      <h1>Nutrition List</h1>
       <Box display="flex" justifyContent="space-between" mb={3}>
         <TextField
           variant="outlined"
@@ -103,8 +114,8 @@ const WorkoutList = () => {
           onChange={handleSearchChange}
           sx={{ width: '300px' }}
         />
-        <Button variant="contained" color="primary" onClick={handleAddWorkout}>
-          Add Workout
+        <Button variant="contained" color="primary" onClick={handleOpenModal}>
+          Add Nutrition
         </Button>
       </Box>
       {loading ? (
@@ -117,14 +128,14 @@ const WorkoutList = () => {
           onPageChange={handlePageChange}
           totalCount={totalCount}
           rowsPerPage={10}
-          handleEdit={handleEditWorkout}
-          handleDelete={handleDeleteWorkout}
+          handleEdit={handleEditNutrition}
+          handleDelete={handleDeleteNutrition}
         />
       )}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Delete Workout</DialogTitle>
+        <DialogTitle>Delete Nutrition</DialogTitle>
         <DialogContent>
-          <DialogContentText>Are you sure you want to delete this workout? This action cannot be undone.</DialogContentText>
+          <DialogContentText>Are you sure you want to delete this nutrition entry? This action cannot be undone.</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
@@ -135,8 +146,9 @@ const WorkoutList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <NutritionForm id={editNutrition} open={openModal} onClose={handleCloseModal} />
     </div>
   );
 };
 
-export default React.memo(WorkoutList);
+export default React.memo(NutritionList);

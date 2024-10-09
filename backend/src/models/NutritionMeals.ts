@@ -8,6 +8,8 @@ interface INutritionMeal extends Document {
         quantity: number; // in grams
     }[];
     totalCalories: number;
+    createdAt: Date; // timestamp for when the meal was created
+    updatedAt: Date; // timestamp for when the meal was last updated
 }
 
 const NutritionMealSchema: Schema = new Schema({
@@ -18,6 +20,8 @@ const NutritionMealSchema: Schema = new Schema({
         quantity: { type: Number, required: true },
     }],
     totalCalories: { type: Number, required: true },
+}, {
+    timestamps: true, // This will automatically add createdAt and updatedAt fields
 });
 
 export default mongoose.model<INutritionMeal>('NutritionMeal', NutritionMealSchema);

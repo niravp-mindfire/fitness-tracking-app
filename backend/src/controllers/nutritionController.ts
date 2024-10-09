@@ -13,7 +13,8 @@ export const getAllNutritions = async (req: any, res: Response) => {
             sort = 'date', // Default sorting by 'date'
             order = 'desc', // Default sort order descending
             page = 1,
-            limit = 10
+            limit = 10,
+            search // Optional search parameter
         } = req.query;
 
         const query: any = { userId };
@@ -25,17 +26,29 @@ export const getAllNutritions = async (req: any, res: Response) => {
             if (endDate) query.date.$lte = new Date(endDate as string);
         }
 
-        // Pagination and Sorting
-        const skip = (Number(page) - 1) * Number(limit);
+        // Search functionality (if applicable)
+        if (search) {
+            query.title = { $regex: search, $options: 'i' }; // Assuming 'title' is a field in your Nutrition model
+        }
+
+        // Sorting
         const sortOrder = order === 'asc' ? 1 : -1;
 
-        // Fetch nutritions
-        const nutritions = await Nutrition.find(query)
-            .sort({ [sort as string]: sortOrder })
-            .skip(skip)
-            .limit(Number(limit));
-
+        // Handle -1 for page and limit to return all data
+        let nutritions;
         const total = await Nutrition.countDocuments(query);
+
+        if (Number(page) === -1 && Number(limit) === -1) {
+            // If page and limit are -1, retrieve all nutritions
+            nutritions = await Nutrition.find(query).sort({ [sort as string]: sortOrder });
+        } else {
+            // Pagination
+            const skip = (Number(page) - 1) * Number(limit);
+            nutritions = await Nutrition.find(query)
+                .sort({ [sort as string]: sortOrder })
+                .skip(skip)
+                .limit(Number(limit));
+        }
 
         res.status(200).json(successResponse({
             total,
@@ -48,6 +61,28 @@ export const getAllNutritions = async (req: any, res: Response) => {
         res.status(500).json(errorResponse('Error fetching nutritions', error));
     }
 };
+
+// GET a nutrition entry by ID
+export const getNutritionById = async (req: any, res: Response) => {
+    const { id } = req.params;
+    const userId = req?.user?.userId;
+
+    try {
+        // Find the nutrition entry by ID
+        const nutrition = await Nutrition.findById(id);
+
+        // Check if the nutrition entry exists and if the user is authorized
+        if (!nutrition || String(nutrition.userId) !== userId) {
+            return res.status(404).json(errorResponse('Nutrition entry not found or unauthorized'));
+        }
+
+        // Return the nutrition entry
+        res.status(200).json(successResponse(nutrition, 'Nutrition entry retrieved successfully'));
+    } catch (error) {
+        res.status(500).json(errorResponse('Error fetching nutrition entry', error));
+    }
+};
+
 
 // POST a new nutrition entry
 export const createNutrition = async (req: any, res: Response) => {

@@ -10,11 +10,28 @@ const calculateTotalCalories = async (foodItems: any[]) => {
     for (const item of foodItems) {
         const food = await FoodItem.findById(item.foodId);
         if (food) {
-            totalCalories += (food.calories * item.quantity) / 100; // Convert grams to calories
+            totalCalories += food.calories * item.quantity; // Convert grams to calories
         }
     }
     return totalCalories;
 };
+
+// GET a nutrition meal by ID
+export const getNutritionMealById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const nutritionMeal = await NutritionMeal.findById(id).populate('foodItems.foodId');
+        if (!nutritionMeal) {
+            return res.status(404).json(errorResponse('Nutrition meal not found'));
+        }
+
+        res.status(200).json(successResponse(nutritionMeal, 'Nutrition meal retrieved successfully'));
+    } catch (error) {
+        res.status(500).json(errorResponse('Error fetching nutrition meal', error));
+    }
+};
+
 
 // GET all nutrition meals for a specific nutritionId (with optional pagination and sorting)
 export const getAllNutritionMeals = async (req: Request, res: Response) => {
@@ -84,6 +101,7 @@ export const createNutritionMeal = async (req: Request, res: Response) => {
 };
 
 // PUT (update) an existing nutrition meal by ID
+// PUT (update) an existing nutrition meal by ID
 export const updateNutritionMeal = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { mealType, foodItems } = req.body;
@@ -113,6 +131,7 @@ export const updateNutritionMeal = async (req: Request, res: Response) => {
         res.status(500).json(errorResponse('Error updating nutrition meal', error));
     }
 };
+
 
 // DELETE a nutrition meal by ID
 export const deleteNutritionMeal = async (req: Request, res: Response) => {

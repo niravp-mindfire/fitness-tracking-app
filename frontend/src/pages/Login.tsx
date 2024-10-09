@@ -42,7 +42,7 @@ const Login = () => {
           validationSchema={loginSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, errors }) => (
             <Form>
               <Box sx={{ mt: 1 }}>
                 <Field
@@ -55,7 +55,7 @@ const Login = () => {
                   name="email"
                   autoComplete="email"
                   autoFocus
-                  error={!!error} // Show error styling if there's an error
+                  error={!!error || errors.email}
                   helperText={<ErrorMessage name="email" />}
                   InputProps={{
                     style: { height: '56px' }, // Consistent height
@@ -72,15 +72,13 @@ const Login = () => {
                   type="password"
                   id="password"
                   autoComplete="current-password"
-                  error={!!error} // Show error styling if there's an error
+                  error={!!error || errors.password} // Show error styling if there's an error
                   helperText={<ErrorMessage name="password" />}
                   InputProps={{
                     style: { height: '56px' }, // Consistent height
                   }}
                 />
 
-                {loading && <CircularProgress sx={{ mt: 1 }} />}
-                
                 <Button
                   type="submit"
                   fullWidth
@@ -89,7 +87,7 @@ const Login = () => {
                   disabled={isSubmitting || loading}
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  {loading ? 'Logging in...' : 'Sign In'}
+                  Sign In {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
                 </Button>
 
                 {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}

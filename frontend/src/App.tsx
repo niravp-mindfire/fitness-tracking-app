@@ -23,7 +23,11 @@ import ChallengeList from './pages/challenges/list';
 import ChallengeForm from './pages/challenges/form';
 import FoodItemList from './pages/foodItem/list';
 import FoodItemForm from './pages/foodItem/form';
-
+import MealPlanList from './pages/mealPlan/list'
+import MealPlanForm from './pages/mealPlan/form';
+import NutritionList from './pages/nutritions/NutritionList';
+import NutritionMealList from './pages/nutritionMeal/NutritionMealList';
+import ProgressTrackingList from './pages/progressTracking/ProgressTrackingList';
 // Route configuration
 const routes = [
   { path: path.HOME, element: <Login /> },
@@ -50,6 +54,12 @@ const routes = [
   { path: path.FOOD_ITEM, element: <FoodItemList />, isPrivate: true },
   { path: `${path.FOOD_ITEM}/add`, element: <FoodItemForm />, isPrivate: true },
   { path: `${path.FOOD_ITEM}/edit/:id`, element: <FoodItemForm />, isPrivate: true },
+  { path: path.MEAL_PLAN, element: <MealPlanList />, isPrivate: true },
+  { path: `${path.MEAL_PLAN}/add`, element: <MealPlanForm />, isPrivate: true },
+  { path: `${path.MEAL_PLAN}/edit/:id`, element: <MealPlanForm />, isPrivate: true },
+  { path: path.NUTRITION, element: <NutritionList />, isPrivate: true },
+  { path: path.NUTRITION_MEAL, element: <NutritionMealList />, isPrivate: true },
+  { path: path.PROGRESS_TRACKINGS, element: <ProgressTrackingList />, isPrivate: true },
 ];
 
 
