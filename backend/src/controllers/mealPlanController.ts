@@ -55,6 +55,24 @@ export const getAllMealPlans = async (req: any, res: Response) => {
     }
 };
 
+export const getMealPlanById = async (req: Request, res: Response) => {
+    try {
+        const mealPlanId = req.params.id;
+        const mealPlan = await MealPlan.findById(mealPlanId).populate('meals.foodItems.foodId');
+        
+        if (!mealPlan) {
+            return res.status(404).json({ message: 'Meal plan not found' });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: mealPlan,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 // POST a new meal plan
 export const createMealPlan = async (req: any, res: Response) => {
     const userId = req?.user?.userId;
@@ -92,7 +110,7 @@ export const updateMealPlan = async (req: any, res: Response) => {
         const mealPlan = await MealPlan.findById(id);
 
         if (!mealPlan || String(mealPlan.userId) !== userId) {
-            return res.status(404).json(errorResponse('Meal plan not found or unauthorized'));
+            return res.status(404).json(errorResponse('Meal plan not found'));
         }
 
         const updatedData = req.body;
@@ -113,7 +131,7 @@ export const deleteMealPlan = async (req: any, res: Response) => {
         const mealPlan = await MealPlan.findById(id);
 
         if (!mealPlan || String(mealPlan.userId) !== userId) {
-            return res.status(404).json(errorResponse('Meal plan not found or unauthorized'));
+            return res.status(404).json(errorResponse('Meal plan not found'));
         }
 
         await MealPlan.findByIdAndDelete(id);

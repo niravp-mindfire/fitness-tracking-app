@@ -28,7 +28,6 @@ export const fetchNutritionEntries = createAsyncThunk<{
       const response = await axiosInstance.get(apiUrl.NUTRITION, {
         params: { page, limit, search, sort, order },
       });
-      console.log(response);
       if(response?.status === 200) {
         return {
             nutritionEntries: response?.data?.data?.nutritions,

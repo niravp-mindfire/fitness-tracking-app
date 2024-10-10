@@ -63,7 +63,6 @@ export const getAllWorkouts = async (req: any, res: Response) => {
   }
 };
 
-
 export const getWorkoutById = async (req: any, res: Response) => {
   const { id } = req.params;  // Extract workout ID from request parameters
   const userId = req?.user?.userId;  // Get the user ID from the request (if using authentication)

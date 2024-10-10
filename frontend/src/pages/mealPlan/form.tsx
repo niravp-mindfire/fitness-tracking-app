@@ -138,7 +138,6 @@ const MealPlanForm = () => {
       }
     },
   });
-  console.log(formik.errors, "=====formik");
 
   const handleAddMeal = () => {
     formik.setFieldValue("meals", [

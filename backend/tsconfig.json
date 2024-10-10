@@ -6,12 +6,13 @@
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true, // Optional: Skips type checking for declaration files
+    "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types", "./@types"],
-    "types": ["node", "express"] // Ensure "express" is included
+    "types": ["node", "express", "jest"] // Add "jest" here
   },
   "include": [
-    "src/**/*", // Include all files in src
+    "src/**/*",
+    "src/tests/**/*",
     "@types"
   ]
 }

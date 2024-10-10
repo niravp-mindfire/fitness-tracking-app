@@ -44,7 +44,6 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
   const currentProgressTracking: any = useAppSelector(
     (state) => state.progressTracking.currentProgressTracking
   );
-  console.log(id, "=====id");
   
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const error = useAppSelector(selectProgressTrackingError);

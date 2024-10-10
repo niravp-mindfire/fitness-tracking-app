@@ -18,6 +18,7 @@ import notificationsRouter from './routes/notificationRouter';
 dotenv.config();
 
 const app = express();
+export const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
@@ -34,14 +35,14 @@ app.use('/api/meal-plans', mealPlanRouter);
 app.use('/api/nutritious', nutritionRouter);
 app.use('/api/nutrition-meals', nutritionMealsRouter);
 app.use('/api/challenges', challengesRouter);
-app.use('/api/progress-tracking', progressTrackingRouter); 
-app.use('/api/notifications', notificationsRouter); 
+app.use('/api/progress-tracking', progressTrackingRouter);
+app.use('/api/notifications', notificationsRouter);
 
-const PORT = process.env.PORT || 5000;
+let server: ReturnType<typeof app.listen>;
 
 mongoose.connect(process.env.MONGO_URI!)
   .then(() => {
-    app.listen(PORT, () => {
+    server = app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   })
@@ -49,4 +50,8 @@ mongoose.connect(process.env.MONGO_URI!)
     console.error('MongoDB connection error:', err);
   });
 
-module.exports = app
+export const closeServer = () => {
+  server?.close(); // Close the server if it exists
+};
+
+export default app;
