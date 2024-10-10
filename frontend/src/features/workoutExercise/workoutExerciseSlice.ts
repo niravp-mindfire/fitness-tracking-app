@@ -51,7 +51,6 @@ export const fetchWorkoutExerciseById = createAsyncThunk<WorkoutExercise, string
     async (id, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(`${apiUrl.WORKOUT_EXERCISES}/${id}`);
-            console.log(response.data);
             
             return response.data;
         } catch (error: any) {

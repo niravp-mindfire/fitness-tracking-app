@@ -101,7 +101,6 @@ const ProgressTrackingList = () => {
   }));
 
   const handleEditProgressTracking = (id: any) => {
-    console.log(id, "===here id");
     
     setEditId(id);
     setOpen(true);

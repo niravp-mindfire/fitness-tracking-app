@@ -28,6 +28,7 @@ export const getNutritionMealById = async (req: Request, res: Response) => {
 
         res.status(200).json(successResponse(nutritionMeal, 'Nutrition meal retrieved successfully'));
     } catch (error) {
+        console.log(error, "==========errror")
         res.status(500).json(errorResponse('Error fetching nutrition meal', error));
     }
 };

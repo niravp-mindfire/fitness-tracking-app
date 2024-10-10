@@ -16,7 +16,6 @@ const ChallengeForm: React.FC = () => {
   const existingChallenge = useAppSelector(state => state.challenge.currentChallenge);
   const allUsers = useAppSelector(state => state.profile.users);
   const [loading, setLoading] = useState(false);
-  console.log(existingChallenge);
   
   useEffect(() => {
     if (id && !existingChallenge) {

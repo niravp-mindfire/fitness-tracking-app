@@ -30,7 +30,6 @@ export const fetchProgressTrackings = createAsyncThunk<{
         params: { page, limit, search, sort, order },
       });
       if (response.status === 200) {
-        console.log(response.data);
         
         return {
           progressTrackings: response.data.progressTracking,

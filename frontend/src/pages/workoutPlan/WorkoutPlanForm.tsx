@@ -54,7 +54,6 @@ const WorkoutPlanForm = () => {
   const currentWorkoutPlan = useAppSelector(
     (state) => state.workoutPlan.currentWorkoutPlan
   );
-  console.log(currentWorkoutPlan, "=====currentWorkoutPlan");
   
   const exercises = useAppSelector((state) => state.exercise.exercises);
   const [loading, setLoading] = useState(true);
@@ -162,7 +161,6 @@ const WorkoutPlanForm = () => {
   if (loading) {
     return <CircularProgress />;
   }
-  console.log(formik.values);
   
   return (
     <>

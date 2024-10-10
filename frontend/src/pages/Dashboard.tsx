@@ -22,7 +22,6 @@ const Dashboard = () => {
     try {
       const response = await axiosInstance.get(`${apiUrl.PROGRESS_TRACKINGS}/track/progress`);
       if (response.status === 200) {
-        console.log(response.data.data);
         setChartData(response.data.data); // Typescript should now understand the type
       }
     } catch (err) {

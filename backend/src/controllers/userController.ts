@@ -45,13 +45,17 @@ export const loginUser = async (req: Request, res: Response) => {
             return res.status(400).json(errorResponse('Invalid email or password'));
         }
 
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+        const token = generateToken(user)
         res.json(successResponse({ token, role: user?.role }, 'Login successful'));
     } catch (error) {
         console.error(error);
         res.status(500).json(errorResponse('Error logging in', error));
     }
 };
+
+export const generateToken = (user: any) => {
+    return jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+}
 
 // Forget password - send email with reset link
 export const forgetPassword = async (req: Request, res: Response) => {

@@ -43,7 +43,6 @@ export const fetchWorkoutById = createAsyncThunk<Workout, string, { rejectValue:
   async (id, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`${apiUrl.WORKOUTS}/${id}`);
-      console.log(response);
       if(response.status === 200) {
         return response.data.data; 
       }
