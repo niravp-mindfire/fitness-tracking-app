@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "husky": "^8.0.0",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3"
+  },
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0",
+    "prepare": "husky install",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,json,md}": "prettier --write"
+  }
+}
