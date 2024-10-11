@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   TextField,
@@ -8,35 +8,36 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-} from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+} from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   fetchFoodItems,
   deleteFoodItem,
-} from "../../features/foodItem/foodItem";
-import DataTable from "../../component/Datatable";
-import { TableColumn } from "../../utils/types";
-import { useNavigate } from "react-router-dom";
-import { path } from "../../utils/path";
+} from '../../features/foodItem/foodItem';
+import DataTable from '../../component/Datatable';
+import { TableColumn } from '../../utils/types';
+import { useNavigate } from 'react-router-dom';
+import { path } from '../../utils/path';
+import SnackAlert from '../../component/SnackAlert';
 
 const FoodItemList: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const { foodItems, totalCount, loading } = useAppSelector(
-    (state) => state.foodItem
+    (state) => state.foodItem,
   );
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<string>("name");
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = useState<string>('name');
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [selectedFoodItemId, setSelectedFoodItemId] = useState<string | null>(
-    null
+    null,
   );
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   useEffect(() => {
     getAllData();
   }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
@@ -49,11 +50,11 @@ const FoodItemList: React.FC = () => {
         limit: rowsPerPage,
         sort: orderBy,
         order,
-      })
+      }),
     );
   };
 
-  const handleSort = (field: string, newOrder: "asc" | "desc") => {
+  const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
     setOrder(newOrder);
     setOrderBy(field);
   };
@@ -73,11 +74,12 @@ const FoodItemList: React.FC = () => {
 
   const handleConfirmDelete = () => {
     if (selectedFoodItemId) {
-      dispatch(deleteFoodItem(selectedFoodItemId)).then(res => {
-        getAllData()
+      dispatch(deleteFoodItem(selectedFoodItemId)).then((res) => {
+        getAllData();
       });
     }
     setDialogOpen(false);
+    setSnackbarOpen(true);
   };
 
   const handleCloseDialog = () => {
@@ -93,11 +95,11 @@ const FoodItemList: React.FC = () => {
   };
 
   const columns: TableColumn[] = [
-    { field: "name", headerName: "Name", sorting: true },
-    { field: "calories", headerName: "Calories", sorting: true },
-    { field: "protein", headerName: "Protein(g)", sorting: true },
-    { field: "carbs", headerName: "Carbohydrates(g)", sorting: true },
-    { field: "fat", headerName: "Fat(g)", sorting: true },
+    { field: 'name', headerName: 'Name', sorting: true },
+    { field: 'calories', headerName: 'Calories', sorting: true },
+    { field: 'protein', headerName: 'Protein(g)', sorting: true },
+    { field: 'carbs', headerName: 'Carbohydrates(g)', sorting: true },
+    { field: 'fat', headerName: 'Fat(g)', sorting: true },
   ];
 
   return (
@@ -109,7 +111,7 @@ const FoodItemList: React.FC = () => {
           onChange={handleSearchChange}
           label="Search Food Item"
           variant="outlined"
-          sx={{ width: "300px" }}
+          sx={{ width: '300px' }}
         />
         <Button variant="contained" color="primary" onClick={handleAddFoodItem}>
           Add Food Item
@@ -152,6 +154,12 @@ const FoodItemList: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record deleted successfully`}
+      />
     </div>
   );
 };

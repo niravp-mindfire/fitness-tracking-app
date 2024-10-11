@@ -2,9 +2,21 @@
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { loginUser, selectAuthLoading, selectAuthError } from '../features/auth/auth';
+import {
+  loginUser,
+  selectAuthLoading,
+  selectAuthError,
+} from '../features/auth/auth';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, CircularProgress, TextField, Typography, Container, Grid } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+  Container,
+  Grid,
+} from '@mui/material';
 import { AppDispatch } from '../app/store'; // Import the AppDispatch type
 import { LoginFormValues } from '../utils/types';
 import { loginSchema } from '../utils/validationSchema';
@@ -16,21 +28,31 @@ const Login = () => {
   const loading = useSelector(selectAuthLoading);
   const error = useSelector(selectAuthError);
 
-  const initialValues = useMemo(() => (loginInitialValue), []);
+  const initialValues = useMemo(() => loginInitialValue, []);
 
-  const handleSubmit = useCallback(async (values: LoginFormValues) => {
-    try {
-      await dispatch(loginUser(values)).unwrap(); // Unwrap the result
-      navigate('/dashboard'); // Redirect after successful login
-    } catch (err) {
-      // Handle login failure
-      console.error('Login failed:', err); // Optionally log error
-    }
-  }, [dispatch, navigate]);
+  const handleSubmit = useCallback(
+    async (values: LoginFormValues) => {
+      try {
+        await dispatch(loginUser(values)).unwrap(); // Unwrap the result
+        navigate('/dashboard'); // Redirect after successful login
+      } catch (err) {
+        // Handle login failure
+        console.error('Login failed:', err); // Optionally log error
+      }
+    },
+    [dispatch, navigate],
+  );
 
   return (
     <Container maxWidth="xs">
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
           Welcome Back
         </Typography>
@@ -55,6 +77,7 @@ const Login = () => {
                   name="email"
                   autoComplete="email"
                   autoFocus
+                  disabled={isSubmitting}
                   error={!!error || errors.email}
                   helperText={<ErrorMessage name="email" />}
                   InputProps={{
@@ -70,6 +93,7 @@ const Login = () => {
                   name="password"
                   label="Password"
                   type="password"
+                  disabled={isSubmitting}
                   id="password"
                   autoComplete="current-password"
                   error={!!error || errors.password} // Show error styling if there's an error
@@ -87,19 +111,32 @@ const Login = () => {
                   disabled={isSubmitting || loading}
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign In {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
+                  Sign In{' '}
+                  {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
                 </Button>
 
-                {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
+                {error && (
+                  <Typography color="error" sx={{ mb: 2 }}>
+                    {error}
+                  </Typography>
+                )}
 
                 <Grid container>
                   <Grid item xs>
-                    <Button onClick={() => navigate('/forgot-password')} variant="text" color="primary">
+                    <Button
+                      onClick={() => navigate('/forgot-password')}
+                      variant="text"
+                      color="primary"
+                    >
                       Forgot Password?
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button onClick={() => navigate('/register')} variant="text" color="primary">
+                    <Button
+                      onClick={() => navigate('/register')}
+                      variant="text"
+                      color="primary"
+                    >
                       Create Account
                     </Button>
                   </Grid>

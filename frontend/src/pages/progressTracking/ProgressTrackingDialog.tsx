@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { FormikErrors, useFormik } from "formik";
-import * as Yup from "yup";
+import React, { useEffect, useState } from 'react';
+import { FormikErrors, useFormik } from 'formik';
+import * as Yup from 'yup';
 import {
   TextField,
   Button,
@@ -11,15 +11,15 @@ import {
   Snackbar,
   Alert,
   IconButton,
-} from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
-import { useAppDispatch, useAppSelector } from "../../app/store";
+} from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../../app/store';
 import {
   createProgressTracking,
   updateProgressTracking,
   selectProgressTrackingError,
   fetchProgressTrackingById,
-} from "../../features/progressTracking/progressTrackingSlice";
+} from '../../features/progressTracking/progressTrackingSlice';
 
 interface ProgressTrackingDialogProps {
   open: boolean;
@@ -38,23 +38,23 @@ interface ProgressTrackingFormValues {
 const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
   open,
   onClose,
-  id = "",
+  id = '',
 }) => {
   const dispatch = useAppDispatch();
   const currentProgressTracking: any = useAppSelector(
-    (state) => state.progressTracking.currentProgressTracking
+    (state) => state.progressTracking.currentProgressTracking,
   );
-  
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const error = useAppSelector(selectProgressTrackingError);
 
   const [initialValues, setInitialValues] =
     useState<ProgressTrackingFormValues>({
       weight: 0,
-      date: "",
+      date: '',
       bodyFatPercentage: undefined,
       muscleMass: undefined,
-      notes: "",
+      notes: '',
     });
 
   useEffect(() => {
@@ -64,10 +64,10 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
       } else {
         setInitialValues({
           weight: 0,
-          date: "",
+          date: '',
           bodyFatPercentage: undefined,
           muscleMass: undefined,
-          notes: "",
+          notes: '',
         });
       }
     }
@@ -77,7 +77,7 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
     if (currentProgressTracking && id) {
       setInitialValues({
         weight: currentProgressTracking.weight,
-        date: currentProgressTracking.date.split("T")[0],
+        date: currentProgressTracking.date.split('T')[0],
         bodyFatPercentage: currentProgressTracking.bodyFatPercentage,
         muscleMass: currentProgressTracking.muscleMass,
         notes: currentProgressTracking.notes,
@@ -86,8 +86,8 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
   }, [currentProgressTracking, id]);
 
   const validationSchema = Yup.object({
-    weight: Yup.number().required("Weight is required").positive().integer(),
-    date: Yup.date().required("Date is required"),
+    weight: Yup.number().required('Weight is required').positive().integer(),
+    date: Yup.date().required('Date is required'),
     bodyFatPercentage: Yup.number().positive().integer().nullable(),
     muscleMass: Yup.number().positive().integer().nullable(),
   });
@@ -109,7 +109,7 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
         try {
           if (id) {
             await dispatch(
-              updateProgressTracking({ id, tracking: values })
+              updateProgressTracking({ id, tracking: values }),
             ).unwrap();
           } else {
             await dispatch(createProgressTracking(values)).unwrap();
@@ -141,13 +141,13 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
       fullWidth
     >
       <DialogTitle>
-        {id ? "Edit Progress Tracking" : "Add Progress Tracking"}
+        {id ? 'Edit Progress Tracking' : 'Add Progress Tracking'}
         <IconButton
           onClick={() => {
             onClose(false);
             formik.resetForm();
           }}
-          sx={{ position: "absolute", top: 8, right: 8 }}
+          sx={{ position: 'absolute', top: 8, right: 8 }}
         >
           <CloseIcon />
         </IconButton>
@@ -160,10 +160,11 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
             name="date"
             type="date"
             value={formik.values.date}
+            disabled={formik.isSubmitting}
             InputLabelProps={{ shrink: true }}
             onChange={formik.handleChange}
             error={formik.touched.date && Boolean(formik.errors.date)}
-            helperText={formik.touched.date ? formik.errors.date : ""}
+            helperText={formik.touched.date ? formik.errors.date : ''}
             margin="normal"
           />
           <TextField
@@ -172,10 +173,11 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
             name="weight"
             type="number"
             value={formik.values.weight}
+            disabled={formik.isSubmitting}
             InputLabelProps={{ shrink: true }}
             onChange={formik.handleChange}
             error={formik.touched.weight && Boolean(formik.errors.weight)}
-            helperText={formik.touched.weight ? formik.errors.weight : ""}
+            helperText={formik.touched.weight ? formik.errors.weight : ''}
             margin="normal"
           />
           <TextField
@@ -183,7 +185,8 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
             label="Body Fat Percentage"
             name="bodyFatPercentage"
             type="number"
-            value={formik.values.bodyFatPercentage || ""}
+            disabled={formik.isSubmitting}
+            value={formik.values.bodyFatPercentage || ''}
             InputLabelProps={{ shrink: true }}
             onChange={formik.handleChange}
             margin="normal"
@@ -193,7 +196,8 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
             label="Muscle Mass"
             name="muscleMass"
             type="number"
-            value={formik.values.muscleMass || ""}
+            disabled={formik.isSubmitting}
+            value={formik.values.muscleMass || ''}
             InputLabelProps={{ shrink: true }}
             onChange={formik.handleChange}
             margin="normal"
@@ -203,10 +207,11 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
             label="Notes"
             name="notes"
             value={formik.values.notes}
+            disabled={formik.isSubmitting}
             onChange={formik.handleChange}
             InputLabelProps={{ shrink: true }}
             error={formik.touched.notes && Boolean(formik.errors.notes)}
-            helperText={formik.touched.notes ? formik.errors.notes : ""}
+            helperText={formik.touched.notes ? formik.errors.notes : ''}
             margin="normal"
           />
           <Button
@@ -215,7 +220,7 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
             color="primary"
             sx={{ mt: 2 }}
           >
-            {id ? "Update" : "Add"}
+            {id ? 'Update' : 'Add'}
           </Button>
         </Box>
       </DialogContent>
@@ -223,14 +228,14 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
           severity="error"
-          sx={{ width: "100%" }}
+          sx={{ width: '100%' }}
         >
-          {error ? error : "An error occurred. Please try again."}
+          {error ? error : 'An error occurred. Please try again.'}
         </Alert>
       </Snackbar>
     </Dialog>

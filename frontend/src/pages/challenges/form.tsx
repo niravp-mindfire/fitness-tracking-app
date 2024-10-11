@@ -1,7 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
-import { TextField, Button, Box, Typography, Card, CardContent, CircularProgress, AppBar, Toolbar, Select, MenuItem, InputLabel, FormControl, Chip } from '@mui/material';
-import { createChallenge, updateChallenge, fetchChallengeById, resetCurrentChallenge } from '../../features/challenges/challenge';
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CircularProgress,
+  AppBar,
+  Toolbar,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Chip,
+} from '@mui/material';
+import {
+  createChallenge,
+  updateChallenge,
+  fetchChallengeById,
+  resetCurrentChallenge,
+} from '../../features/challenges/challenge';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import BreadcrumbsComponent from '../../component/BreadcrumbsComponent';
@@ -13,10 +33,12 @@ const ChallengeForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
-  const existingChallenge = useAppSelector(state => state.challenge.currentChallenge);
-  const allUsers = useAppSelector(state => state.profile.users);
+  const existingChallenge = useAppSelector(
+    (state) => state.challenge.currentChallenge,
+  );
+  const allUsers = useAppSelector((state) => state.profile.users);
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     if (id && !existingChallenge) {
       dispatch(fetchChallengeById(id));
@@ -37,14 +59,17 @@ const ChallengeForm: React.FC = () => {
       description: existingChallenge?.description || '',
       startDate: existingChallenge?.startDate?.split('T')[0] || '',
       endDate: existingChallenge?.endDate?.split('T')[0] || '',
-      participants: existingChallenge?.participants.map((p: any) => p._id) || [],
+      participants:
+        existingChallenge?.participants.map((p: any) => p._id) || [],
     },
     validationSchema: ChallengeSchema,
     onSubmit: async (values) => {
       setLoading(true);
       try {
         if (id) {
-          await dispatch(updateChallenge({ id: id as string, challengeData: values })).unwrap();
+          await dispatch(
+            updateChallenge({ id: id as string, challengeData: values }),
+          ).unwrap();
         } else {
           await dispatch(createChallenge(values)).unwrap();
         }
@@ -59,7 +84,10 @@ const ChallengeForm: React.FC = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}
+      >
         <Toolbar>
           <BreadcrumbsComponent
             items={[
@@ -80,17 +108,29 @@ const ChallengeForm: React.FC = () => {
               fullWidth
               label="Title"
               {...formik.getFieldProps('title')}
+              disabled={formik.isSubmitting}
               error={formik.touched.title && Boolean(formik.errors.title)}
-              helperText={formik.touched.title && formik.errors.title ? String(formik.errors.title) : ''}
+              helperText={
+                formik.touched.title && formik.errors.title
+                  ? String(formik.errors.title)
+                  : ''
+              }
             />
             <TextField
               fullWidth
               label="Description"
               multiline
               rows={4}
+              disabled={formik.isSubmitting}
               {...formik.getFieldProps('description')}
-              error={formik.touched.description && Boolean(formik.errors.description)}
-              helperText={formik.touched.description && formik.errors.description ? String(formik.errors.description) : ''}
+              error={
+                formik.touched.description && Boolean(formik.errors.description)
+              }
+              helperText={
+                formik.touched.description && formik.errors.description
+                  ? String(formik.errors.description)
+                  : ''
+              }
               sx={{ mt: 2 }}
             />
             <TextField
@@ -98,9 +138,16 @@ const ChallengeForm: React.FC = () => {
               label="Start Date"
               type="date"
               InputLabelProps={{ shrink: true }}
+              disabled={formik.isSubmitting}
               {...formik.getFieldProps('startDate')}
-              error={formik.touched.startDate && Boolean(formik.errors.startDate)}
-              helperText={formik.touched.startDate && formik.errors.startDate ? String(formik.errors.startDate) : ''}
+              error={
+                formik.touched.startDate && Boolean(formik.errors.startDate)
+              }
+              helperText={
+                formik.touched.startDate && formik.errors.startDate
+                  ? String(formik.errors.startDate)
+                  : ''
+              }
               sx={{ mt: 2 }}
             />
             <TextField
@@ -108,9 +155,14 @@ const ChallengeForm: React.FC = () => {
               label="End Date"
               type="date"
               InputLabelProps={{ shrink: true }}
+              disabled={formik.isSubmitting}
               {...formik.getFieldProps('endDate')}
               error={formik.touched.endDate && Boolean(formik.errors.endDate)}
-              helperText={formik.touched.endDate && formik.errors.endDate ? String(formik.errors.endDate) : ''}
+              helperText={
+                formik.touched.endDate && formik.errors.endDate
+                  ? String(formik.errors.endDate)
+                  : ''
+              }
               sx={{ mt: 2 }}
             />
 
@@ -122,12 +174,24 @@ const ChallengeForm: React.FC = () => {
                 id="participants-select"
                 multiple
                 value={formik.values.participants}
-                onChange={(event) => formik.setFieldValue('participants', event.target.value)}
+                disabled={formik.isSubmitting}
+                onChange={(event) =>
+                  formik.setFieldValue('participants', event.target.value)
+                }
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                     {selected.map((userId: any) => {
-                      const user = allUsers.find(user => user._id === userId);
-                      return <Chip key={userId} label={user?.profile.firstName + ' ' + user?.profile.lastName} />;
+                      const user = allUsers.find((user) => user._id === userId);
+                      return (
+                        <Chip
+                          key={userId}
+                          label={
+                            user?.profile.firstName +
+                            ' ' +
+                            user?.profile.lastName
+                          }
+                        />
+                      );
                     })}
                   </Box>
                 )}
@@ -146,9 +210,15 @@ const ChallengeForm: React.FC = () => {
               fullWidth
               type="submit"
               sx={{ mt: 2 }}
-              disabled={loading}
+              disabled={formik.isSubmitting}
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : id ? 'Update Challenge' : 'Add Challenge'}
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : id ? (
+                'Update Challenge'
+              ) : (
+                'Add Challenge'
+              )}
             </Button>
           </Box>
         </CardContent>

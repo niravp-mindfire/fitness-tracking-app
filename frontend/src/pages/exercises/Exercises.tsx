@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   TextField,
@@ -8,38 +8,39 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-} from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+} from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   fetchExercises,
   deleteExercise,
-} from "../../features/exercise/exerciseSlice";
-import DataTable from "../../component/Datatable";
-import { TableColumn } from "../../utils/types";
-import { useNavigate } from "react-router-dom";
-import { path } from "../../utils/path";
+} from '../../features/exercise/exerciseSlice';
+import DataTable from '../../component/Datatable';
+import { TableColumn } from '../../utils/types';
+import { useNavigate } from 'react-router-dom';
+import { path } from '../../utils/path';
+import SnackAlert from '../../component/SnackAlert';
 
 const ExerciseList: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const { exercises, totalCount, loading } = useAppSelector(
-    (state) => state.exercise
+    (state) => state.exercise,
   );
 
   // Local state for managing search, sort, pagination, and date filters
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<string>("name");
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = useState<string>('name');
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(
-    null
+    null,
   );
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   // Fetch exercises when component mounts or state changes
   useEffect(() => {
     getAllData();
@@ -64,12 +65,12 @@ const ExerciseList: React.FC = () => {
         order,
         startDate,
         endDate,
-      })
+      }),
     );
   };
 
   // Handle sorting
-  const handleSort = (field: string, newOrder: "asc" | "desc") => {
+  const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
     setOrder(newOrder);
     setOrderBy(field);
   };
@@ -94,8 +95,10 @@ const ExerciseList: React.FC = () => {
   const handleConfirmDelete = () => {
     if (selectedExerciseId) {
       dispatch(deleteExercise(selectedExerciseId));
+      getAllData();
     }
     setDialogOpen(false);
+    setSnackbarOpen(true);
   };
 
   // Close delete confirmation dialog
@@ -120,10 +123,10 @@ const ExerciseList: React.FC = () => {
 
   // Table columns definition
   const columns: TableColumn[] = [
-    { field: "name", headerName: "Name", sorting: true },
-    { field: "type", headerName: "Type", sorting: true },
-    { field: "category", headerName: "Category", sorting: true },
-    { field: "description", headerName: "Description", sorting: false },
+    { field: 'name', headerName: 'Name', sorting: true },
+    { field: 'type', headerName: 'Type', sorting: true },
+    { field: 'category', headerName: 'Category', sorting: true },
+    { field: 'description', headerName: 'Description', sorting: false },
   ];
 
   return (
@@ -135,7 +138,7 @@ const ExerciseList: React.FC = () => {
           onChange={handleSearchChange}
           label="Search Exercise"
           variant="outlined"
-          sx={{ width: "300px" }}
+          sx={{ width: '300px' }}
         />
         <Button variant="contained" color="primary" onClick={handleAddExercise}>
           Add Exercise
@@ -197,6 +200,12 @@ const ExerciseList: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record deleted successfully`}
+      />
     </div>
   );
 };

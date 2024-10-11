@@ -1,11 +1,28 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchWorkouts, selectAllWorkouts, selectWorkoutLoading, selectTotalWorkouts, updateSort, deleteWorkout } from '../../features/workout/workoutSlice';
+import {
+  fetchWorkouts,
+  selectAllWorkouts,
+  selectWorkoutLoading,
+  selectTotalWorkouts,
+  updateSort,
+  deleteWorkout,
+} from '../../features/workout/workoutSlice';
 import DataTable from '../../component/Datatable';
 import { Workout } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@mui/material';
 import { path } from '../../utils/path';
+import SnackAlert from '../../component/SnackAlert';
 
 const WorkoutList = () => {
   const dispatch = useAppDispatch();
@@ -18,29 +35,48 @@ const WorkoutList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   // Only fetch data when search term, sort field, or order changes
   useEffect(() => {
-    dispatch(fetchWorkouts({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+    dispatch(
+      fetchWorkouts({
+        page: 1,
+        limit: 10,
+        search: searchTerm,
+        sort: sortField,
+        order: sortOrder,
+      }),
+    );
   }, [dispatch, searchTerm, sortField, sortOrder]);
 
   const handleSort = useCallback(
     (field: any) => {
       dispatch(updateSort(field));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handlePageChange = useCallback(
     (newPage: number) => {
-      dispatch(fetchWorkouts({ page: newPage + 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+      dispatch(
+        fetchWorkouts({
+          page: newPage + 1,
+          limit: 10,
+          search: searchTerm,
+          sort: sortField,
+          order: sortOrder,
+        }),
+      );
     },
-    [dispatch, searchTerm, sortField, sortOrder]
+    [dispatch, searchTerm, sortField, sortOrder],
   );
 
-  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  }, []);
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+    },
+    [],
+  );
 
   const handleAddWorkout = useCallback(() => {
     navigate(`${path.WORKOUT}/add`);
@@ -50,7 +86,7 @@ const WorkoutList = () => {
     (id: any) => {
       navigate(`${path.WORKOUT}/edit/${id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   const handleDeleteWorkout = useCallback((id: string) => {
@@ -63,7 +99,16 @@ const WorkoutList = () => {
       await dispatch(deleteWorkout(deleteId));
       setDialogOpen(false);
       setDeleteId(null);
-      dispatch(fetchWorkouts({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+      dispatch(
+        fetchWorkouts({
+          page: 1,
+          limit: 10,
+          search: searchTerm,
+          sort: sortField,
+          order: sortOrder,
+        }),
+      );
+      setSnackbarOpen(true);
     }
   }, [deleteId, dispatch, searchTerm, sortField, sortOrder]);
 
@@ -78,7 +123,7 @@ const WorkoutList = () => {
       { field: 'duration', headerName: 'Duration', sorting: true },
       { field: 'notes', headerName: 'Notes', sorting: false },
     ],
-    []
+    [],
   );
 
   const tableData = useMemo(
@@ -89,7 +134,7 @@ const WorkoutList = () => {
         duration: workout.duration,
         notes: workout.notes,
       })),
-    [workouts]
+    [workouts],
   );
 
   return (
@@ -124,7 +169,10 @@ const WorkoutList = () => {
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Workout</DialogTitle>
         <DialogContent>
-          <DialogContentText>Are you sure you want to delete this workout? This action cannot be undone.</DialogContentText>
+          <DialogContentText>
+            Are you sure you want to delete this workout? This action cannot be
+            undone.
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
@@ -135,6 +183,12 @@ const WorkoutList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record deleted successfully`}
+      />
     </div>
   );
 };

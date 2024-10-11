@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   fetchWorkoutExercises,
   deleteWorkoutExercise,
-} from "../../features/workoutExercise/workoutExerciseSlice";
-import DataTable from "../../component/Datatable";
-import { RootState, useAppDispatch } from "../../app/store";
+} from '../../features/workoutExercise/workoutExerciseSlice';
+import DataTable from '../../component/Datatable';
+import { RootState, useAppDispatch } from '../../app/store';
 import {
   Box,
   TextField,
@@ -15,24 +15,25 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-} from "@mui/material";
-import { path } from "../../utils/path";
-import { useNavigate } from "react-router-dom";
+} from '@mui/material';
+import { path } from '../../utils/path';
+import { useNavigate } from 'react-router-dom';
+import SnackAlert from '../../component/SnackAlert';
 
 const WorkoutExerciseList = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { workoutExercises, totalCount, loading } = useSelector(
-    (state: RootState) => state.workoutExercise
+    (state: RootState) => state.workoutExercise,
   );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortBy, setSortBy] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   useEffect(() => {
     getAllData();
   }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
@@ -44,8 +45,8 @@ const WorkoutExerciseList = () => {
         limit: rowsPerPage,
         search,
         sort: sortBy,
-        order: sortOrder as "asc" | "desc",
-      })
+        order: sortOrder as 'asc' | 'desc',
+      }),
     );
   };
 
@@ -61,7 +62,7 @@ const WorkoutExerciseList = () => {
     setPage(newPage);
   };
 
-  const handleSort = (field: string, order: "asc" | "desc") => {
+  const handleSort = (field: string, order: 'asc' | 'desc') => {
     setSortBy(field);
     setSortOrder(order);
     getAllData();
@@ -78,6 +79,7 @@ const WorkoutExerciseList = () => {
       setDialogOpen(false);
       setDeleteId(null);
       getAllData();
+      setSnackbarOpen(true);
     }
   };
 
@@ -87,11 +89,11 @@ const WorkoutExerciseList = () => {
   };
 
   const columns = [
-    { field: "workoutId", headerName: "Workout", sorting: true },
-    { field: "exerciseId", headerName: "Exercise", sorting: true },
-    { field: "sets", headerName: "Sets", sorting: true },
-    { field: "reps", headerName: "Reps", sorting: true },
-    { field: "weight", headerName: "Weight (kg)", sorting: true },
+    { field: 'workoutId', headerName: 'Workout', sorting: true },
+    { field: 'exerciseId', headerName: 'Exercise', sorting: true },
+    { field: 'sets', headerName: 'Sets', sorting: true },
+    { field: 'reps', headerName: 'Reps', sorting: true },
+    { field: 'weight', headerName: 'Weight (kg)', sorting: true },
   ];
 
   const tableData = workoutExercises?.map((workoutExercise: any) => ({
@@ -116,14 +118,12 @@ const WorkoutExerciseList = () => {
           label="Search"
           value={search}
           onChange={handleSearchChange}
-          sx={{ width: "300px" }}
+          sx={{ width: '300px' }}
         />
         <Button
           variant="contained"
           color="primary"
-          onClick={() =>
-            navigate(`${path.WORKOUT_EXERCISE}/add`)
-          }
+          onClick={() => navigate(`${path.WORKOUT_EXERCISE}/add`)}
         >
           Add Workout
         </Button>
@@ -159,6 +159,12 @@ const WorkoutExerciseList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record deleted successfully`}
+      />
     </div>
   );
 };

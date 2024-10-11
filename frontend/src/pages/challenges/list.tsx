@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   TextField,
@@ -8,35 +8,36 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-} from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+} from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   fetchChallenges,
   deleteChallenge,
-} from "../../features/challenges/challenge";
-import DataTable from "../../component/Datatable";
-import { TableColumn } from "../../utils/types";
-import { useNavigate } from "react-router-dom";
-import { path } from "../../utils/path";
+} from '../../features/challenges/challenge';
+import DataTable from '../../component/Datatable';
+import { TableColumn } from '../../utils/types';
+import { useNavigate } from 'react-router-dom';
+import { path } from '../../utils/path';
+import SnackAlert from '../../component/SnackAlert';
 
 const ChallengeList: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const { challenges, totalCount, loading } = useAppSelector(
-    (state) => state.challenge
+    (state) => state.challenge,
   );
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<string>("title");
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = useState<string>('title');
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
-    null
+    null,
   );
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   useEffect(() => {
     getAllData();
   }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
@@ -49,11 +50,11 @@ const ChallengeList: React.FC = () => {
         limit: rowsPerPage,
         sort: orderBy,
         order,
-      })
+      }),
     );
   };
 
-  const handleSort = (field: string, newOrder: "asc" | "desc") => {
+  const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
     setOrder(newOrder);
     setOrderBy(field);
   };
@@ -69,7 +70,7 @@ const ChallengeList: React.FC = () => {
   const handleDeleteClick = (id: string) => {
     setSelectedChallengeId(id);
     setDialogOpen(true);
-    getAllData()
+    getAllData();
   };
 
   const handleConfirmDelete = () => {
@@ -77,6 +78,7 @@ const ChallengeList: React.FC = () => {
       dispatch(deleteChallenge(selectedChallengeId));
     }
     setDialogOpen(false);
+    setSnackbarOpen(true);
   };
 
   const handleCloseDialog = () => {
@@ -92,10 +94,10 @@ const ChallengeList: React.FC = () => {
   };
 
   const columns: TableColumn[] = [
-    { field: "title", headerName: "Title", sorting: true },
-    { field: "description", headerName: "Description", sorting: false },
-    { field: "startDate", headerName: "Start Date", sorting: true },
-    { field: "endDate", headerName: "End Date", sorting: true },
+    { field: 'title', headerName: 'Title', sorting: true },
+    { field: 'description', headerName: 'Description', sorting: false },
+    { field: 'startDate', headerName: 'Start Date', sorting: true },
+    { field: 'endDate', headerName: 'End Date', sorting: true },
   ];
 
   return (
@@ -107,9 +109,13 @@ const ChallengeList: React.FC = () => {
           onChange={handleSearchChange}
           label="Search Challenge"
           variant="outlined"
-          sx={{ width: "300px" }}
+          sx={{ width: '300px' }}
         />
-        <Button variant="contained" color="primary" onClick={handleAddChallenge}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddChallenge}
+        >
           Add Challenge
         </Button>
       </Box>
@@ -149,6 +155,12 @@ const ChallengeList: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record deleted successfully`}
+      />
     </div>
   );
 };

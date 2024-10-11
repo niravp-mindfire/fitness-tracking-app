@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { FormikErrors, useFormik } from "formik";
-import * as Yup from "yup";
+import React, { useEffect, useState } from 'react';
+import { FormikErrors, useFormik } from 'formik';
+import * as Yup from 'yup';
 import {
   TextField,
   Button,
@@ -14,18 +14,18 @@ import {
   Alert,
   IconButton,
   Grid,
-} from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
-import { useAppDispatch, useAppSelector } from "../../app/store";
+} from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../../app/store';
 import {
   createNutritionMeal,
   updateNutritionMeal,
   selectNutritionMealError,
   fetchNutritionMealById,
-} from "../../features/nutritionMeal/nutritionMealSlice"; // Adjust the import based on your file structure
-import { fetchFoodItems } from "../../features/foodItem/foodItem";
-import { defaultPagination } from "../../utils/common";
-import { fetchNutritionEntries } from "../../features/nutrition/nutritionSlice";
+} from '../../features/nutritionMeal/nutritionMealSlice'; // Adjust the import based on your file structure
+import { fetchFoodItems } from '../../features/foodItem/foodItem';
+import { defaultPagination } from '../../utils/common';
+import { fetchNutritionEntries } from '../../features/nutrition/nutritionSlice';
 
 interface NutritionMealDialogProps {
   open: boolean;
@@ -47,24 +47,24 @@ interface NutritionMealFormValues {
 const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
   open,
   onClose,
-  id = "",
+  id = '',
 }) => {
   const dispatch = useAppDispatch();
   const foodItems = useAppSelector((state) => state.foodItem.foodItems);
   const nutritionItems = useAppSelector(
-    (state) => state.nutrition.nutritionEntries
+    (state) => state.nutrition.nutritionEntries,
   );
   const currentNutritionMeal: any = useAppSelector(
-    (state) => state.nutritionMeal.currentNutritionMeal
+    (state) => state.nutritionMeal.currentNutritionMeal,
   );
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const error = useAppSelector(selectNutritionMealError);
 
   const [initialValues, setInitialValues] = useState<NutritionMealFormValues>({
-    nutritionId: "",
-    mealType: "",
-    foodItems: [{ foodId: "", quantity: 0 }],
+    nutritionId: '',
+    mealType: '',
+    foodItems: [{ foodId: '', quantity: 0 }],
   });
 
   useEffect(() => {
@@ -74,9 +74,9 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
         dispatch(fetchNutritionMealById(id));
       } else {
         setInitialValues({
-          nutritionId: "",
-          mealType: "",
-          foodItems: [{ foodId: "", quantity: 0 }],
+          nutritionId: '',
+          mealType: '',
+          foodItems: [{ foodId: '', quantity: 0 }],
         });
       }
     }
@@ -101,18 +101,18 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
   };
 
   const validationSchema = Yup.object({
-    nutritionId: Yup.string().required("Nutrition is required"),
-    mealType: Yup.string().required("Meal type is required"),
+    nutritionId: Yup.string().required('Nutrition is required'),
+    mealType: Yup.string().required('Meal type is required'),
     foodItems: Yup.array()
       .of(
         Yup.object({
-          foodId: Yup.string().required("Food ID is required"),
+          foodId: Yup.string().required('Food ID is required'),
           quantity: Yup.number()
-            .required("Quantity is required")
-            .positive("Quantity must be a positive number"),
-        })
+            .required('Quantity is required')
+            .positive('Quantity must be a positive number'),
+        }),
       )
-      .min(1, "At least one food item must be added"),
+      .min(1, 'At least one food item must be added'),
   });
 
   const formik = useFormik<NutritionMealFormValues>({
@@ -121,7 +121,9 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
     onSubmit: async (values: any) => {
       try {
         if (id) {
-          await dispatch(updateNutritionMeal({ id, nutritionMeal: values })).unwrap();
+          await dispatch(
+            updateNutritionMeal({ id, nutritionMeal: values }),
+          ).unwrap();
         } else {
           await dispatch(createNutritionMeal(values)).unwrap();
         }
@@ -135,28 +137,28 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
   });
 
   const handleAddFoodItem = () => {
-    formik.setFieldValue("foodItems", [
+    formik.setFieldValue('foodItems', [
       ...formik.values.foodItems,
-      { foodId: "", quantity: 0 },
+      { foodId: '', quantity: 0 },
     ]);
   };
 
   const handleRemoveFoodItem = (index: number) => {
     const updatedFoodItems = formik.values.foodItems.filter(
-      (_, i: number) => i !== index
+      (_, i: number) => i !== index,
     );
-    formik.setFieldValue("foodItems", updatedFoodItems);
+    formik.setFieldValue('foodItems', updatedFoodItems);
   };
 
   const handleFoodItemChange = (
     index: number,
     field: keyof FoodItem,
-    value: string | number
+    value: string | number,
   ) => {
     const updatedFoodItems = [...formik.values.foodItems];
     updatedFoodItems[index] = { ...updatedFoodItems[index], [field]: value };
 
-    formik.setFieldValue("foodItems", updatedFoodItems);
+    formik.setFieldValue('foodItems', updatedFoodItems);
   };
 
   useEffect(() => {
@@ -176,13 +178,13 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
       fullWidth
     >
       <DialogTitle>
-        {id ? "Edit Nutrition Meal" : "Add Nutrition Meal"}
+        {id ? 'Edit Nutrition Meal' : 'Add Nutrition Meal'}
         <IconButton
           onClick={() => {
             onClose(false);
             formik.resetForm();
           }}
-          sx={{ position: "absolute", top: 8, right: 8 }}
+          sx={{ position: 'absolute', top: 8, right: 8 }}
         >
           <CloseIcon />
         </IconButton>
@@ -197,6 +199,7 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
             name={`nutritionId`}
             value={formik.values.nutritionId}
             onChange={formik.handleChange}
+            disabled={formik.isSubmitting}
             fullWidth
             sx={{ mt: 2 }}
           >
@@ -214,10 +217,11 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
             label="Meal Type"
             name="mealType"
             value={formik.values.mealType}
+            disabled={formik.isSubmitting}
             onChange={formik.handleChange}
             error={formik.touched.mealType && Boolean(formik.errors.mealType)}
             helperText={
-              formik.touched.mealType ? (formik.errors.mealType as string) : ""
+              formik.touched.mealType ? (formik.errors.mealType as string) : ''
             }
             margin="normal"
           />
@@ -241,6 +245,7 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
                   InputLabelProps={{ shrink: true }}
                   SelectProps={{ native: true }}
                   name={`foodItems[${index}].foodId`}
+                  disabled={formik.isSubmitting}
                   value={formik.values.foodItems[index].foodId}
                   onChange={formik.handleChange}
                   fullWidth
@@ -249,7 +254,7 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
                     !!(
                       formik.touched.foodItems?.[index]?.foodId &&
                       formik.errors.foodItems?.[index] &&
-                      typeof formik.errors.foodItems?.[index] !== "string" &&
+                      typeof formik.errors.foodItems?.[index] !== 'string' &&
                       (
                         formik.errors.foodItems?.[index] as FormikErrors<{
                           foodId: string;
@@ -260,7 +265,7 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
                   helperText={
                     formik.touched.foodItems?.[index]?.foodId &&
                     formik.errors.foodItems?.[index] &&
-                    typeof formik.errors.foodItems?.[index] !== "string" &&
+                    typeof formik.errors.foodItems?.[index] !== 'string' &&
                     (
                       formik.errors.foodItems?.[index] as FormikErrors<{
                         foodId: string;
@@ -277,7 +282,6 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
                     </option>
                   ))}
                 </TextField>
-                
               </Grid>
               <Grid item xs={4}>
                 <TextField
@@ -285,14 +289,15 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
                   type="number"
                   name={`foodItems[${index}].quantity`}
                   value={formik.values.foodItems[index].quantity}
+                  disabled={formik.isSubmitting}
                   onChange={(e) =>
-                    handleFoodItemChange(index, "quantity", e.target.value)
+                    handleFoodItemChange(index, 'quantity', e.target.value)
                   }
                   error={
                     !!(
                       formik.touched.foodItems?.[index]?.quantity &&
                       formik.errors.foodItems?.[index] &&
-                      typeof formik.errors.foodItems?.[index] !== "string" &&
+                      typeof formik.errors.foodItems?.[index] !== 'string' &&
                       (
                         formik.errors.foodItems?.[index] as FormikErrors<{
                           quantity: number;
@@ -303,7 +308,7 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
                   helperText={
                     formik.touched.foodItems?.[index]?.quantity &&
                     formik.errors.foodItems?.[index] &&
-                    typeof formik.errors.foodItems?.[index] !== "string" &&
+                    typeof formik.errors.foodItems?.[index] !== 'string' &&
                     (
                       formik.errors.foodItems?.[index] as FormikErrors<{
                         quantity: number;
@@ -326,17 +331,13 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
               </Grid>
             </Grid>
           ))}
-          <Button
-            variant="outlined"
-            onClick={handleAddFoodItem}
-            sx={{ mt: 2 }}
-          >
+          <Button variant="outlined" onClick={handleAddFoodItem} sx={{ mt: 2 }}>
             Add Food Item
           </Button>
           <DialogActions>
             <Button onClick={() => onClose(false)}>Cancel</Button>
             <Button type="submit" color="primary">
-              {id ? "Update" : "Add"}
+              {id ? 'Update' : 'Add'}
             </Button>
           </DialogActions>
         </Box>
@@ -349,9 +350,9 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
         <Alert
           onClose={() => setSnackbarOpen(false)}
           severity="error"
-          sx={{ width: "100%" }}
+          sx={{ width: '100%' }}
         >
-          {error || "An error occurred. Please try again."}
+          {error || 'An error occurred. Please try again.'}
         </Alert>
       </Snackbar>
     </Dialog>

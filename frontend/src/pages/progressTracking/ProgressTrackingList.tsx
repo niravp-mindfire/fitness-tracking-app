@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   fetchProgressTrackings,
   deleteProgressTracking,
-} from "../../features/progressTracking/progressTrackingSlice";
-import DataTable from "../../component/Datatable";
-import { RootState, useAppDispatch, useAppSelector } from "../../app/store";
+} from '../../features/progressTracking/progressTrackingSlice';
+import DataTable from '../../component/Datatable';
+import { RootState, useAppDispatch, useAppSelector } from '../../app/store';
 import {
   Box,
   TextField,
@@ -14,24 +14,25 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-} from "@mui/material";
-import ProgressTrackingModal from "./ProgressTrackingDialog";
+} from '@mui/material';
+import ProgressTrackingModal from './ProgressTrackingDialog';
+import SnackAlert from '../../component/SnackAlert';
 
 const ProgressTrackingList = () => {
   const dispatch = useAppDispatch();
   const { progressTrackings, totalCount, loading } = useAppSelector(
-    (state: RootState) => state.progressTracking
+    (state: RootState) => state.progressTracking,
   );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortBy, setSortBy] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | undefined>();
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   useEffect(() => {
     getAllData();
   }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
@@ -43,8 +44,8 @@ const ProgressTrackingList = () => {
         limit: rowsPerPage,
         search,
         sort: sortBy,
-        order: sortOrder as "asc" | "desc",
-      })
+        order: sortOrder as 'asc' | 'desc',
+      }),
     );
   };
 
@@ -56,7 +57,7 @@ const ProgressTrackingList = () => {
     setPage(newPage);
   };
 
-  const handleSort = (field: string, order: "asc" | "desc") => {
+  const handleSort = (field: string, order: 'asc' | 'desc') => {
     setSortBy(field);
     setSortOrder(order);
     getAllData();
@@ -73,6 +74,7 @@ const ProgressTrackingList = () => {
       setDialogOpen(false);
       setDeleteId(null);
       getAllData();
+      setSnackbarOpen(true);
     }
   };
 
@@ -82,12 +84,12 @@ const ProgressTrackingList = () => {
   };
 
   const columns = [
-    { field: "date", headerName: "Date", sorting: true },
-    { field: "weight", headerName: "Weight", sorting: true },
-    { field: "bodyFatPercentage", headerName: "Body Fat(%)", sorting: true },
-    { field: "muscleMass", headerName: "Muscle Mass", sorting: true },
-    { field: "notes", headerName: "Notes", sorting: true },
-    { field: "createdAt", headerName: "Created At", sorting: true },
+    { field: 'date', headerName: 'Date', sorting: true },
+    { field: 'weight', headerName: 'Weight', sorting: true },
+    { field: 'bodyFatPercentage', headerName: 'Body Fat(%)', sorting: true },
+    { field: 'muscleMass', headerName: 'Muscle Mass', sorting: true },
+    { field: 'notes', headerName: 'Notes', sorting: true },
+    { field: 'createdAt', headerName: 'Created At', sorting: true },
   ];
 
   const tableData = progressTrackings?.map((tracking: any) => ({
@@ -97,11 +99,12 @@ const ProgressTrackingList = () => {
     bodyFatPercentage: tracking.bodyFatPercentage,
     muscleMass: tracking.muscleMass,
     notes: tracking.notes,
-    createdAt: tracking?.createdAt ? new Date(tracking?.createdAt).toLocaleDateString() : '-',
+    createdAt: tracking?.createdAt
+      ? new Date(tracking?.createdAt).toLocaleDateString()
+      : '-',
   }));
 
   const handleEditProgressTracking = (id: any) => {
-    
     setEditId(id);
     setOpen(true);
   };
@@ -123,7 +126,7 @@ const ProgressTrackingList = () => {
           label="Search"
           value={search}
           onChange={handleSearchChange}
-          sx={{ width: "300px" }}
+          sx={{ width: '300px' }}
         />
         <Button
           variant="contained"
@@ -166,7 +169,17 @@ const ProgressTrackingList = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <ProgressTrackingModal open={open} onClose={handleCloseModal} id={editId} />
+      <ProgressTrackingModal
+        open={open}
+        onClose={handleCloseModal}
+        id={editId}
+      />
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record deleted successfully`}
+      />
     </div>
   );
 };

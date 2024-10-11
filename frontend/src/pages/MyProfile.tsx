@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik';
 import {
   Box,
   Button,
@@ -15,16 +15,16 @@ import {
   Card,
   CardContent,
   Grid,
-} from "@mui/material";
-import { updateProfileSchema } from "../utils/validationSchema";
-import { updateProfileInitialValues } from "../utils/initialValues";
+} from '@mui/material';
+import { updateProfileSchema } from '../utils/validationSchema';
+import { updateProfileInitialValues } from '../utils/initialValues';
 import {
   updateUserProfile,
   getProfile,
-} from "../features/profile/profileSlice";
-import { toast } from "react-toastify";
-import { ProfileFormValues } from "../utils/types";
-import { calculateAge, formatDateForInput } from "../utils/common"; // Assuming you have this function
+} from '../features/profile/profileSlice';
+import { toast } from 'react-toastify';
+import { ProfileFormValues } from '../utils/types';
+import { calculateAge, formatDateForInput } from '../utils/common'; // Assuming you have this function
 
 const MyProfile = () => {
   const dispatch = useAppDispatch();
@@ -46,27 +46,29 @@ const MyProfile = () => {
     async (values: ProfileFormValues) => {
       // Calculate age from DOB
       const age = calculateAge(values.profile.dob);
-      const dob = values.profile.dob ? new Date(values.profile.dob).toISOString().split('T')[0] : null;
+      const dob = values.profile.dob
+        ? new Date(values.profile.dob).toISOString().split('T')[0]
+        : null;
       const userData: any = {
-          firstName: values.profile.firstName, // Keeping the original structure
-          lastName: values.profile.lastName,
-          dob,  // Assign the formatted date of birth
-          age,  // Assign the calculated age
-          gender: values.profile.gender,
-          height: values.profile.height,
-          weight: values.profile.weight,
-          fitnessGoals: values.fitnessGoals,
+        firstName: values.profile.firstName, // Keeping the original structure
+        lastName: values.profile.lastName,
+        dob, // Assign the formatted date of birth
+        age, // Assign the calculated age
+        gender: values.profile.gender,
+        height: values.profile.height,
+        weight: values.profile.weight,
+        fitnessGoals: values.fitnessGoals,
       };
 
       try {
         await dispatch(updateUserProfile(userData)).unwrap();
-        toast.success("Profile updated successfully!");
+        toast.success('Profile updated successfully!');
         fetchProfile();
       } catch (error) {
-        toast.error("Failed to update profile");
+        toast.error('Failed to update profile');
       }
     },
-    [dispatch]
+    [dispatch],
   );
 
   return (
@@ -74,9 +76,9 @@ const MyProfile = () => {
       <Box
         sx={{
           marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
         <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
@@ -87,7 +89,7 @@ const MyProfile = () => {
           validationSchema={updateProfileSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting, values }) => (
+          {({ isSubmitting, values, errors }) => (
             <Form>
               <Box sx={{ mb: 4 }}>
                 <Card variant="outlined">
@@ -99,9 +101,10 @@ const MyProfile = () => {
                           variant="outlined"
                           fullWidth
                           label="First Name"
+                          disabled={isSubmitting}
                           name="profile.firstName"
                           helperText={<ErrorMessage name="profile.firstName" />}
-                          error={!!error}
+                          error={!!error || errors?.profile?.firstName}
                         />
                       </Grid>
                       <Grid item xs={12} md={6}>
@@ -111,24 +114,25 @@ const MyProfile = () => {
                           fullWidth
                           label="Last Name"
                           name="profile.lastName"
+                          disabled={isSubmitting}
                           helperText={<ErrorMessage name="profile.lastName" />}
-                          error={!!error}
+                          error={!!error || errors?.profile?.lastName}
                         />
                       </Grid>
                       <Grid item xs={12} md={6}>
-                      <Field
-                        as={TextField}
-                        variant="outlined"
-                        fullWidth
-                        label="Date of Birth"
-                        name="profile.dob"
-                        type="date"
-                        value={formatDateForInput(userProfile?.profile?.dob)}
-                        InputLabelProps={{ shrink: true }}
-                        helperText={<ErrorMessage name="profile.dob" />}
-                        error={!!error}
-                      />
-
+                        <Field
+                          as={TextField}
+                          variant="outlined"
+                          fullWidth
+                          label="Date of Birth"
+                          name="profile.dob"
+                          type="date"
+                          disabled={isSubmitting}
+                          value={formatDateForInput(userProfile?.profile?.dob)}
+                          InputLabelProps={{ shrink: true }}
+                          helperText={<ErrorMessage name="profile.dob" />}
+                          error={!!error || errors?.profile?.dob}
+                        />
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <Field
@@ -138,10 +142,11 @@ const MyProfile = () => {
                           label="Age"
                           name="profile.age"
                           type="number"
+                          disabled={isSubmitting}
                           value={calculateAge(values.profile.dob)} // Calculate age based on DOB
                           InputProps={{ readOnly: true }} // Make age read-only
                           helperText={<ErrorMessage name="profile.age" />}
-                          error={!!error}
+                          error={!!error || errors?.profile?.age}
                         />
                       </Grid>
                       <Grid item xs={12} md={6}>
@@ -152,6 +157,8 @@ const MyProfile = () => {
                             labelId="gender-label"
                             name="profile.gender"
                             label="Gender"
+                            disabled={isSubmitting}
+                            error={!!error || errors?.profile?.gender}
                           >
                             <MenuItem value="Male">Male</MenuItem>
                             <MenuItem value="Female">Female</MenuItem>
@@ -170,9 +177,10 @@ const MyProfile = () => {
                           fullWidth
                           label="Height (cm)"
                           name="profile.height"
+                          disabled={isSubmitting}
                           type="number"
                           helperText={<ErrorMessage name="profile.height" />}
-                          error={!!error}
+                          error={!!error || errors?.profile?.height}
                         />
                       </Grid>
                       <Grid item xs={12} md={6}>
@@ -182,9 +190,10 @@ const MyProfile = () => {
                           fullWidth
                           label="Weight (kg)"
                           name="profile.weight"
+                          disabled={isSubmitting}
                           type="number"
                           helperText={<ErrorMessage name="profile.weight" />}
-                          error={!!error}
+                          error={!!error || errors?.profile?.weight}
                         />
                       </Grid>
                     </Grid>
@@ -209,6 +218,7 @@ const MyProfile = () => {
                                   as={TextField}
                                   variant="outlined"
                                   fullWidth
+                                  disabled={isSubmitting}
                                   label="Goal Type"
                                   name={`fitnessGoals.${index}.goalType`}
                                 />
@@ -222,6 +232,7 @@ const MyProfile = () => {
                                   as={TextField}
                                   variant="outlined"
                                   fullWidth
+                                  disabled={isSubmitting}
                                   label="Target Value"
                                   name={`fitnessGoals.${index}.targetValue`}
                                   type="number"
@@ -236,6 +247,7 @@ const MyProfile = () => {
                                   as={TextField}
                                   variant="outlined"
                                   fullWidth
+                                  disabled={isSubmitting}
                                   label="Current Value"
                                   name={`fitnessGoals.${index}.currentValue`}
                                   type="number"
@@ -246,16 +258,19 @@ const MyProfile = () => {
                                 />
                               </Grid>
                               <Grid item xs={12} md={3}>
-                              <Field
-                                as={TextField}
-                                variant="outlined"
-                                fullWidth
-                                label="Target Date"
-                                name={`fitnessGoals.${index}.targetDate`}
-                                type="date"
-                                InputLabelProps={{ shrink: true }}
-                                value={formatDateForInput(values.fitnessGoals[index].targetDate)}
-                              />
+                                <Field
+                                  as={TextField}
+                                  variant="outlined"
+                                  fullWidth
+                                  disabled={isSubmitting}
+                                  label="Target Date"
+                                  name={`fitnessGoals.${index}.targetDate`}
+                                  type="date"
+                                  InputLabelProps={{ shrink: true }}
+                                  value={formatDateForInput(
+                                    values.fitnessGoals[index].targetDate,
+                                  )}
+                                />
 
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.targetDate`}
@@ -268,6 +283,7 @@ const MyProfile = () => {
                               variant="contained"
                               color="secondary"
                               sx={{ mt: 2 }}
+                              disabled={isSubmitting}
                             >
                               Remove Goal
                             </Button>
@@ -276,15 +292,16 @@ const MyProfile = () => {
                         <Button
                           onClick={() =>
                             push({
-                              goalType: "",
+                              goalType: '',
                               targetValue: 0,
                               currentValue: 0,
-                              targetDate: "",
+                              targetDate: '',
                             })
                           }
                           variant="contained"
                           color="primary"
                           sx={{ mt: 2 }}
+                          disabled={isSubmitting}
                         >
                           Add Goal
                         </Button>
@@ -302,7 +319,8 @@ const MyProfile = () => {
                 disabled={isSubmitting}
                 sx={{ mt: 3, mb: 2 }}
               >
-                Update Profile {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
+                Update Profile{' '}
+                {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
               </Button>
 
               {error && <Typography color="error">{error}</Typography>}

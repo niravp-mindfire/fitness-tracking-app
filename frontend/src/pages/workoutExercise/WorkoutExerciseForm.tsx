@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { useFormik } from "formik";
-import { useSelector } from "react-redux";
+import React, { useEffect } from 'react';
+import { useFormik } from 'formik';
+import { useSelector } from 'react-redux';
 import {
   TextField,
   Button,
@@ -10,26 +10,30 @@ import {
   Typography,
   AppBar,
   Toolbar,
-} from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+} from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   createWorkoutExercise,
   updateWorkoutExercise,
   fetchWorkoutExerciseById,
-} from "../../features/workoutExercise/workoutExerciseSlice";
-import { fetchWorkouts } from "../../features/workout/workoutSlice";
-import { fetchExercises } from "../../features/exercise/exerciseSlice";
-import { RootState, useAppDispatch } from "../../app/store";
-import { path } from "../../utils/path";
-import BreadcrumbsComponent from "../../component/BreadcrumbsComponent";
-import { defaultPagination } from "../../utils/common";
+} from '../../features/workoutExercise/workoutExerciseSlice';
+import { fetchWorkouts } from '../../features/workout/workoutSlice';
+import { fetchExercises } from '../../features/exercise/exerciseSlice';
+import { RootState, useAppDispatch } from '../../app/store';
+import { path } from '../../utils/path';
+import BreadcrumbsComponent from '../../component/BreadcrumbsComponent';
+import { defaultPagination } from '../../utils/common';
 
 const WorkoutExerciseForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
-  const loading = useSelector((state: RootState) => state.workoutExercise.loading);
-  const workoutExercise = useSelector((state: RootState) => state.workoutExercise.currentWorkoutExercise);
+  const loading = useSelector(
+    (state: RootState) => state.workoutExercise.loading,
+  );
+  const workoutExercise = useSelector(
+    (state: RootState) => state.workoutExercise.currentWorkoutExercise,
+  );
   const workouts = useSelector((state: RootState) => state.workout.workouts);
   const exercises = useSelector((state: RootState) => state.exercise.exercises);
 
@@ -45,11 +49,11 @@ const WorkoutExerciseForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      workoutId: "",
-      exerciseId: "",
-      sets: "",
-      reps: "",
-      weight: "",
+      workoutId: '',
+      exerciseId: '',
+      sets: '',
+      reps: '',
+      weight: '',
     },
     onSubmit: async (values: any) => {
       if (id) {
@@ -76,22 +80,25 @@ const WorkoutExerciseForm = () => {
   return (
     <>
       {/* Header with Breadcrumbs */}
-      <AppBar position="static" sx={{ backgroundColor: "transparent", boxShadow: "none" }}>
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}
+      >
         <Toolbar>
           <BreadcrumbsComponent
             items={[
-              { label: "Workouts", path: path.WORKOUT_EXERCISE },
-              { label: id ? "Edit Workout" : "Add Workout Exercise" },
+              { label: 'Workouts', path: path.WORKOUT_EXERCISE },
+              { label: id ? 'Edit Workout' : 'Add Workout Exercise' },
             ]}
           />
         </Toolbar>
       </AppBar>
 
       {/* Main Form */}
-      <Card sx={{ maxWidth: 600, mx: "auto", mt: 4 }}>
+      <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom>
-            {id ? "Edit Workout Exercise" : "Add Workout Exercise"}
+            {id ? 'Edit Workout Exercise' : 'Add Workout Exercise'}
           </Typography>
           <Box component="form" onSubmit={formik.handleSubmit}>
             <TextField
@@ -100,6 +107,7 @@ const WorkoutExerciseForm = () => {
               SelectProps={{ native: true }}
               InputLabelProps={{ shrink: true }}
               name="workoutId"
+              disabled={formik.isSubmitting}
               value={formik.values.workoutId}
               onChange={formik.handleChange}
               fullWidth
@@ -109,7 +117,8 @@ const WorkoutExerciseForm = () => {
               </option>
               {workouts?.map((workout: any) => (
                 <option key={workout?._id} value={workout?._id}>
-                  Duration: {workout?.duration} - Date: {new Date(workout?.date).toDateString()}
+                  Duration: {workout?.duration} - Date:{' '}
+                  {new Date(workout?.date).toDateString()}
                 </option>
               ))}
             </TextField>
@@ -120,6 +129,7 @@ const WorkoutExerciseForm = () => {
               InputLabelProps={{ shrink: true }}
               SelectProps={{ native: true }}
               name="exerciseId"
+              disabled={formik.isSubmitting}
               value={formik.values.exerciseId}
               onChange={formik.handleChange}
               fullWidth
@@ -141,6 +151,7 @@ const WorkoutExerciseForm = () => {
               InputLabelProps={{ shrink: true }}
               value={formik.values.sets}
               onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
               fullWidth
               sx={{ mt: 2 }}
             />
@@ -150,6 +161,7 @@ const WorkoutExerciseForm = () => {
               InputLabelProps={{ shrink: true }}
               value={formik.values.reps}
               onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
               fullWidth
               sx={{ mt: 2 }}
             />
@@ -159,11 +171,12 @@ const WorkoutExerciseForm = () => {
               InputLabelProps={{ shrink: true }}
               value={formik.values.weight}
               onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
               fullWidth
               sx={{ mt: 2 }}
             />
             <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
-              {id ? "Update Workout Exercise" : "Add Workout Exercise"}
+              {id ? 'Update Workout Exercise' : 'Add Workout Exercise'}
             </Button>
           </Box>
         </CardContent>

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   fetchNutritionMeals,
   deleteNutritionMeal,
-} from "../../features/nutritionMeal/nutritionMealSlice";
-import DataTable from "../../component/Datatable";
-import { RootState, useAppDispatch, useAppSelector } from "../../app/store";
+} from '../../features/nutritionMeal/nutritionMealSlice';
+import DataTable from '../../component/Datatable';
+import { RootState, useAppDispatch, useAppSelector } from '../../app/store';
 import {
   Box,
   TextField,
@@ -14,24 +14,25 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-} from "@mui/material";
-import NutritionMealModal from "./NutritionMealForm";
+} from '@mui/material';
+import NutritionMealModal from './NutritionMealForm';
+import SnackAlert from '../../component/SnackAlert';
 
 const NutritionMealList = () => {
   const dispatch = useAppDispatch();
   const { nutritionMeals, totalCount, loading } = useAppSelector(
-    (state: RootState) => state.nutritionMeal
+    (state: RootState) => state.nutritionMeal,
   );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortBy, setSortBy] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [open, setOpen] = useState(false)
-  const [editId, setEditId] = useState()
-
+  const [open, setOpen] = useState(false);
+  const [editId, setEditId] = useState();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   useEffect(() => {
     getAllData();
   }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
@@ -43,8 +44,8 @@ const NutritionMealList = () => {
         limit: rowsPerPage,
         search,
         sort: sortBy,
-        order: sortOrder as "asc" | "desc",
-      })
+        order: sortOrder as 'asc' | 'desc',
+      }),
     );
   };
 
@@ -56,7 +57,7 @@ const NutritionMealList = () => {
     setPage(newPage);
   };
 
-  const handleSort = (field: string, order: "asc" | "desc") => {
+  const handleSort = (field: string, order: 'asc' | 'desc') => {
     setSortBy(field);
     setSortOrder(order);
     getAllData();
@@ -73,6 +74,7 @@ const NutritionMealList = () => {
       setDialogOpen(false);
       setDeleteId(null);
       getAllData();
+      setSnackbarOpen(true);
     }
   };
 
@@ -82,29 +84,31 @@ const NutritionMealList = () => {
   };
 
   const columns = [
-    { field: "mealType", headerName: "Meal Type", sorting: true },
-    { field: "totalCalories", headerName: "Calories", sorting: true },
-    { field: "createdAt", headerName: "Created At", sorting: true }
+    { field: 'mealType', headerName: 'Meal Type', sorting: true },
+    { field: 'totalCalories', headerName: 'Calories', sorting: true },
+    { field: 'createdAt', headerName: 'Created At', sorting: true },
   ];
 
   const tableData = nutritionMeals?.map((meal: any) => ({
     id: meal._id,
     mealType: meal.mealType,
     totalCalories: meal.totalCalories,
-    createdAt: meal?.createdAt ? new Date(meal?.createdAt).toLocaleDateString() : '-',
+    createdAt: meal?.createdAt
+      ? new Date(meal?.createdAt).toLocaleDateString()
+      : '-',
   }));
 
   const handleEditNutritionMeal = (id: any) => {
     // navigate(`${path.NUTRITION_MEAL}/edit/${id}`);
-    setEditId(id)
-    setOpen(true)
+    setEditId(id);
+    setOpen(true);
   };
 
   const handleCloseModal = (type = false) => {
     setOpen(false);
-    setEditId(undefined)
-    if(type) {
-      getAllData()
+    setEditId(undefined);
+    if (type) {
+      getAllData();
     }
   };
 
@@ -117,13 +121,13 @@ const NutritionMealList = () => {
           label="Search"
           value={search}
           onChange={handleSearchChange}
-          sx={{ width: "300px" }}
+          sx={{ width: '300px' }}
         />
         <Button
           variant="contained"
           color="primary"
           onClick={() => {
-            setOpen(true)
+            setOpen(true);
           }}
         >
           Add Nutrition Meal
@@ -161,6 +165,12 @@ const NutritionMealList = () => {
         </DialogActions>
       </Dialog>
       <NutritionMealModal open={open} onClose={handleCloseModal} id={editId} />
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record deleted successfully`}
+      />
     </div>
   );
 };
