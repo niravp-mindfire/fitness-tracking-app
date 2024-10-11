@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Exercise from '../models/Exercise';
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 
 // GET all exercises with search, sort, pagination, and date filtering
 export const getAllExercises = async (req: Request, res: Response) => {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import FoodItem from '../models/FoodItem';
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 
 // GET all food items with optional search, sort, pagination
 export const getAllFoodItems = async (req: Request, res: Response) => {

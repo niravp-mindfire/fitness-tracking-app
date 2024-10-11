@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import WorkoutPlan from '../models/WorkoutPlans';
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 
 // GET all workout plans with pagination, search, sorting, and date filtering
 export const getAllWorkoutPlans = async (req: any, res: Response) => {

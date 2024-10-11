@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app, { closeServer } from '../index';
 import User from '../models/User';
-import { successResponse, errorResponse } from '../config/responseFormat';
+import { successResponse, errorResponse } from '../utils/responseFormat';
 import { generateToken } from '../controllers/userController';
 import mongoose from 'mongoose';
 

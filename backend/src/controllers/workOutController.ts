@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Workout from '../models/Workout';
 import WorkoutExercise from "../models/WorkoutExercises"
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 
 export const getAllWorkouts = async (req: any, res: Response) => {
   try {

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import ProgressTracking from '../models/ProgressTracking';
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 import mongoose from 'mongoose';
 
 export const getProgressTrackingById = async (req: Request, res: Response): Promise<Response> => {

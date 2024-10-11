@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Notification from '../models/Notifications';
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 
 export const addNotification = async (req: any, res: Response) => {
   try {

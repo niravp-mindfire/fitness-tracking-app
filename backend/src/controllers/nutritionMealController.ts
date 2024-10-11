@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import NutritionMeal from '../models/NutritionMeals';
 import FoodItem from '../models/FoodItem';
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 import { validationResult } from 'express-validator';
 
 // Helper function to calculate total calories based on food items and their quantities

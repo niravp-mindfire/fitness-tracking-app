@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import MealPlan from '../models/MealPlans';
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 import { validationResult } from 'express-validator';
 import FoodItem from '../models/FoodItem';
 

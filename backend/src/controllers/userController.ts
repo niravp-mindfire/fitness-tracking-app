@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
-import { successResponse, errorResponse } from '../config/responseFormat';
+import { successResponse, errorResponse } from '../utils/responseFormat';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const JWT_EXPIRES_IN = '1h';
