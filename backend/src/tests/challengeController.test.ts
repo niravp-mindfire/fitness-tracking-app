@@ -4,7 +4,16 @@ import mongoose from 'mongoose';
 import Challenge from '../models/Challenges';
 import { generateToken } from '../controllers/userController';
 
-const testChallenge = {
+// Define the shape of the challenge data
+interface ChallengeData {
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  participants: string[];
+}
+
+const testChallenge: ChallengeData = {
   title: 'Test Challenge',
   description: 'This is a test challenge',
   startDate: '2024-10-10T00:00:00Z',
@@ -15,21 +24,21 @@ const testChallenge = {
 let token: string;
 
 beforeAll(async () => {
-  // Create a test token (replace with your user creation logic)
   token = 'Bearer ' + (await createTestUserAndGetToken());
 });
+
 beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URI!);
-  // No need to listen again here
+  await mongoose.connect(process.env.TEST_MONGO_URI!);
 });
 
 afterAll(async () => {
   await Challenge.deleteMany({ title: 'Test Challenge' });
   await Challenge.deleteMany({ title: 'Updated Challenge' });
   await mongoose.disconnect();
-  closeServer(); // ensure the server closes
+  closeServer(); // Ensure the server closes
 });
-const createTestUserAndGetToken = async () => {
+
+const createTestUserAndGetToken = async (): Promise<string> => {
   const mockUser = {
     _id: '123456',
     username: 'updateduser',
@@ -102,7 +111,7 @@ describe('Challenges API', () => {
   describe('PUT /api/challenges/:id', () => {
     it('should update an existing challenge', async () => {
       const createdChallenge = await Challenge.create(testChallenge);
-      const updatedChallengeData = {
+      const updatedChallengeData: ChallengeData = {
         ...testChallenge,
         title: 'Updated Challenge',
       };

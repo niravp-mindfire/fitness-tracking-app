@@ -14,7 +14,6 @@ import nutritionRouter from './routes/nutritionRoutes';
 import nutritionMealsRouter from './routes/nutritionMealRoutes';
 import challengesRouter from './routes/challengeRoutes';
 import progressTrackingRouter from './routes/progressTrackingRouter';
-import notificationsRouter from './routes/notificationRouter';
 
 dotenv.config();
 
@@ -39,7 +38,6 @@ app.use('/api/nutritious', nutritionRouter);
 app.use('/api/nutrition-meals', nutritionMealsRouter);
 app.use('/api/challenges', challengesRouter);
 app.use('/api/progress-tracking', progressTrackingRouter);
-app.use('/api/notifications', notificationsRouter);
 
 let server: ReturnType<typeof app.listen>;
 
