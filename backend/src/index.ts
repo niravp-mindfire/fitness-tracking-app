@@ -3,9 +3,6 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import swaggerUi from 'swagger-ui-express';
-import swaggerJsDoc from 'swagger-jsdoc';
-
 import userRouter from './routes/userRouter';
 import workOutRouter from './routes/workOutRouter';
 import workoutExerciseRouter from './routes/workoutExerciseRouter';
@@ -18,7 +15,6 @@ import nutritionMealsRouter from './routes/nutritionMealRoutes';
 import challengesRouter from './routes/challengeRoutes';
 import progressTrackingRouter from './routes/progressTrackingRouter';
 import notificationsRouter from './routes/notificationRouter';
-import swaggerDocs from './utils/swaggerOptions';
 
 dotenv.config();
 
@@ -27,6 +23,7 @@ export const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
+
 app.get('/test', (req, res) => {
   res.json('Hello world');
 });
@@ -43,8 +40,6 @@ app.use('/api/nutrition-meals', nutritionMealsRouter);
 app.use('/api/challenges', challengesRouter);
 app.use('/api/progress-tracking', progressTrackingRouter);
 app.use('/api/notifications', notificationsRouter);
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 let server: ReturnType<typeof app.listen>;
 
@@ -63,5 +58,4 @@ export const closeServer = () => {
   server?.close(); // Close the server if it exists
 };
 
-module.exports = swaggerDocs;
 export default app;
