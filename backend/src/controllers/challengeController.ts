@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Challenge from '../models/Challenges';
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 import { validationResult } from 'express-validator';
 
 export const getAllChallenges = async (req: Request, res: Response) => {

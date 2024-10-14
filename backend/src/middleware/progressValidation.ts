@@ -1,7 +1,7 @@
 import { body, param } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import { errorResponse } from '../config/responseFormat';
+import { errorResponse } from '../utils/responseFormat';
 
 export const validateProgressTrackingRequest = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);

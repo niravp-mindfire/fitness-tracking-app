@@ -1,0 +1,1824 @@
+{
+  "info": {
+    "name": "Fitness API Collection",
+    "description": "A collection of APIs for managing user profiles, workouts, exercises, meal plans, nutrition, challenges, and notifications.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Registration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"testUser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"profile\": {\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"age\": 25\n    }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Forget Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"test@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/forget-password",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "forget-password"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reset Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"password\": \"newpassword123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/reset-password/{{resetToken}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "reset-password", "{{resetToken}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Edit Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"age\": 30,\n    \"gender\": \"Male\",\n    \"height\": 180,\n    \"weight\": 75,\n    \"fitnessGoals\": \"Lose Weight\",\n    \"dob\": \"1998-01-01\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/edit-profile",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "edit-profile"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/my-profile",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "my-profile"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/users",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Workout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"userId\": \"1\",\n    \"date\": \"2024-10-14\",\n    \"duration\": 60,\n    \"notes\": \"Morning workout session\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/workouts",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workouts"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Workout",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"duration\": 75,\n    \"notes\": \"Evening workout session\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/workouts/{{workoutId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workouts", "{{workoutId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Workout",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workouts/{{workoutId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workouts", "{{workoutId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Workouts",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workouts",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workouts"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Workout by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workouts/{{workoutId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workouts", "{{workoutId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Exercise",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"workoutId\": \"1\",\n    \"exerciseId\": \"2\",\n    \"sets\": 3,\n    \"reps\": 12\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-exercises",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-exercises"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Workout Exercises",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-exercises/{{workoutId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-exercises", "{{workoutId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Workout Exercise",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-exercises/{{exerciseId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-exercises", "{{exerciseId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Workout Exercises",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-exercise",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-exercise"]
+        },
+        "description": "Fetches all workout exercises with optional pagination, sorting, and searching."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Workout Exercise by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-exercise/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-exercise", "{{id}}"]
+        },
+        "description": "Fetches a specific workout exercise by ID."
+      },
+      "response": []
+    },
+    {
+      "name": "Add Exercise to Workout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-exercise",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-exercise"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "workoutId": "{{workoutId}}",
+            "exerciseId": "{{exerciseId}}",
+            "sets": "{{sets}}",
+            "reps": "{{reps}}",
+            "weight": "{{weight}}"
+          }
+        },
+        "description": "Adds a new exercise to a workout."
+      },
+      "response": []
+    },
+    {
+      "name": "Update Workout Exercise",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-exercise/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-exercise", "{{id}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "sets": "{{sets}}",
+            "reps": "{{reps}}",
+            "weight": "{{weight}}"
+          }
+        },
+        "description": "Updates an existing workout exercise by ID."
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Workout Exercise",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-exercise/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-exercise", "{{id}}"]
+        },
+        "description": "Deletes a workout exercise by ID."
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Workout Plans",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-plan?search={{search}}&sort={{sort}}&order={{order}}&page={{page}}&limit={{limit}}&startDate={{startDate}}&endDate={{endDate}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-plan"],
+          "query": [
+            {
+              "key": "search",
+              "value": "",
+              "description": "Search term for title or description"
+            },
+            {
+              "key": "sort",
+              "value": "createdAt",
+              "description": "Field to sort by"
+            },
+            {
+              "key": "order",
+              "value": "desc",
+              "description": "Sorting order (asc/desc)"
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Page number for pagination"
+            },
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Number of items per page"
+            },
+            {
+              "key": "startDate",
+              "value": "",
+              "description": "Start date for filtering"
+            },
+            {
+              "key": "endDate",
+              "value": "",
+              "description": "End date for filtering"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Workout Plan By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-plan/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-plan", "{{id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Workout Plan",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-plan",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-plan"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "title": "Workout Plan Title",
+            "description": "Description of the workout plan",
+            "exercises": [],
+            "duration": "60 minutes"
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Workout Plan",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-plan/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-plan", "{{id}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "title": "Updated Workout Plan Title",
+            "description": "Updated description",
+            "exercises": [],
+            "duration": "90 minutes"
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Workout Plan",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/workout-plan/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "workout-plan", "{{id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Exercises",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "JWT token for authentication"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/exercises?search={{search}}&sort={{sort}}&order={{order}}&page={{page}}&limit={{limit}}&startDate={{startDate}}&endDate={{endDate}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "exercises"],
+          "query": [
+            {
+              "key": "search",
+              "value": "",
+              "description": "Search term for exercise name"
+            },
+            {
+              "key": "sort",
+              "value": "name",
+              "description": "Field to sort by"
+            },
+            {
+              "key": "order",
+              "value": "asc",
+              "description": "Sorting order (asc/desc)"
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Page number for pagination"
+            },
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Number of items per page"
+            },
+            {
+              "key": "startDate",
+              "value": "",
+              "description": "Start date for filtering"
+            },
+            {
+              "key": "endDate",
+              "value": "",
+              "description": "End date for filtering"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Exercise By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "JWT token for authentication"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/exercises/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "exercises", "{{id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Exercise",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "JWT token for authentication"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/exercises",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "exercises"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "name": "Exercise Name",
+            "type": "Exercise Type",
+            "description": "Description of the exercise",
+            "category": "Exercise Category"
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Exercise",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "JWT token for authentication"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/exercises/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "exercises", "{{id}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "name": "Updated Exercise Name",
+            "type": "Updated Exercise Type",
+            "description": "Updated description",
+            "category": "Updated Category"
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Exercise",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "JWT token for authentication"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/exercises/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "exercises", "{{id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Food Items",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your_token>",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/food-items?search=&sort=name&order=asc&page=1&limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "food-items"],
+          "query": [
+            {
+              "key": "search",
+              "value": ""
+            },
+            {
+              "key": "sort",
+              "value": "name"
+            },
+            {
+              "key": "order",
+              "value": "asc"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "code": 200,
+          "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"total\": 10,\n        \"page\": 1,\n        \"limit\": 10,\n        \"totalPages\": 1,\n        \"foodItems\": [\n            {\n                \"_id\": \"food_item_id\",\n                \"name\": \"Apple\",\n                \"calories\": 95,\n                \"macronutrients\": {\n                    \"protein\": 0.5,\n                    \"fat\": 0.3,\n                    \"carbohydrates\": 25\n                }\n            }\n        ]\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Food Item By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your_token>",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/food-items/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "food-items", "{{id}}"]
+        }
+      },
+      "response": [
+        {
+          "code": 200,
+          "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"food_item_id\",\n        \"name\": \"Apple\",\n        \"calories\": 95,\n        \"macronutrients\": {\n            \"protein\": 0.5,\n            \"fat\": 0.3,\n            \"carbohydrates\": 25\n        }\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Create Food Item",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your_token>",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Banana\",\n    \"calories\": 105,\n    \"macronutrients\": {\n        \"protein\": 1.3,\n        \"fat\": 0.3,\n        \"carbohydrates\": 27\n    }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/food-items",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "food-items"]
+        }
+      },
+      "response": [
+        {
+          "code": 201,
+          "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"new_food_item_id\",\n        \"name\": \"Banana\",\n        \"calories\": 105,\n        \"macronutrients\": {\n            \"protein\": 1.3,\n            \"fat\": 0.3,\n            \"carbohydrates\": 27\n        }\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Update Food Item",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your_token>",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Updated Banana\",\n    \"calories\": 110,\n    \"macronutrients\": {\n        \"protein\": 1.4,\n        \"fat\": 0.3,\n        \"carbohydrates\": 29\n    }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/food-items/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "food-items", "{{id}}"]
+        }
+      },
+      "response": [
+        {
+          "code": 200,
+          "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"_id\": \"food_item_id\",\n        \"name\": \"Updated Banana\",\n        \"calories\": 110,\n        \"macronutrients\": {\n            \"protein\": 1.4,\n            \"fat\": 0.3,\n            \"carbohydrates\": 29\n        }\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Delete Food Item",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your_token>",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/food-items/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "food-items", "{{id}}"]
+        }
+      },
+      "response": [
+        {
+          "code": 200,
+          "body": "{\n    \"status\": \"success\",\n    \"message\": \"Food item deleted successfully\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get All Meal Plans",
+      "request": {
+        "url": "{{baseUrl}}/api/meal-plans",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "JWT Token for authentication"
+          }
+        ],
+        "description": "Retrieve all meal plans for the authenticated user with optional search, pagination, and sorting.",
+        "query": [
+          {
+            "key": "search",
+            "value": "",
+            "description": "Search by title or description"
+          },
+          {
+            "key": "sort",
+            "value": "createdAt",
+            "description": "Field to sort by"
+          },
+          {
+            "key": "order",
+            "value": "desc",
+            "description": "Order of sorting: 'asc' or 'desc'"
+          },
+          {
+            "key": "page",
+            "value": "1",
+            "description": "Page number for pagination"
+          },
+          {
+            "key": "limit",
+            "value": "10",
+            "description": "Number of results per page"
+          }
+        ]
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": {
+            "total": 10,
+            "page": 1,
+            "limit": 10,
+            "totalPages": 1,
+            "mealPlans": [
+              {
+                "_id": "mealPlanId",
+                "userId": "userId",
+                "title": "Sample Meal Plan",
+                "description": "Description of meal plan",
+                "meals": [],
+                "duration": 7,
+                "createdAt": "2024-10-14T00:00:00.000Z",
+                "updatedAt": "2024-10-14T00:00:00.000Z"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Meal Plan by ID",
+      "request": {
+        "url": "{{baseUrl}}/api/meal-plans/:id",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "description": "Retrieve a meal plan by its ID."
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": {
+            "success": true,
+            "data": {
+              "_id": "mealPlanId",
+              "userId": "userId",
+              "title": "Sample Meal Plan",
+              "description": "Description of meal plan",
+              "meals": [],
+              "duration": 7,
+              "createdAt": "2024-10-14T00:00:00.000Z",
+              "updatedAt": "2024-10-14T00:00:00.000Z"
+            }
+          }
+        },
+        {
+          "status": "404",
+          "body": {
+            "message": "Meal plan not found"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Meal Plan",
+      "request": {
+        "url": "{{baseUrl}}/api/meal-plans",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "title": "New Meal Plan",
+            "description": "Description of new meal plan",
+            "meals": [],
+            "duration": 7
+          }
+        },
+        "description": "Create a new meal plan."
+      },
+      "response": [
+        {
+          "status": "201",
+          "body": {
+            "success": true,
+            "data": {
+              "_id": "newMealPlanId",
+              "userId": "userId",
+              "title": "New Meal Plan",
+              "description": "Description of new meal plan",
+              "meals": [],
+              "duration": 7,
+              "createdAt": "2024-10-14T00:00:00.000Z",
+              "updatedAt": "2024-10-14T00:00:00.000Z"
+            }
+          }
+        },
+        {
+          "status": "400",
+          "body": {
+            "success": false,
+            "errors": [
+              {
+                "msg": "Invalid data",
+                "param": "title",
+                "location": "body"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Meal Plan",
+      "request": {
+        "url": "{{baseUrl}}/api/meal-plans/:id",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "title": "Updated Meal Plan",
+            "description": "Updated description",
+            "meals": [],
+            "duration": 14
+          }
+        },
+        "description": "Update an existing meal plan by ID."
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": {
+            "success": true,
+            "data": {
+              "_id": "mealPlanId",
+              "userId": "userId",
+              "title": "Updated Meal Plan",
+              "description": "Updated description",
+              "meals": [],
+              "duration": 14,
+              "createdAt": "2024-10-14T00:00:00.000Z",
+              "updatedAt": "2024-10-14T00:00:00.000Z"
+            }
+          }
+        },
+        {
+          "status": "404",
+          "body": {
+            "success": false,
+            "message": "Meal plan not found"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Meal Plan",
+      "request": {
+        "url": "{{baseUrl}}/api/meal-plans/:id",
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "description": "Delete a meal plan by ID."
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": {
+            "success": true,
+            "message": "Meal plan deleted successfully"
+          }
+        },
+        {
+          "status": "404",
+          "body": {
+            "success": false,
+            "message": "Meal plan not found"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get All Nutritions",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nutritious?sort=date&order=desc&page=1&limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutritious"],
+          "query": [
+            {
+              "key": "sort",
+              "value": "date"
+            },
+            {
+              "key": "order",
+              "value": "desc"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Nutrition By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nutritious/{{nutritionId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutritious", "{{nutritionId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Nutrition",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"date\": \"2024-10-14T00:00:00Z\",\n    \"notes\": \"Healthy meal\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/nutritious",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutritious"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Nutrition",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"date\": \"2024-10-15T00:00:00Z\",\n    \"notes\": \"Updated meal notes\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/nutritious/{{nutritionId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutritious", "{{nutritionId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Nutrition",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nutritious/{{nutritionId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutritious", "{{nutritionId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Nutrition Meals",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nutrition-meals",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutrition-meals"],
+          "query": [
+            {
+              "key": "nutritionId",
+              "value": ""
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "sort",
+              "value": "mealType"
+            },
+            {
+              "key": "order",
+              "value": "asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Nutrition Meal By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nutrition-meals/{{nutritionMealId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutrition-meals", "{{nutritionMealId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Nutrition Meal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"nutritionId\": \"{{nutritionId}}\",\n    \"mealType\": \"Breakfast\",\n    \"foodItems\": [\n        {\n            \"foodId\": \"{{foodItemId}}\",\n            \"quantity\": 200\n        }\n    ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/nutrition-meals",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutrition-meals"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Nutrition Meal",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"mealType\": \"Lunch\",\n    \"foodItems\": [\n        {\n            \"foodId\": \"{{foodItemId}}\",\n            \"quantity\": 150\n        }\n    ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/nutrition-meals/{{nutritionMealId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutrition-meals", "{{nutritionMealId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Nutrition Meal",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/nutrition-meals/{{nutritionMealId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "nutrition-meals", "{{nutritionMealId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Challenges",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/challenges?page=1&limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "challenges"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "sort",
+              "value": "startDate"
+            },
+            {
+              "key": "order",
+              "value": "asc"
+            },
+            {
+              "key": "startDate",
+              "value": "2024-01-01"
+            },
+            {
+              "key": "endDate",
+              "value": "2024-12-31"
+            },
+            {
+              "key": "search",
+              "value": "fitness"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Challenge by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/challenges/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "challenges", ":id"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Challenge",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/challenges",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "challenges"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "title": "New Challenge",
+            "description": "Description of the new challenge.",
+            "startDate": "2024-10-01",
+            "endDate": "2024-10-31",
+            "participants": []
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Challenge by ID",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/challenges/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "challenges", ":id"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "title": "Updated Challenge Title",
+            "description": "Updated description of the challenge.",
+            "startDate": "2024-11-01",
+            "endDate": "2024-11-30",
+            "participants": []
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Challenge by ID",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/challenges/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "challenges", ":id"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Progress Tracking",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {token}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/progress-tracking",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "progress-tracking"]
+        }
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": {
+            "total": 10,
+            "page": 1,
+            "limit": 10,
+            "totalPages": 1,
+            "progressTracking": [
+              {
+                "_id": "60b8d3c2f83b4a2a2c6c4d34",
+                "userId": "60b8d3c2f83b4a2a2c6c4d33",
+                "date": "2023-10-01T00:00:00.000Z",
+                "weight": 70,
+                "bodyFatPercentage": 15,
+                "muscleMass": 55,
+                "notes": "Feeling great!",
+                "createdAt": "2023-10-01T00:00:00.000Z",
+                "updatedAt": "2023-10-01T00:00:00.000Z"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Progress Tracking by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {token}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/progress-tracking/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "progress-tracking", "{{id}}"]
+        }
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": {
+            "_id": "60b8d3c2f83b4a2a2c6c4d34",
+            "userId": "60b8d3c2f83b4a2a2c6c4d33",
+            "date": "2023-10-01T00:00:00.000Z",
+            "weight": 70,
+            "bodyFatPercentage": 15,
+            "muscleMass": 55,
+            "notes": "Feeling great!",
+            "createdAt": "2023-10-01T00:00:00.000Z",
+            "updatedAt": "2023-10-01T00:00:00.000Z"
+          }
+        },
+        {
+          "status": "404",
+          "body": {
+            "error": "Progress tracking not found"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Track Progress",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {token}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/progress-tracking/track/progress",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "progress-tracking", "track", "progress"]
+        }
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": [
+            {
+              "date": "2023-10-01",
+              "weight": 70,
+              "bodyFatPercentage": 15
+            }
+          ]
+        },
+        {
+          "status": "404",
+          "body": {
+            "error": "No progress data found for this user."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Add Progress Tracking",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {token}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"date\":\"2023-10-01\",\"weight\":70,\"bodyFatPercentage\":15,\"muscleMass\":55,\"notes\":\"Feeling great!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/progress-tracking",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "progress-tracking"]
+        }
+      },
+      "response": [
+        {
+          "status": "201",
+          "body": {
+            "_id": "60b8d3c2f83b4a2a2c6c4d34",
+            "userId": "60b8d3c2f83b4a2a2c6c4d33",
+            "date": "2023-10-01T00:00:00.000Z",
+            "weight": 70,
+            "bodyFatPercentage": 15,
+            "muscleMass": 55,
+            "notes": "Feeling great!",
+            "createdAt": "2023-10-01T00:00:00.000Z",
+            "updatedAt": "2023-10-01T00:00:00.000Z"
+          }
+        },
+        {
+          "status": "500",
+          "body": {
+            "error": "Error adding progress tracking"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Progress Tracking",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {token}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"date\":\"2023-10-01\",\"weight\":75,\"bodyFatPercentage\":14,\"muscleMass\":56,\"notes\":\"Progress made!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/progress-tracking/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "progress-tracking", "{{id}}"]
+        }
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": {
+            "_id": "60b8d3c2f83b4a2a2c6c4d34",
+            "userId": "60b8d3c2f83b4a2a2c6c4d33",
+            "date": "2023-10-01T00:00:00.000Z",
+            "weight": 75,
+            "bodyFatPercentage": 14,
+            "muscleMass": 56,
+            "notes": "Progress made!",
+            "createdAt": "2023-10-01T00:00:00.000Z",
+            "updatedAt": "2023-10-01T00:00:00.000Z"
+          }
+        },
+        {
+          "status": "404",
+          "body": {
+            "error": "Progress tracking not found"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Progress Tracking",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {token}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/progress-tracking/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "progress-tracking", "{{id}}"]
+        }
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": {
+            "message": "Progress tracking deleted successfully"
+          }
+        },
+        {
+          "status": "404",
+          "body": {
+            "error": "Progress tracking not found"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User Progress Tracking",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {token}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/progress-tracking/user/{{userId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "progress-tracking", "user", "{{userId}}"]
+        },
+        "query": {
+          "search": "Feeling",
+          "startDate": "2023-10-01",
+          "endDate": "2023-10-31",
+          "page": 1,
+          "limit": 10
+        }
+      },
+      "response": [
+        {
+          "status": "200",
+          "body": {
+            "total": 5,
+            "page": 1,
+            "limit": 10,
+            "totalPages": 1,
+            "progressTracking": [
+              {
+                "_id": "60b8d3c2f83b4a2a2c6c4d34",
+                "userId": "60b8d3c2f83b4a2a2c6c4d33",
+                "date": "2023-10-01T00:00:00.000Z",
+                "weight": 70,
+                "bodyFatPercentage": 15,
+                "muscleMass": 55,
+                "notes": "Feeling great!",
+                "createdAt": "2023-10-01T00:00:00.000Z",
+                "updatedAt": "2023-10-01T00:00:00.000Z"
+              }
+            ]
+          }
+        },
+        {
+          "status": "404",
+          "body": {
+            "error": "No progress data found for this user."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "jwtToken",
+      "value": ""
+    },
+    {
+      "key": "resetToken",
+      "value": ""
+    }
+  ]
+}

@@ -1,12 +1,29 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchNutritionEntries, selectAllNutritionEntries, selectNutritionLoading, selectTotalNutritionEntries, updateSort, deleteNutrition } from '../../features/nutrition/nutritionSlice';
+import {
+  fetchNutritionEntries,
+  selectAllNutritionEntries,
+  selectNutritionLoading,
+  selectTotalNutritionEntries,
+  updateSort,
+  deleteNutrition,
+} from '../../features/nutrition/nutritionSlice';
 import DataTable from '../../component/Datatable';
 import { Nutrition } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@mui/material';
 import { path } from '../../utils/path';
 import NutritionForm from './NutritionForm';
+import SnackAlert from '../../component/SnackAlert';
 
 const NutritionList = () => {
   const dispatch = useAppDispatch();
@@ -21,47 +38,66 @@ const NutritionList = () => {
   const [editNutrition, setEditNutrition] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const handleOpenModal = () => {
     setOpenModal(true);
   };
 
   const handleCloseModal = (type = false) => {
     setOpenModal(false);
-    setEditNutrition(undefined)
-    if(type) {
-        getAllNutritions()
+    setEditNutrition(undefined);
+    if (type) {
+      getAllNutritions();
     }
   };
   const getAllNutritions = () => {
-    dispatch(fetchNutritionEntries({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
-  }
+    dispatch(
+      fetchNutritionEntries({
+        page: 1,
+        limit: 10,
+        search: searchTerm,
+        sort: sortField,
+        order: sortOrder,
+      }),
+    );
+  };
   // Fetch data when search term, sort field, or order changes
   useEffect(() => {
-    getAllNutritions()
+    getAllNutritions();
   }, [dispatch, searchTerm, sortField, sortOrder]);
 
   const handleSort = useCallback(
     (field: any) => {
       dispatch(updateSort(field));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handlePageChange = useCallback(
     (newPage: number) => {
-      dispatch(fetchNutritionEntries({ page: newPage + 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+      dispatch(
+        fetchNutritionEntries({
+          page: newPage + 1,
+          limit: 10,
+          search: searchTerm,
+          sort: sortField,
+          order: sortOrder,
+        }),
+      );
     },
-    [dispatch, searchTerm, sortField, sortOrder]
+    [dispatch, searchTerm, sortField, sortOrder],
   );
 
-  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  }, []);
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+    },
+    [],
+  );
 
   const handleEditNutrition = (id: any) => {
-    setEditNutrition(id)
-    handleOpenModal()
+    setEditNutrition(id);
+    handleOpenModal();
   };
 
   const handleDeleteNutrition = useCallback((id: string) => {
@@ -74,7 +110,16 @@ const NutritionList = () => {
       await dispatch(deleteNutrition(deleteId));
       setDialogOpen(false);
       setDeleteId(null);
-      dispatch(fetchNutritionEntries({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+      dispatch(
+        fetchNutritionEntries({
+          page: 1,
+          limit: 10,
+          search: searchTerm,
+          sort: sortField,
+          order: sortOrder,
+        }),
+      );
+      setSnackbarOpen(true);
     }
   }, [deleteId, dispatch, searchTerm, sortField, sortOrder]);
 
@@ -89,7 +134,7 @@ const NutritionList = () => {
       { field: 'notes', headerName: 'Notes', sorting: false },
       { field: 'createdAt', headerName: 'Created At', sorting: true },
     ],
-    []
+    [],
   );
 
   const tableData = useMemo(
@@ -98,9 +143,11 @@ const NutritionList = () => {
         id: nutrition._id,
         date: new Date(nutrition.date).toLocaleDateString(),
         notes: nutrition.notes,
-        createdAt: nutrition?.createdAt ? new Date(nutrition?.createdAt).toLocaleDateString() : '-',
+        createdAt: nutrition?.createdAt
+          ? new Date(nutrition?.createdAt).toLocaleDateString()
+          : '-',
       })),
-    [nutritions]
+    [nutritions],
   );
 
   return (
@@ -135,7 +182,10 @@ const NutritionList = () => {
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Nutrition</DialogTitle>
         <DialogContent>
-          <DialogContentText>Are you sure you want to delete this nutrition entry? This action cannot be undone.</DialogContentText>
+          <DialogContentText>
+            Are you sure you want to delete this nutrition entry? This action
+            cannot be undone.
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
@@ -146,7 +196,17 @@ const NutritionList = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <NutritionForm id={editNutrition} open={openModal} onClose={handleCloseModal} />
+      <NutritionForm
+        id={editNutrition}
+        open={openModal}
+        onClose={handleCloseModal}
+      />
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record deleted successfully`}
+      />
     </div>
   );
 };

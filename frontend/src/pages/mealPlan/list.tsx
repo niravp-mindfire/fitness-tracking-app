@@ -29,6 +29,7 @@ import {
 import { path } from '../../utils/path';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; // Plus icon
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'; // Minus icon
+import SnackAlert from '../../component/SnackAlert';
 
 const MealPlanList = () => {
   const dispatch = useAppDispatch();
@@ -42,30 +43,58 @@ const MealPlanList = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [expandedRows, setExpandedRows] = useState<string[]>([]); // Track expanded rows
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   useEffect(() => {
-    dispatch(fetchMealPlans({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+    dispatch(
+      fetchMealPlans({
+        page: 1,
+        limit: 10,
+        search: searchTerm,
+        sort: sortField,
+        order: sortOrder,
+      }),
+    );
   }, [dispatch, searchTerm, sortField, sortOrder]);
 
-  const handleSort = useCallback((field: string) => {
-    dispatch(updateSort(field));
-  }, [dispatch]);
+  const handleSort = useCallback(
+    (field: string) => {
+      dispatch(updateSort(field));
+    },
+    [dispatch],
+  );
 
-  const handlePageChange = useCallback((newPage: number) => {
-    dispatch(fetchMealPlans({ page: newPage + 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
-  }, [dispatch, searchTerm, sortField, sortOrder]);
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      dispatch(
+        fetchMealPlans({
+          page: newPage + 1,
+          limit: 10,
+          search: searchTerm,
+          sort: sortField,
+          order: sortOrder,
+        }),
+      );
+    },
+    [dispatch, searchTerm, sortField, sortOrder],
+  );
 
-  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  }, []);
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+    },
+    [],
+  );
 
   const handleAddMealPlan = useCallback(() => {
     navigate(`${path.MEAL_PLAN}/add`);
   }, [navigate]);
 
-  const handleEditMealPlan = useCallback((id: string) => {
-    navigate(`${path.MEAL_PLAN}/edit/${id}`);
-  }, [navigate]);
+  const handleEditMealPlan = useCallback(
+    (id: string) => {
+      navigate(`${path.MEAL_PLAN}/edit/${id}`);
+    },
+    [navigate],
+  );
 
   const handleDeleteMealPlan = useCallback((id: string) => {
     setDeleteId(id);
@@ -77,7 +106,16 @@ const MealPlanList = () => {
       await dispatch(deleteMealPlan(deleteId));
       setDialogOpen(false);
       setDeleteId(null);
-      dispatch(fetchMealPlans({ page: 1, limit: 10, search: searchTerm, sort: sortField, order: sortOrder }));
+      dispatch(
+        fetchMealPlans({
+          page: 1,
+          limit: 10,
+          search: searchTerm,
+          sort: sortField,
+          order: sortOrder,
+        }),
+      );
+      setSnackbarOpen(true);
     }
   }, [deleteId, dispatch, searchTerm, sortField, sortOrder]);
 
@@ -92,7 +130,7 @@ const MealPlanList = () => {
       { field: 'description', headerName: 'Description', sorting: true },
       { field: 'createdAt', headerName: 'Date', sorting: false },
     ],
-    []
+    [],
   );
 
   const tableData = useMemo(
@@ -104,7 +142,7 @@ const MealPlanList = () => {
         createdAt: new Date(mealPlan.createdAt).toLocaleDateString(),
         meals: mealPlan.meals, // Pass the meals data for expandable rows
       })),
-    [mealPlans]
+    [mealPlans],
   );
 
   const renderExpandableRow = (mealPlan: MealPlan) => {
@@ -114,8 +152,12 @@ const MealPlanList = () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>Meal Type</TableCell>
-            <TableCell sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>Food Item</TableCell>
+            <TableCell sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
+              Meal Type
+            </TableCell>
+            <TableCell sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
+              Food Item
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -138,7 +180,7 @@ const MealPlanList = () => {
 
   const toggleRow = (id: string) => {
     setExpandedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id],
     );
   };
 
@@ -175,7 +217,7 @@ const MealPlanList = () => {
           renderExpandableRow={renderExpandableRow}
         />
       )}
-      
+
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
@@ -192,6 +234,12 @@ const MealPlanList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record deleted successfully`}
+      />
     </div>
   );
 };

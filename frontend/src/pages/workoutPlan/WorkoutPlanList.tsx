@@ -1,27 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   fetchWorkoutPlans,
   deleteWorkoutPlan,
-} from "../../features/workoutPlan/workoutPlanSlice";
-import DataTable from "../../component/Datatable";
-import { RootState, useAppDispatch } from "../../app/store";
-import { Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { path } from "../../utils/path";
+} from '../../features/workoutPlan/workoutPlanSlice';
+import DataTable from '../../component/Datatable';
+import { RootState, useAppDispatch } from '../../app/store';
+import {
+  Box,
+  TextField,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Snackbar,
+  Alert,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { path } from '../../utils/path';
+import SnackAlert from '../../component/SnackAlert';
 
 const WorkoutPlanList = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { workoutPlans, totalCount, loading } = useSelector((state: RootState) => state.workoutPlan);
+  const { workoutPlans, totalCount, loading } = useSelector(
+    (state: RootState) => state.workoutPlan,
+  );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortBy, setSortBy] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   useEffect(() => {
     getAllData();
   }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
@@ -33,8 +47,8 @@ const WorkoutPlanList = () => {
         limit: rowsPerPage,
         search,
         sort: sortBy,
-        order: sortOrder as "asc" | "desc",
-      })
+        order: sortOrder as 'asc' | 'desc',
+      }),
     );
   };
 
@@ -50,7 +64,7 @@ const WorkoutPlanList = () => {
     setPage(newPage);
   };
 
-  const handleSort = (field: string, order: "asc" | "desc") => {
+  const handleSort = (field: string, order: 'asc' | 'desc') => {
     setSortBy(field);
     setSortOrder(order);
     getAllData();
@@ -67,6 +81,7 @@ const WorkoutPlanList = () => {
       setDialogOpen(false);
       setDeleteId(null);
       getAllData();
+      setSnackbarOpen(true);
     }
   };
 
@@ -76,10 +91,10 @@ const WorkoutPlanList = () => {
   };
 
   const columns = [
-    { field: "name", headerName: "Title", sorting: true },
-    { field: "description", headerName: "Description", sorting: true },
-    { field: "duration", headerName: "Duration (Weeks)", sorting: true },
-    { field: "createdAt", headerName: "Created At", sorting: true },
+    { field: 'name', headerName: 'Title', sorting: true },
+    { field: 'description', headerName: 'Description', sorting: true },
+    { field: 'duration', headerName: 'Duration (Weeks)', sorting: true },
+    { field: 'createdAt', headerName: 'Created At', sorting: true },
   ];
 
   const tableData = workoutPlans?.map((plan: any) => ({
@@ -103,9 +118,12 @@ const WorkoutPlanList = () => {
           label="Search"
           value={search}
           onChange={handleSearchChange}
-          sx={{ width: "300px" }}
+          sx={{ width: '300px' }}
         />
-        <Button variant="contained" onClick={() => navigate(`${path.WORKOUT_PLAN}/add`)}>
+        <Button
+          variant="contained"
+          onClick={() => navigate(`${path.WORKOUT_PLAN}/add`)}
+        >
           Add Workout Plan
         </Button>
       </Box>
@@ -125,7 +143,9 @@ const WorkoutPlanList = () => {
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
-          <DialogContentText>Are you sure you want to delete this workout plan?</DialogContentText>
+          <DialogContentText>
+            Are you sure you want to delete this workout plan?
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
@@ -134,6 +154,13 @@ const WorkoutPlanList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`success`}
+        message={`Record Deleted Successfully`}
+      />
     </div>
   );
 };

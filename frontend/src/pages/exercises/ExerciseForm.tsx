@@ -1,7 +1,22 @@
 import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
-import { TextField, Button, Box, Typography, Card, CardContent, CircularProgress, AppBar, Toolbar } from '@mui/material';
-import { createExercise, updateExercise, fetchExerciseById, resetCurrentExercise } from '../../features/exercise/exerciseSlice';
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CircularProgress,
+  AppBar,
+  Toolbar,
+} from '@mui/material';
+import {
+  createExercise,
+  updateExercise,
+  fetchExerciseById,
+  resetCurrentExercise,
+} from '../../features/exercise/exerciseSlice';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import BreadcrumbsComponent from '../../component/BreadcrumbsComponent';
@@ -12,7 +27,9 @@ const ExerciseForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
-  const existingExercise = useAppSelector(state => state.exercise.currentExercise);
+  const existingExercise = useAppSelector(
+    (state) => state.exercise.currentExercise,
+  );
   const [loading, setLoading] = React.useState(false);
 
   // Fetch exercise by ID if we're in edit mode
@@ -41,7 +58,9 @@ const ExerciseForm: React.FC = () => {
       setLoading(true);
       try {
         if (id) {
-          await dispatch(updateExercise({ id: id as string, exercise: values })).unwrap();
+          await dispatch(
+            updateExercise({ id: id as string, exercise: values }),
+          ).unwrap();
         } else {
           await dispatch(createExercise(values)).unwrap();
         }
@@ -57,7 +76,10 @@ const ExerciseForm: React.FC = () => {
   return (
     <>
       {/* Header with Breadcrumbs */}
-      <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}
+      >
         <Toolbar>
           <BreadcrumbsComponent
             items={[
@@ -78,24 +100,39 @@ const ExerciseForm: React.FC = () => {
             <TextField
               fullWidth
               label="Name"
+              disabled={formik.isSubmitting}
               {...formik.getFieldProps('name')}
               error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name ? String(formik.errors.name) : ''}
+              helperText={
+                formik.touched.name && formik.errors.name
+                  ? String(formik.errors.name)
+                  : ''
+              }
             />
             <TextField
               fullWidth
               label="Type"
               {...formik.getFieldProps('type')}
+              disabled={formik.isSubmitting}
               error={formik.touched.type && Boolean(formik.errors.type)}
-              helperText={formik.touched.type && formik.errors.type ? String(formik.errors.type) : ''}
+              helperText={
+                formik.touched.type && formik.errors.type
+                  ? String(formik.errors.type)
+                  : ''
+              }
               sx={{ mt: 2 }}
             />
             <TextField
               fullWidth
               label="Category"
               {...formik.getFieldProps('category')}
+              disabled={formik.isSubmitting}
               error={formik.touched.category && Boolean(formik.errors.category)}
-              helperText={formik.touched.category && formik.errors.category ? String(formik.errors.category) : ''}
+              helperText={
+                formik.touched.category && formik.errors.category
+                  ? String(formik.errors.category)
+                  : ''
+              }
               sx={{ mt: 2 }}
             />
             <TextField
@@ -104,8 +141,15 @@ const ExerciseForm: React.FC = () => {
               multiline
               rows={4}
               {...formik.getFieldProps('description')}
-              error={formik.touched.description && Boolean(formik.errors.description)}
-              helperText={formik.touched.description && formik.errors.description ? String(formik.errors.description) : ''}
+              disabled={formik.isSubmitting}
+              error={
+                formik.touched.description && Boolean(formik.errors.description)
+              }
+              helperText={
+                formik.touched.description && formik.errors.description
+                  ? String(formik.errors.description)
+                  : ''
+              }
               sx={{ mt: 2 }}
             />
             <Button
@@ -116,7 +160,13 @@ const ExerciseForm: React.FC = () => {
               sx={{ mt: 2 }}
               disabled={loading}
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : id ? 'Update Exercise' : 'Add Exercise'}
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : id ? (
+                'Update Exercise'
+              ) : (
+                'Add Exercise'
+              )}
             </Button>
           </Box>
         </CardContent>

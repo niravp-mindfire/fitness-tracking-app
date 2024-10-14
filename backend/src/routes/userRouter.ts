@@ -1,42 +1,28 @@
-import { Router } from 'express';
+import express from 'express';
 import {
-    registerUser,
-    loginUser,
-    forgetPassword,
-    resetPassword,
-    editProfile,
-    getMyProfile,
-    getAllUsers
-} from '../controllers/userController';
-import { authenticateToken } from '../middleware/authMiddleware';
-import {
-    validateRegisterUser,
-    validateLoginUser,
-    validateForgetPassword,
-    validateResetPassword,
-    validateEditProfile
-} from '../middleware/userValidation';
+  registerUser,
+  loginUser,
+  forgetPassword,
+  resetPassword,
+  editProfile,
+  getAllUsers,
+  getMyProfile,
+} from '../controllers/userController'; // Adjust the import based on your directory structure
 
-const userRouter = Router();
+const router = express.Router();
 
-// User registration
-userRouter.post('/register', validateRegisterUser, registerUser);
+router.post('/register', registerUser);
 
-// User login
-userRouter.post('/login', validateLoginUser, loginUser);
+router.post('/login', loginUser);
 
-// Forget password
-userRouter.post('/forget-password', validateForgetPassword, forgetPassword);
+router.post('/forget-password', forgetPassword);
 
-// Reset password
-userRouter.post('/reset-password/:resetToken', validateResetPassword, resetPassword);
+router.post('/reset-password/:resetToken', resetPassword);
 
-// Edit profile
-userRouter.put('/edit-profile', authenticateToken, validateEditProfile, editProfile);
+router.put('/edit-profile', editProfile);
 
-// Get My Profile
-userRouter.get('/my-profile', authenticateToken, getMyProfile); 
+router.get('/my-profile', getMyProfile);
 
-userRouter.get('/users', authenticateToken, getAllUsers)
+router.get('/users', getAllUsers);
 
-export default userRouter;
+export default router;

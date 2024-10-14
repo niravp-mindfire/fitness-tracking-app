@@ -1,10 +1,23 @@
 import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { TextField, Button, Box, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {
+  TextField,
+  Button,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchNutritionById, createNutrition, updateNutrition, selectNutritionById } from '../../features/nutrition/nutritionSlice';
+import {
+  fetchNutritionById,
+  createNutrition,
+  updateNutrition,
+  selectNutritionById,
+} from '../../features/nutrition/nutritionSlice';
 import { Nutrition } from '../../utils/types';
 
 interface NutritionFormProps {
@@ -30,7 +43,10 @@ const NutritionForm: React.FC<NutritionFormProps> = ({ id, open, onClose }) => {
 
   const formik = useFormik<Nutrition>({
     initialValues: {
-      date: (currentNutrition && currentNutrition?.date) ? new Date(currentNutrition?.date).toISOString().split('T')[0] : '',
+      date:
+        currentNutrition && currentNutrition?.date
+          ? new Date(currentNutrition?.date).toISOString().split('T')[0]
+          : '',
       notes: currentNutrition?.notes || '',
     },
     validationSchema,
@@ -59,6 +75,7 @@ const NutritionForm: React.FC<NutritionFormProps> = ({ id, open, onClose }) => {
             type="date"
             InputLabelProps={{ shrink: true }}
             value={formik.values.date}
+            disabled={formik.isSubmitting}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.date && Boolean(formik.errors.date)}
@@ -75,12 +92,15 @@ const NutritionForm: React.FC<NutritionFormProps> = ({ id, open, onClose }) => {
             value={formik.values.notes}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            disabled={formik.isSubmitting}
             error={formik.touched.notes && Boolean(formik.errors.notes)}
             helperText={formik.touched.notes && formik.errors.notes}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => onClose(false)} color="secondary">Cancel</Button>
+          <Button onClick={() => onClose(false)} color="secondary">
+            Cancel
+          </Button>
           <Button type="submit" color="primary">
             {id ? 'Update' : 'Add'} Nutrition
           </Button>

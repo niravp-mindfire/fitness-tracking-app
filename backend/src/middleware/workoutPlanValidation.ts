@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
-import { errorResponse } from '../config/responseFormat';
+import { errorResponse } from '../utils/responseFormat';
 
 export const validateWorkoutPlan = [
     body('title')

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Nutrition from '../models/Nutrition';
-import { errorResponse, successResponse } from '../config/responseFormat';
+import { errorResponse, successResponse } from '../utils/responseFormat';
 import { validationResult } from 'express-validator';
 
 // GET all nutrition entries (with optional filtering by date, pagination, sorting)

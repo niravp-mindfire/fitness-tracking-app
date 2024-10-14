@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import React, { useEffect, useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import {
   TextField,
   Button,
@@ -16,9 +16,9 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
-} from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../app/store";
-import { useNavigate, useParams } from "react-router-dom";
+} from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../app/store';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   fetchWorkoutPlanById,
   createWorkoutPlan,
@@ -26,13 +26,14 @@ import {
   resetCurrentWorkoutPlan,
   clearError,
   selectWorkoutPlanError,
-} from "../../features/workoutPlan/workoutPlanSlice";
-import { path } from "../../utils/path";
-import BreadcrumbsComponent from "../../component/BreadcrumbsComponent";
-import { fetchExercises } from "../../features/exercise/exerciseSlice";
-import { defaultPagination } from "../../utils/common";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+} from '../../features/workoutPlan/workoutPlanSlice';
+import { path } from '../../utils/path';
+import BreadcrumbsComponent from '../../component/BreadcrumbsComponent';
+import { fetchExercises } from '../../features/exercise/exerciseSlice';
+import { defaultPagination } from '../../utils/common';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import SnackAlert from '../../component/SnackAlert';
 
 interface ExerciseEntry {
   exerciseId: string;
@@ -52,14 +53,15 @@ const WorkoutPlanForm = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const currentWorkoutPlan = useAppSelector(
-    (state) => state.workoutPlan.currentWorkoutPlan
+    (state) => state.workoutPlan.currentWorkoutPlan,
   );
-  
+
   const exercises = useAppSelector((state) => state.exercise.exercises);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Local error state
   const error = useAppSelector(selectWorkoutPlanError);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [isSave, setIsSave] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,8 +74,8 @@ const WorkoutPlanForm = () => {
         }
         await dispatch(fetchExercises(defaultPagination));
       } catch (error) {
-        console.error("Failed to fetch data:", error);
-        setErrorMessage("Failed to fetch workout plan data."); // Update error state
+        console.error('Failed to fetch data:', error);
+        setErrorMessage('Failed to fetch workout plan data.'); // Update error state
       } finally {
         setLoading(false);
       }
@@ -83,33 +85,33 @@ const WorkoutPlanForm = () => {
   }, [id, dispatch]);
 
   const validationSchema = Yup.object({
-    title: Yup.string().required("Title is required"),
-    description: Yup.string().required("Description is required"),
+    title: Yup.string().required('Title is required'),
+    description: Yup.string().required('Description is required'),
     duration: Yup.number()
-      .required("Duration is required")
-      .positive("Duration must be a positive number"),
+      .required('Duration is required')
+      .positive('Duration must be a positive number'),
     exercises: Yup.array()
       .of(
         Yup.object({
-          exerciseId: Yup.string().required("Exercise is required"),
+          exerciseId: Yup.string().required('Exercise is required'),
           sets: Yup.number()
-            .required("Sets are required")
-            .min(1, "Sets must be at least 1"),
+            .required('Sets are required')
+            .min(1, 'Sets must be at least 1'),
           reps: Yup.number()
-            .required("Reps are required")
-            .min(1, "Reps must be at least 1"),
-        })
+            .required('Reps are required')
+            .min(1, 'Reps must be at least 1'),
+        }),
       )
-      .min(1, "At least one exercise must be added"),
+      .min(1, 'At least one exercise must be added'),
   });
 
   const formik = useFormik<FormValues>({
     initialValues: {
-      title: currentWorkoutPlan?.title || "",
-      description: currentWorkoutPlan?.description || "",
+      title: currentWorkoutPlan?.title || '',
+      description: currentWorkoutPlan?.description || '',
       duration: currentWorkoutPlan?.duration || 0,
       exercises: currentWorkoutPlan?.exercises || [
-        { exerciseId: "", sets: 0, reps: 0 },
+        { exerciseId: '', sets: 0, reps: 0 },
       ],
     },
     enableReinitialize: true,
@@ -117,11 +119,16 @@ const WorkoutPlanForm = () => {
     onSubmit: async (values) => {
       try {
         if (id) {
-          await dispatch(updateWorkoutPlan({ id, workoutPlan: values })).unwrap();
+          await dispatch(
+            updateWorkoutPlan({ id, workoutPlan: values }),
+          ).unwrap();
         } else {
           await dispatch(createWorkoutPlan(values)).unwrap();
         }
-        navigate(path.WORKOUT_PLAN); // Navigate on success
+        setIsSave(true);
+        setTimeout(() => {
+          navigate(path.WORKOUT_PLAN); // Navigate on success
+        }, 1000);
       } catch (error) {
         setSnackbarOpen(true); // Open snackbar on error
       }
@@ -129,27 +136,27 @@ const WorkoutPlanForm = () => {
   });
 
   const handleAddExercise = () => {
-    formik.setFieldValue("exercises", [
+    formik.setFieldValue('exercises', [
       ...formik.values.exercises,
-      { exerciseId: "", sets: 0, reps: 0 },
+      { exerciseId: '', sets: 0, reps: 0 },
     ]);
   };
 
   const handleRemoveExercise = (index: number) => {
     const updatedExercises = formik.values.exercises.filter(
-      (_, i) => i !== index
+      (_, i) => i !== index,
     );
-    formik.setFieldValue("exercises", updatedExercises);
+    formik.setFieldValue('exercises', updatedExercises);
   };
 
   const handleExerciseChange = (
     index: number,
     field: keyof ExerciseEntry,
-    value: string | number
+    value: string | number,
   ) => {
     const updatedExercises = [...formik.values.exercises];
     updatedExercises[index] = { ...updatedExercises[index], [field]: value };
-    formik.setFieldValue("exercises", updatedExercises);
+    formik.setFieldValue('exercises', updatedExercises);
   };
 
   useEffect(() => {
@@ -161,33 +168,34 @@ const WorkoutPlanForm = () => {
   if (loading) {
     return <CircularProgress />;
   }
-  
+
   return (
     <>
       <AppBar
         position="static"
-        sx={{ backgroundColor: "transparent", boxShadow: "none" }}
+        sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}
       >
         <Toolbar>
           <BreadcrumbsComponent
             items={[
-              { label: "Workout Plans", path: path.WORKOUT_PLAN },
-              { label: id ? "Edit Workout Plan" : "Add Workout Plan" },
+              { label: 'Workout Plans', path: path.WORKOUT_PLAN },
+              { label: id ? 'Edit Workout Plan' : 'Add Workout Plan' },
             ]}
           />
         </Toolbar>
       </AppBar>
 
-      <Card sx={{ maxWidth: 800, mx: "auto", mt: 4, p: 3 }}>
+      <Card sx={{ maxWidth: 800, mx: 'auto', mt: 4, p: 3 }}>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom>
-            {id ? "Edit Workout Plan" : "Add Workout Plan"}
+            {id ? 'Edit Workout Plan' : 'Add Workout Plan'}
           </Typography>
           <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
             <TextField
               fullWidth
               label="Title"
               name="title"
+              disabled={formik.isSubmitting}
               value={formik.values.title}
               onChange={formik.handleChange}
               error={formik.touched.title && Boolean(formik.errors.title)}
@@ -200,6 +208,7 @@ const WorkoutPlanForm = () => {
               name="description"
               value={formik.values.description}
               onChange={formik.handleChange}
+              disabled={formik.isSubmitting}
               error={
                 formik.touched.description && Boolean(formik.errors.description)
               }
@@ -213,6 +222,7 @@ const WorkoutPlanForm = () => {
               label="Duration (Weeks)"
               name="duration"
               type="number"
+              disabled={formik.isSubmitting}
               value={formik.values.duration}
               onChange={formik.handleChange}
               error={formik.touched.duration && Boolean(formik.errors.duration)}
@@ -237,12 +247,26 @@ const WorkoutPlanForm = () => {
                     select
                     label="Exercise"
                     value={exercise.exerciseId}
+                    disabled={formik.isSubmitting}
                     onChange={(e) =>
-                      handleExerciseChange(index, "exerciseId", e.target.value)
+                      handleExerciseChange(index, 'exerciseId', e.target.value)
                     }
                     fullWidth
-                    error={formik.touched.exercises && formik.touched.exercises[index] && Boolean(formik.errors.exercises && formik.errors.exercises[index] && typeof formik.errors.exercises !== "string")}
-                    helperText={formik.touched.exercises && formik.touched.exercises[index] && formik.errors.exercises && typeof formik.errors.exercises !== "string"}
+                    error={
+                      formik.touched.exercises &&
+                      formik.touched.exercises[index] &&
+                      Boolean(
+                        formik.errors.exercises &&
+                          formik.errors.exercises[index] &&
+                          typeof formik.errors.exercises !== 'string',
+                      )
+                    }
+                    helperText={
+                      formik.touched.exercises &&
+                      formik.touched.exercises[index] &&
+                      formik.errors.exercises &&
+                      typeof formik.errors.exercises !== 'string'
+                    }
                   >
                     {exercises.map((ex) => (
                       <MenuItem key={ex._id} value={ex._id}>
@@ -258,16 +282,30 @@ const WorkoutPlanForm = () => {
                     name={`sets-${index}`}
                     type="number"
                     value={exercise.sets}
+                    disabled={formik.isSubmitting}
                     onChange={(e) =>
                       handleExerciseChange(
                         index,
-                        "sets",
-                        parseInt(e.target.value)
+                        'sets',
+                        parseInt(e.target.value),
                       )
                     }
                     fullWidth
-                    error={formik.touched.exercises && formik.touched.exercises[index] && Boolean(formik.errors.exercises && formik.errors.exercises[index] && typeof formik.errors.exercises !== "string")}
-                    helperText={formik.touched.exercises && formik.touched.exercises[index] && formik.errors.exercises && typeof formik.errors.exercises !== "string"}
+                    error={
+                      formik.touched.exercises &&
+                      formik.touched.exercises[index] &&
+                      Boolean(
+                        formik.errors.exercises &&
+                          formik.errors.exercises[index] &&
+                          typeof formik.errors.exercises !== 'string',
+                      )
+                    }
+                    helperText={
+                      formik.touched.exercises &&
+                      formik.touched.exercises[index] &&
+                      formik.errors.exercises &&
+                      typeof formik.errors.exercises !== 'string'
+                    }
                   />
                 </Grid>
 
@@ -277,16 +315,30 @@ const WorkoutPlanForm = () => {
                     name={`reps-${index}`}
                     type="number"
                     value={exercise.reps}
+                    disabled={formik.isSubmitting}
                     onChange={(e) =>
                       handleExerciseChange(
                         index,
-                        "reps",
-                        parseInt(e.target.value)
+                        'reps',
+                        parseInt(e.target.value),
                       )
                     }
                     fullWidth
-                    error={formik.touched.exercises && formik.touched.exercises[index] && Boolean(formik.errors.exercises && formik.errors.exercises[index] && typeof formik.errors.exercises !== "string")}
-                    helperText={formik.touched.exercises && formik.touched.exercises[index] && formik.errors.exercises && typeof formik.errors.exercises !== "string"}
+                    error={
+                      formik.touched.exercises &&
+                      formik.touched.exercises[index] &&
+                      Boolean(
+                        formik.errors.exercises &&
+                          formik.errors.exercises[index] &&
+                          typeof formik.errors.exercises !== 'string',
+                      )
+                    }
+                    helperText={
+                      formik.touched.exercises &&
+                      formik.touched.exercises[index] &&
+                      formik.errors.exercises &&
+                      typeof formik.errors.exercises !== 'string'
+                    }
                   />
                 </Grid>
 
@@ -317,21 +369,27 @@ const WorkoutPlanForm = () => {
                 color="primary"
                 disabled={loading}
               >
-                {loading ? <CircularProgress size={24} /> : "Save"}
+                {loading ? <CircularProgress size={24} /> : 'Save'}
               </Button>
             </Box>
           </Box>
         </CardContent>
       </Card>
 
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
-        <Alert onClose={() => setSnackbarOpen(false)} severity="error">
-          {error || 'An error occurred!'}
-        </Alert>
-      </Snackbar>
+      <SnackAlert
+        snackbarOpen={isSave}
+        setSnackbarOpen={setIsSave}
+        type={`success`}
+        message={`Record saved successfully`}
+      />
+      <SnackAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        type={`error`}
+        message={error || 'An error occurred!'}
+      />
     </>
   );
 };
 
 export default WorkoutPlanForm;
-

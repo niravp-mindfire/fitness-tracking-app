@@ -1,10 +1,25 @@
 // src/pages/Register.tsx
 import React, { useCallback, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks'; 
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { registerUser, selectAuthError, selectAuthLoading } from '../features/auth/auth'; 
+import {
+  registerUser,
+  selectAuthError,
+  selectAuthLoading,
+} from '../features/auth/auth';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, CircularProgress, TextField, Typography, Container, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+  Container,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from '@mui/material';
 import { RegisterFormValues } from '../utils/types';
 import { calculateAge } from '../utils/common';
 import { registerSchema } from '../utils/validationSchema';
@@ -16,29 +31,39 @@ const Register = () => {
   const loading = useAppSelector(selectAuthLoading);
   const error = useAppSelector(selectAuthError);
 
-  const initialValues = useMemo(() => (registerInitialValue), []);
+  const initialValues = useMemo(() => registerInitialValue, []);
 
-  const handleSubmit = useCallback(async (values: RegisterFormValues) => {
-    const age = calculateAge(values.profile.dob);
-    const userData = {
-      ...values,
-      profile: {
-        ...values.profile,
-        age,
-      },
-    };
+  const handleSubmit = useCallback(
+    async (values: RegisterFormValues) => {
+      const age = calculateAge(values.profile.dob);
+      const userData = {
+        ...values,
+        profile: {
+          ...values.profile,
+          age,
+        },
+      };
 
-    try {
-      await dispatch(registerUser(userData)).unwrap();
-      navigate('/login');
-    } catch (error) {
-      console.error('Registration failed:', error);
-    }
-  }, [dispatch, navigate]);
+      try {
+        await dispatch(registerUser(userData)).unwrap();
+        navigate('/login');
+      } catch (error) {
+        console.error('Registration failed:', error);
+      }
+    },
+    [dispatch, navigate],
+  );
 
   return (
     <Container maxWidth="xs">
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         <Typography component="h1" variant="h5">
           Register
         </Typography>
@@ -57,6 +82,7 @@ const Register = () => {
                   margin="normal"
                   fullWidth
                   id="profile.firstName"
+                  disabled={isSubmitting}
                   label="First Name"
                   name="profile.firstName"
                   helperText={<ErrorMessage name="profile.firstName" />}
@@ -67,6 +93,7 @@ const Register = () => {
                   as={TextField}
                   variant="outlined"
                   margin="normal"
+                  disabled={isSubmitting}
                   fullWidth
                   id="profile.lastName"
                   label="Last Name"
@@ -80,6 +107,7 @@ const Register = () => {
                   margin="normal"
                   fullWidth
                   id="username"
+                  disabled={isSubmitting}
                   label="Username"
                   name="username"
                   helperText={<ErrorMessage name="username" />}
@@ -92,6 +120,7 @@ const Register = () => {
                   margin="normal"
                   fullWidth
                   id="email"
+                  disabled={isSubmitting}
                   label="Email Address"
                   name="email"
                   helperText={<ErrorMessage name="email" />}
@@ -105,6 +134,7 @@ const Register = () => {
                   fullWidth
                   name="password"
                   label="Password"
+                  disabled={isSubmitting}
                   type="password"
                   id="password"
                   autoComplete="current-password"
@@ -119,6 +149,7 @@ const Register = () => {
                   fullWidth
                   id="profile.dob"
                   label="Date of Birth"
+                  disabled={isSubmitting}
                   name="profile.dob"
                   type="date"
                   InputLabelProps={{
@@ -136,6 +167,7 @@ const Register = () => {
                     labelId="profile.gender-label"
                     id="profile.gender"
                     name="profile.gender"
+                    disabled={isSubmitting}
                     label="Gender"
                     helperText={<ErrorMessage name="profile.gender" />}
                     error={!!error || errors?.profile?.gender}
@@ -151,6 +183,7 @@ const Register = () => {
                   margin="normal"
                   fullWidth
                   id="profile.height"
+                  disabled={isSubmitting}
                   label="Height (cm)"
                   name="profile.height"
                   type="number"
@@ -164,6 +197,7 @@ const Register = () => {
                   margin="normal"
                   fullWidth
                   id="profile.weight"
+                  disabled={isSubmitting}
                   label="Weight (kg)"
                   name="profile.weight"
                   type="number"
@@ -175,16 +209,21 @@ const Register = () => {
                   fullWidth
                   variant="contained"
                   color="primary"
-                  disabled={isSubmitting || loading}
+                  disabled={isSubmitting}
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Register {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
+                  Register{' '}
+                  {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
                 </Button>
-                {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
+                {error && (
+                  <Typography color="error" sx={{ mb: 2 }}>
+                    {error}
+                  </Typography>
+                )}
 
                 {/* Already have an account? */}
                 <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-                  Already have an account? 
+                  Already have an account?
                   <Button
                     onClick={() => navigate('/login')}
                     color="primary"
