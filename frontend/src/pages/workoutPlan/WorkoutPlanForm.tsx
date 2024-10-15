@@ -6,34 +6,29 @@ import {
   Button,
   Box,
   Typography,
-  CardContent,
-  Card,
-  AppBar,
-  Toolbar,
   MenuItem,
   IconButton,
   Grid,
   CircularProgress,
-  Snackbar,
-  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { useNavigate, useParams } from 'react-router-dom';
 import {
   fetchWorkoutPlanById,
   createWorkoutPlan,
   updateWorkoutPlan,
   resetCurrentWorkoutPlan,
-  clearError,
   selectWorkoutPlanError,
 } from '../../features/workoutPlan/workoutPlanSlice';
-import { path } from '../../utils/path';
-import BreadcrumbsComponent from '../../component/BreadcrumbsComponent';
 import { fetchExercises } from '../../features/exercise/exerciseSlice';
 import { defaultPagination } from '../../utils/common';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SnackAlert from '../../component/SnackAlert';
+import { DialogProps } from '../../utils/types';
 
 interface ExerciseEntry {
   exerciseId: string;
@@ -48,10 +43,12 @@ interface FormValues {
   exercises: ExerciseEntry[];
 }
 
-const WorkoutPlanForm = () => {
+const WorkoutPlanForm: React.FC<DialogProps> = ({
+  open = false,
+  onClose = () => {},
+  id = '',
+}) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
   const currentWorkoutPlan = useAppSelector(
     (state) => state.workoutPlan.currentWorkoutPlan,
   );
@@ -126,9 +123,7 @@ const WorkoutPlanForm = () => {
           await dispatch(createWorkoutPlan(values)).unwrap();
         }
         setIsSave(true);
-        setTimeout(() => {
-          navigate(path.WORKOUT_PLAN); // Navigate on success
-        }, 1000);
+        onClose(true);
       } catch (error) {
         setSnackbarOpen(true); // Open snackbar on error
       }
@@ -171,25 +166,28 @@ const WorkoutPlanForm = () => {
 
   return (
     <>
-      <AppBar
-        position="static"
-        sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}
+      <Dialog
+        open={open}
+        onClose={() => {
+          onClose(false);
+          formik.resetForm();
+        }}
+        maxWidth="md"
+        fullWidth
       >
-        <Toolbar>
-          <BreadcrumbsComponent
-            items={[
-              { label: 'Workout Plans', path: path.WORKOUT_PLAN },
-              { label: id ? 'Edit Workout Plan' : 'Add Workout Plan' },
-            ]}
-          />
-        </Toolbar>
-      </AppBar>
-
-      <Card sx={{ maxWidth: 800, mx: 'auto', mt: 4, p: 3 }}>
-        <CardContent>
-          <Typography variant="h5" component="h2" gutterBottom>
-            {id ? 'Edit Workout Plan' : 'Add Workout Plan'}
-          </Typography>
+        <DialogTitle>
+          {id ? 'Edit Workout Plan' : 'Add Workout Plan'}
+          <IconButton
+            onClick={() => {
+              onClose(false);
+              formik.resetForm();
+            }}
+            sx={{ position: 'absolute', top: 8, right: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
           <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
             <TextField
               fullWidth
@@ -373,8 +371,8 @@ const WorkoutPlanForm = () => {
               </Button>
             </Box>
           </Box>
-        </CardContent>
-      </Card>
+        </DialogContent>
+      </Dialog>
 
       <SnackAlert
         snackbarOpen={isSave}

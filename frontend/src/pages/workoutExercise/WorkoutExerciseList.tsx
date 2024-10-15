@@ -19,6 +19,7 @@ import {
 import { path } from '../../utils/path';
 import { useNavigate } from 'react-router-dom';
 import SnackAlert from '../../component/SnackAlert';
+import WorkoutExerciseForm from './WorkoutExerciseForm';
 
 const WorkoutExerciseList = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +35,11 @@ const WorkoutExerciseList = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [formModel, setFormModel] = useState({
+    isOpen: false,
+    editId: '',
+  });
+
   useEffect(() => {
     getAllData();
   }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
@@ -52,10 +58,6 @@ const WorkoutExerciseList = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-  };
-
-  const handleSearch = () => {
-    getAllData();
   };
 
   const handlePageChange = (newPage: number) => {
@@ -106,7 +108,20 @@ const WorkoutExerciseList = () => {
   }));
 
   const handleEditWorkout = (id: any) => {
-    navigate(`${path.WORKOUT_EXERCISE}/edit/${id}`);
+    setFormModel({
+      isOpen: true,
+      editId: id,
+    });
+  };
+
+  const handleClose = (fetch: boolean) => {
+    setFormModel({
+      isOpen: false,
+      editId: '',
+    });
+    if (fetch) {
+      getAllData();
+    }
   };
 
   return (
@@ -123,7 +138,7 @@ const WorkoutExerciseList = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => navigate(`${path.WORKOUT_EXERCISE}/add`)}
+          onClick={() => setFormModel({ isOpen: true, editId: '' })}
         >
           Add Workout
         </Button>
@@ -159,6 +174,11 @@ const WorkoutExerciseList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <WorkoutExerciseForm
+        open={formModel?.isOpen}
+        onClose={handleClose}
+        id={formModel?.editId}
+      />
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}
