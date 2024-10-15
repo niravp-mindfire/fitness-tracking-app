@@ -17,8 +17,8 @@ import {
 import DataTable from '../../component/Datatable';
 import { TableColumn } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
-import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
+import ChallengeForm from './form';
 
 const ChallengeList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -38,6 +38,10 @@ const ChallengeList: React.FC = () => {
     null,
   );
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [formModel, setFormModel] = useState({
+    isOpen: false,
+    editId: '',
+  });
   useEffect(() => {
     getAllData();
   }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
@@ -86,11 +90,17 @@ const ChallengeList: React.FC = () => {
   };
 
   const handleAddChallenge = () => {
-    navigate(`${path.CHALLENGE}/add`);
+    setFormModel({
+      isOpen: true,
+      editId: '',
+    });
   };
 
   const handleEditChallenge = (id: string) => {
-    navigate(`${path.CHALLENGE}/edit/${id}`);
+    setFormModel({
+      isOpen: true,
+      editId: id,
+    });
   };
 
   const columns: TableColumn[] = [
@@ -99,6 +109,16 @@ const ChallengeList: React.FC = () => {
     { field: 'startDate', headerName: 'Start Date', sorting: true },
     { field: 'endDate', headerName: 'End Date', sorting: true },
   ];
+
+  const handleClose = (fetch: boolean) => {
+    setFormModel({
+      isOpen: false,
+      editId: '',
+    });
+    if (fetch) {
+      getAllData();
+    }
+  };
 
   return (
     <div>
@@ -155,6 +175,11 @@ const ChallengeList: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <ChallengeForm
+        open={formModel?.isOpen}
+        onClose={handleClose}
+        id={formModel?.editId}
+      />
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}

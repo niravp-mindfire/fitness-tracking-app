@@ -21,6 +21,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
+import WorkoutPlanForm from './WorkoutPlanForm';
 
 const WorkoutPlanList = () => {
   const dispatch = useAppDispatch();
@@ -36,6 +37,10 @@ const WorkoutPlanList = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [formModel, setFormModel] = useState({
+    isOpen: false,
+    editId: '',
+  });
   useEffect(() => {
     getAllData();
   }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
@@ -106,7 +111,20 @@ const WorkoutPlanList = () => {
   }));
 
   const handleEditWorkoutPlan = (id: any) => {
-    navigate(`${path.WORKOUT_PLAN}/edit/${id}`);
+    setFormModel({
+      isOpen: true,
+      editId: id,
+    });
+  };
+
+  const handleClose = (fetch: boolean) => {
+    setFormModel({
+      isOpen: false,
+      editId: '',
+    });
+    if (fetch) {
+      getAllData();
+    }
   };
 
   return (
@@ -122,7 +140,7 @@ const WorkoutPlanList = () => {
         />
         <Button
           variant="contained"
-          onClick={() => navigate(`${path.WORKOUT_PLAN}/add`)}
+          onClick={() => setFormModel({ isOpen: true, editId: '' })}
         >
           Add Workout Plan
         </Button>
@@ -154,7 +172,11 @@ const WorkoutPlanList = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
+      <WorkoutPlanForm
+        open={formModel?.isOpen}
+        onClose={handleClose}
+        id={formModel?.editId}
+      />
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}
