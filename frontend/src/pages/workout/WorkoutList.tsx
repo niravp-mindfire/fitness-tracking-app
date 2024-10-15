@@ -10,7 +10,6 @@ import {
 } from '../../features/workout/workoutSlice';
 import DataTable from '../../component/Datatable';
 import { Workout } from '../../utils/types';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
   TextField,
@@ -21,12 +20,11 @@ import {
   DialogContentText,
   DialogActions,
 } from '@mui/material';
-import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
+import WorkoutForm from './WorkoutForm';
 
 const WorkoutList = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const workouts = useAppSelector(selectAllWorkouts);
   const loading = useAppSelector(selectWorkoutLoading);
   const totalCount = useAppSelector(selectTotalWorkouts);
@@ -36,8 +34,16 @@ const WorkoutList = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [formModel, setFormModel] = useState({
+    isOpen: false,
+    editId: '',
+  });
   // Only fetch data when search term, sort field, or order changes
   useEffect(() => {
+    getAllData();
+  }, [dispatch, searchTerm, sortField, sortOrder]);
+
+  const getAllData = () => {
     dispatch(
       fetchWorkouts({
         page: 1,
@@ -47,7 +53,7 @@ const WorkoutList = () => {
         order: sortOrder,
       }),
     );
-  }, [dispatch, searchTerm, sortField, sortOrder]);
+  };
 
   const handleSort = useCallback(
     (field: any) => {
@@ -76,17 +82,6 @@ const WorkoutList = () => {
       setSearchTerm(event.target.value);
     },
     [],
-  );
-
-  const handleAddWorkout = useCallback(() => {
-    navigate(`${path.WORKOUT}/add`);
-  }, [navigate]);
-
-  const handleEditWorkout = useCallback(
-    (id: any) => {
-      navigate(`${path.WORKOUT}/edit/${id}`);
-    },
-    [navigate],
   );
 
   const handleDeleteWorkout = useCallback((id: string) => {
@@ -137,6 +132,16 @@ const WorkoutList = () => {
     [workouts],
   );
 
+  const handleClose = (fetch: boolean) => {
+    setFormModel({
+      isOpen: false,
+      editId: '',
+    });
+    if (fetch) {
+      getAllData();
+    }
+  };
+
   return (
     <div>
       <h1>Workout List</h1>
@@ -148,7 +153,16 @@ const WorkoutList = () => {
           onChange={handleSearchChange}
           sx={{ width: '300px' }}
         />
-        <Button variant="contained" color="primary" onClick={handleAddWorkout}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setFormModel({
+              isOpen: true,
+              editId: '',
+            });
+          }}
+        >
           Add Workout
         </Button>
       </Box>
@@ -162,7 +176,12 @@ const WorkoutList = () => {
           onPageChange={handlePageChange}
           totalCount={totalCount}
           rowsPerPage={10}
-          handleEdit={handleEditWorkout}
+          handleEdit={(id) => {
+            setFormModel({
+              isOpen: true,
+              editId: id,
+            });
+          }}
           handleDelete={handleDeleteWorkout}
         />
       )}
@@ -183,6 +202,11 @@ const WorkoutList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <WorkoutForm
+        open={formModel?.isOpen}
+        onClose={handleClose}
+        id={formModel?.editId}
+      />
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}

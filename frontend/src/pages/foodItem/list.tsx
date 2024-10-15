@@ -19,6 +19,7 @@ import { TableColumn } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
 import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
+import FoodItemForm from './form';
 
 const FoodItemList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -38,6 +39,10 @@ const FoodItemList: React.FC = () => {
     null,
   );
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [formModel, setFormModel] = useState({
+    isOpen: false,
+    editId: '',
+  });
   useEffect(() => {
     getAllData();
   }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
@@ -87,11 +92,17 @@ const FoodItemList: React.FC = () => {
   };
 
   const handleAddFoodItem = () => {
-    navigate(`${path.FOOD_ITEM}/add`);
+    setFormModel({
+      isOpen: true,
+      editId: '',
+    });
   };
 
   const handleEditFoodItem = (id: string) => {
-    navigate(`${path.FOOD_ITEM}/edit/${id}`);
+    setFormModel({
+      isOpen: true,
+      editId: id,
+    });
   };
 
   const columns: TableColumn[] = [
@@ -101,6 +112,16 @@ const FoodItemList: React.FC = () => {
     { field: 'carbs', headerName: 'Carbohydrates(g)', sorting: true },
     { field: 'fat', headerName: 'Fat(g)', sorting: true },
   ];
+
+  const handleClose = (fetch: boolean) => {
+    setFormModel({
+      isOpen: false,
+      editId: '',
+    });
+    if (fetch) {
+      getAllData();
+    }
+  };
 
   return (
     <div>
@@ -154,6 +175,11 @@ const FoodItemList: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <FoodItemForm
+        open={formModel?.isOpen}
+        onClose={handleClose}
+        id={formModel?.editId}
+      />
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}

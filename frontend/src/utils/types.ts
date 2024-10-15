@@ -41,7 +41,7 @@ export interface ProfileFormValues {
     gender: string;
     height: number;
     weight: number;
-    dob: any
+    dob: any;
   };
   fitnessGoals: any;
 }
@@ -62,7 +62,7 @@ export interface WorkoutState {
   sort: string;
   order: 'asc' | 'desc';
   search: string;
-  currentWorkout: any
+  currentWorkout: any;
 }
 
 export interface TableRowData {
@@ -93,7 +93,6 @@ export interface DataTableProps {
   renderExpandableRow?: (row: any) => JSX.Element; // Specify that this function returns a JSX element
 }
 
-
 export interface Exercise {
   _id?: string;
   name: string;
@@ -119,22 +118,22 @@ export interface WorkoutExercise {
   id?: string; // Optional for when fetching from API
   workoutId: string; // Reference to the workout
   exerciseId: string; // Reference to the exercise
-  sets: number;      // Number of sets
-  reps: number;      // Number of reps
-  weight: number;    // Weight in kg
+  sets: number; // Number of sets
+  reps: number; // Number of reps
+  weight: number; // Weight in kg
 }
 
 export interface WorkoutExerciseState {
   workoutExercises: WorkoutExercise[]; // Array of workout exercises
-  loading: boolean;                     // Loading state
-  error: string | null;                 // Error message
-  totalCount: number;                   // Total count for pagination
+  loading: boolean; // Loading state
+  error: string | null; // Error message
+  totalCount: number; // Total count for pagination
   currentWorkoutExercise: WorkoutExercise | null; // Currently selected workout exercise
-  page: number;                         // Current page
-  limit: number;                        // Items per page
-  sort: string;                         // Sort field
-  order: 'asc' | 'desc';                // Sort order
-  search: string;                       // Search query
+  page: number; // Current page
+  limit: number; // Items per page
+  sort: string; // Sort field
+  order: 'asc' | 'desc'; // Sort order
+  search: string; // Search query
 }
 
 // WorkoutPlan type
@@ -153,16 +152,16 @@ export interface WorkoutPlan {
 }
 // WorkoutPlanState type
 export interface WorkoutPlanState {
-  workoutPlans: WorkoutPlan[];    // Array of workout plans
-  loading: boolean;               // Loading state for fetching data
-  error: string | null;           // Error message if something goes wrong
-  totalCount: number;             // Total count of workout plans (for pagination)
+  workoutPlans: WorkoutPlan[]; // Array of workout plans
+  loading: boolean; // Loading state for fetching data
+  error: string | null; // Error message if something goes wrong
+  totalCount: number; // Total count of workout plans (for pagination)
   currentWorkoutPlan: WorkoutPlan | null; // Current workout plan being viewed or edited
-  page: number;                   // Current page for pagination
-  limit: number;                  // Number of records per page
-  sort: string;                   // Column to sort by
-  order: 'asc' | 'desc';          // Sorting order
-  search: string;                 // Search query
+  page: number; // Current page for pagination
+  limit: number; // Number of records per page
+  sort: string; // Column to sort by
+  order: 'asc' | 'desc'; // Sorting order
+  search: string; // Search query
 }
 export interface FoodItem {
   foodId: string; // Represents the ID of the food item
@@ -234,29 +233,29 @@ export interface NutritionState {
 
 // NutritionMeal type
 export interface NutritionMeal {
-  _id: string;                // Unique identifier for the nutrition meal
-  mealType: string;           // Name of the meal
-  calories: number;           // Total calories in the meal
-  protein: number;            // Protein content in grams
-  carbs: number;              // Carbohydrate content in grams
-  fat: number;                // Fat content in grams
-  servingSize: string;        // Serving size description (e.g., "1 cup", "100g")
-  createdAt: string;          // Date and time the meal was created
-  updatedAt: string;          // Date and time the meal was last updated
+  _id: string; // Unique identifier for the nutrition meal
+  mealType: string; // Name of the meal
+  calories: number; // Total calories in the meal
+  protein: number; // Protein content in grams
+  carbs: number; // Carbohydrate content in grams
+  fat: number; // Fat content in grams
+  servingSize: string; // Serving size description (e.g., "1 cup", "100g")
+  createdAt: string; // Date and time the meal was created
+  updatedAt: string; // Date and time the meal was last updated
 }
 
 // NutritionMealState type
 export interface NutritionMealState {
   nutritionMeals: NutritionMeal[]; // Array of nutrition meals
-  loading: boolean;                 // Loading state for async actions
-  error: string | null;             // Error message (if any)
-  totalCount: number;               // Total number of nutrition meals for pagination
+  loading: boolean; // Loading state for async actions
+  error: string | null; // Error message (if any)
+  totalCount: number; // Total number of nutrition meals for pagination
   currentNutritionMeal: NutritionMeal | null; // Currently selected nutrition meal for editing
-  page: number;                     // Current page for pagination
-  limit: number;                    // Limit of items per page
-  sort: string;                     // Current sort field
-  order: 'asc' | 'desc';           // Sort order
-  search: string;                   // Search query for filtering meals
+  page: number; // Current page for pagination
+  limit: number; // Limit of items per page
+  sort: string; // Current sort field
+  order: 'asc' | 'desc'; // Sort order
+  search: string; // Search query for filtering meals
 }
 
 // types.ts
@@ -282,4 +281,10 @@ export interface ProgressTrackingState {
   sort: string; // Field by which to sort entries
   order: 'asc' | 'desc'; // Order of sorting
   search: string; // Search term for filtering entries
+}
+
+export interface DialogProps {
+  open: boolean;
+  onClose: (fetch: boolean) => void;
+  id?: string;
 }
