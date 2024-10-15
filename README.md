@@ -201,5 +201,5 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ```
 
-This provides a comprehensive `README.md` file for your project with instructions for both backend and frontend setup, environment variables, API endpoints, scripts, and more.
+This provides a comprehensive `README.md` file for your project with instructions for both backend and frontend setup, environment variables, API endpoints, scripts, and more..
 ```

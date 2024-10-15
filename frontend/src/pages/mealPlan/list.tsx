@@ -27,9 +27,8 @@ import {
   TableBody,
 } from '@mui/material';
 import { path } from '../../utils/path';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; // Plus icon
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'; // Minus icon
 import SnackAlert from '../../component/SnackAlert';
+import MealPlanForm from './form';
 
 const MealPlanList = () => {
   const dispatch = useAppDispatch();
@@ -44,7 +43,15 @@ const MealPlanList = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [expandedRows, setExpandedRows] = useState<string[]>([]); // Track expanded rows
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [formModel, setFormModel] = useState({
+    isOpen: false,
+    editId: '',
+  });
   useEffect(() => {
+    getAllData();
+  }, [dispatch, searchTerm, sortField, sortOrder]);
+
+  const getAllData = () => {
     dispatch(
       fetchMealPlans({
         page: 1,
@@ -54,7 +61,7 @@ const MealPlanList = () => {
         order: sortOrder,
       }),
     );
-  }, [dispatch, searchTerm, sortField, sortOrder]);
+  };
 
   const handleSort = useCallback(
     (field: string) => {
@@ -85,16 +92,19 @@ const MealPlanList = () => {
     [],
   );
 
-  const handleAddMealPlan = useCallback(() => {
-    navigate(`${path.MEAL_PLAN}/add`);
-  }, [navigate]);
+  const handleAddMealPlan = () => {
+    setFormModel({
+      isOpen: true,
+      editId: '',
+    });
+  };
 
-  const handleEditMealPlan = useCallback(
-    (id: string) => {
-      navigate(`${path.MEAL_PLAN}/edit/${id}`);
-    },
-    [navigate],
-  );
+  const handleEditMealPlan = (id: string) => {
+    setFormModel({
+      isOpen: true,
+      editId: id,
+    });
+  };
 
   const handleDeleteMealPlan = useCallback((id: string) => {
     setDeleteId(id);
@@ -106,15 +116,7 @@ const MealPlanList = () => {
       await dispatch(deleteMealPlan(deleteId));
       setDialogOpen(false);
       setDeleteId(null);
-      dispatch(
-        fetchMealPlans({
-          page: 1,
-          limit: 10,
-          search: searchTerm,
-          sort: sortField,
-          order: sortOrder,
-        }),
-      );
+      getAllData();
       setSnackbarOpen(true);
     }
   }, [deleteId, dispatch, searchTerm, sortField, sortOrder]);
@@ -184,6 +186,16 @@ const MealPlanList = () => {
     );
   };
 
+  const handleClose = (fetch: boolean) => {
+    setFormModel({
+      isOpen: false,
+      editId: '',
+    });
+    if (fetch) {
+      getAllData();
+    }
+  };
+
   return (
     <div>
       <h1>Meal Plan List</h1>
@@ -234,6 +246,11 @@ const MealPlanList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <MealPlanForm
+        open={formModel?.isOpen}
+        onClose={handleClose}
+        id={formModel?.editId}
+      />
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}

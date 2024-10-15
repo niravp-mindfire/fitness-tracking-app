@@ -19,6 +19,7 @@ import { TableColumn } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
 import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
+import ExerciseForm from './ExerciseForm';
 
 const ExerciseList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -41,6 +42,10 @@ const ExerciseList: React.FC = () => {
     null,
   );
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [formModel, setFormModel] = useState({
+    isOpen: false,
+    editId: '',
+  });
   // Fetch exercises when component mounts or state changes
   useEffect(() => {
     getAllData();
@@ -108,17 +113,18 @@ const ExerciseList: React.FC = () => {
 
   // Handle adding a new exercise
   const handleAddExercise = () => {
-    navigate(`${path.EXERCISE}/add`);
+    setFormModel({
+      isOpen: true,
+      editId: '',
+    });
   };
 
   // Handle editing an existing exercise
   const handleEditExercise = (id: string) => {
-    navigate(`${path.EXERCISE}/edit/${id}`);
-  };
-
-  // Date filter submit
-  const handleDateFilter = () => {
-    setPage(0); // Reset page when applying filters
+    setFormModel({
+      isOpen: true,
+      editId: id,
+    });
   };
 
   // Table columns definition
@@ -128,6 +134,16 @@ const ExerciseList: React.FC = () => {
     { field: 'category', headerName: 'Category', sorting: true },
     { field: 'description', headerName: 'Description', sorting: false },
   ];
+
+  const handleClose = (fetch: boolean) => {
+    setFormModel({
+      isOpen: false,
+      editId: '',
+    });
+    if (fetch) {
+      getAllData();
+    }
+  };
 
   return (
     <div>
@@ -144,26 +160,6 @@ const ExerciseList: React.FC = () => {
           Add Exercise
         </Button>
       </Box>
-
-      {/* <Box display="flex" justifyContent="space-between" mb={2}>
-        <TextField
-          type="date"
-          label="Start Date"
-          InputLabelProps={{ shrink: true }}
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <TextField
-          type="date"
-          label="End Date"
-          InputLabelProps={{ shrink: true }}
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-        <Button variant="contained" onClick={handleDateFilter}>
-          Filter
-        </Button>
-      </Box> */}
 
       {loading ? (
         <p>Loading...</p>
@@ -200,6 +196,11 @@ const ExerciseList: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <ExerciseForm
+        open={formModel?.isOpen}
+        onClose={handleClose}
+        id={formModel?.editId}
+      />
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}

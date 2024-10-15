@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 'node' # Use 'node' to always get the latest version
+
+      # Install dependencies in the root directory
+      - name: Install root dependencies
+        run: npm install
+
+      # Install dependencies and run tests in the backend
+      - name: Install backend dependencies
+        working-directory: backend
+        run: |
+          npm install
+          npm test
+
+      # Install dependencies, run tests, and build the frontend
+      - name: Install frontend dependencies and build
+        working-directory: frontend
+        run: |
+          npm install
+          npm test
+          npm run build
