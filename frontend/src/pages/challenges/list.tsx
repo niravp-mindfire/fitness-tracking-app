@@ -8,6 +8,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
+  Typography,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -42,6 +44,7 @@ const ChallengeList: React.FC = () => {
     isOpen: false,
     editId: '',
   });
+
   useEffect(() => {
     getAllData();
   }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
@@ -74,7 +77,6 @@ const ChallengeList: React.FC = () => {
   const handleDeleteClick = (id: string) => {
     setSelectedChallengeId(id);
     setDialogOpen(true);
-    getAllData();
   };
 
   const handleConfirmDelete = () => {
@@ -121,27 +123,34 @@ const ChallengeList: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Challenge List</h1>
-      <Box display="flex" justifyContent="space-between" mb={2}>
-        <TextField
-          value={searchTerm}
-          onChange={handleSearchChange}
-          label="Search Challenge"
-          variant="outlined"
-          sx={{ width: '300px' }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddChallenge}
-        >
-          Add Challenge
-        </Button>
-      </Box>
+    <Box padding={2}>
+      <Typography variant="h4" gutterBottom>
+        Challenge List
+      </Typography>
+      <Grid container spacing={2} mb={2} alignItems="center">
+        <Grid item xs={12} sm={8}>
+          <TextField
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearchChange}
+            label="Search Challenge"
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleAddChallenge}
+          >
+            Add Challenge
+          </Button>
+        </Grid>
+      </Grid>
 
       {loading ? (
-        <p>Loading...</p>
+        <Typography variant="h6">Loading...</Typography>
       ) : (
         <DataTable
           columns={columns}
@@ -186,7 +195,7 @@ const ChallengeList: React.FC = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </div>
+    </Box>
   );
 };
 

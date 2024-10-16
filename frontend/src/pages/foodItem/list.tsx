@@ -8,6 +8,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
+  Stack,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -17,7 +19,6 @@ import {
 import DataTable from '../../component/Datatable';
 import { TableColumn } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
-import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
 import FoodItemForm from './form';
 
@@ -43,6 +44,7 @@ const FoodItemList: React.FC = () => {
     isOpen: false,
     editId: '',
   });
+
   useEffect(() => {
     getAllData();
   }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
@@ -126,18 +128,28 @@ const FoodItemList: React.FC = () => {
   return (
     <div>
       <h1>Food Item List</h1>
-      <Box display="flex" justifyContent="space-between" mb={2}>
-        <TextField
-          value={searchTerm}
-          onChange={handleSearchChange}
-          label="Search Food Item"
-          variant="outlined"
-          sx={{ width: '300px' }}
-        />
-        <Button variant="contained" color="primary" onClick={handleAddFoodItem}>
-          Add Food Item
-        </Button>
-      </Box>
+      <Stack spacing={2} mb={2}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={8} md={6}>
+            <TextField
+              value={searchTerm}
+              onChange={handleSearchChange}
+              label="Search Food Item"
+              variant="outlined"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} md={6}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddFoodItem}
+            >
+              Add Food Item
+            </Button>
+          </Grid>
+        </Grid>
+      </Stack>
 
       {loading ? (
         <p>Loading...</p>

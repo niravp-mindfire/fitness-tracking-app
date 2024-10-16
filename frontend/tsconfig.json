@@ -1,26 +1,24 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "target": "es5", // Compatible with most environments
+    "lib": ["dom", "dom.iterable", "esnext"], // DOM and ES Next features
+    "allowJs": true, // Allow JavaScript files
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "esModuleInterop": true, // Enable interoperability between CommonJS and ES modules
+    "allowSyntheticDefaultImports": true, // Allows default imports from modules without default exports
+    "strict": true, // Enables strict type-checking options
+    "forceConsistentCasingInFileNames": true, // Enforce consistent casing in file names
+    "noFallthroughCasesInSwitch": true, // Ensures all cases are handled in switch statements
+    "module": "commonjs", // Use commonjs for compatibility with Jest
+    "moduleResolution": "node", // Resolve modules in a Node.js-like manner
+    "resolveJsonModule": true, // Allows importing JSON modules
+    "isolatedModules": true, // Enforces that each file is treated as its own module
+    "noEmit": true, // No files will be emitted
+    "jsx": "react-jsx", // JSX support for React
+    "types": ["jest", "node"] // Include Jest and Node types for testing
   },
   "include": [
-    "src"
+    "src", // Include your source code
+    "__tests__" // Include your tests folder if it's outside 'src'
   ]
 }

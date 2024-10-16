@@ -14,6 +14,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
 } from '@mui/material';
 import NutritionMealModal from './NutritionMealForm';
 import SnackAlert from '../../component/SnackAlert';
@@ -33,6 +34,7 @@ const NutritionMealList = () => {
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   useEffect(() => {
     getAllData();
   }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
@@ -99,7 +101,6 @@ const NutritionMealList = () => {
   }));
 
   const handleEditNutritionMeal = (id: any) => {
-    // navigate(`${path.NUTRITION_MEAL}/edit/${id}`);
     setEditId(id);
     setOpen(true);
   };
@@ -115,23 +116,33 @@ const NutritionMealList = () => {
   return (
     <div>
       <h1>Nutrition Meal List</h1>
-      <Box display="flex" justifyContent="space-between" mb={3}>
-        <TextField
-          variant="outlined"
-          label="Search"
-          value={search}
-          onChange={handleSearchChange}
-          sx={{ width: '300px' }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
-          Add Nutrition Meal
-        </Button>
+      <Box mb={3}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              label="Search"
+              value={search}
+              onChange={handleSearchChange}
+              fullWidth // Make the TextField take full width
+            />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            display="flex"
+            justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setOpen(true)}
+            >
+              Add Nutrition Meal
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
       {loading ? (
         <p>Loading...</p>

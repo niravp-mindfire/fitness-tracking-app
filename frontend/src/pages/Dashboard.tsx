@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
-import ProgressTrackingChart from "../component/ProgressTrackingChart";
-import axiosInstance from "../utils/axiosInstance";
-import { apiUrl } from "../utils/apiUrl";
+import React, { useEffect, useState } from 'react';
+import { Box, Typography } from '@mui/material';
+import ProgressTrackingChart from '../component/ProgressTrackingChart';
+import axiosInstance from '../utils/axiosInstance';
+import { apiUrl } from '../utils/apiUrl';
 
 // Define the shape of chart data
 interface ChartData {
@@ -20,7 +20,9 @@ const Dashboard = () => {
 
   const getChartData = async () => {
     try {
-      const response = await axiosInstance.get(`${apiUrl.PROGRESS_TRACKINGS}/track/progress`);
+      const response = await axiosInstance.get(
+        `${apiUrl.PROGRESS_TRACKINGS}/track/progress`,
+      );
       if (response.status === 200) {
         setChartData(response.data.data); // Typescript should now understand the type
       }
@@ -31,8 +33,17 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ padding: 4 }}>
-      <Typography variant="h4">Welcome to the Dashboard</Typography>
-      <Box sx={{ padding: 4 }}>
+      <Typography variant="h4" sx={{ marginBottom: 4 }}>
+        Welcome to the Dashboard
+      </Typography>
+      <Box
+        sx={{
+          padding: 2,
+          backgroundColor: '#f5f5f5',
+          borderRadius: 2,
+          boxShadow: 2,
+        }}
+      >
         <ProgressTrackingChart data={chartData} />
       </Box>
     </Box>
