@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -17,7 +18,6 @@ import {
 import DataTable from '../../component/Datatable';
 import { TableColumn } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
-import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
 import ExerciseForm from './ExerciseForm';
 
@@ -31,8 +31,6 @@ const ExerciseList: React.FC = () => {
 
   // Local state for managing search, sort, pagination, and date filters
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
@@ -46,19 +44,11 @@ const ExerciseList: React.FC = () => {
     isOpen: false,
     editId: '',
   });
+
   // Fetch exercises when component mounts or state changes
   useEffect(() => {
     getAllData();
-  }, [
-    dispatch,
-    searchTerm,
-    page,
-    rowsPerPage,
-    orderBy,
-    order,
-    startDate,
-    endDate,
-  ]);
+  }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
 
   const getAllData = () => {
     dispatch(
@@ -68,8 +58,6 @@ const ExerciseList: React.FC = () => {
         limit: rowsPerPage,
         sort: orderBy,
         order,
-        startDate,
-        endDate,
       }),
     );
   };
@@ -146,42 +134,48 @@ const ExerciseList: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Exercise List</h1>
-      <Box display="flex" justifyContent="space-between" mb={2}>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <h1>Exercise List</h1>
+      </Grid>
+      <Grid item xs={12} sm={6}>
         <TextField
           value={searchTerm}
           onChange={handleSearchChange}
           label="Search Exercise"
           variant="outlined"
-          sx={{ width: '300px' }}
+          fullWidth // Make TextField full width
         />
+      </Grid>
+      <Grid item xs={12} sm={6} container justifyContent="flex-end">
         <Button variant="contained" color="primary" onClick={handleAddExercise}>
           Add Exercise
         </Button>
-      </Box>
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={exercises.map((exercise) => ({
-            id: exercise._id,
-            name: exercise.name,
-            type: exercise.type,
-            category: exercise.category,
-            description: exercise.description,
-          }))}
-          onSort={handleSort}
-          totalCount={totalCount}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          handleEdit={handleEditExercise}
-          handleDelete={handleDeleteClick}
-        />
-      )}
-
+      </Grid>
+      <Grid item xs={12}>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <DataTable
+              columns={columns}
+              data={exercises.map((exercise) => ({
+                id: exercise._id,
+                name: exercise.name,
+                type: exercise.type,
+                category: exercise.category,
+                description: exercise.description,
+              }))}
+              onSort={handleSort}
+              totalCount={totalCount}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              handleEdit={handleEditExercise}
+              handleDelete={handleDeleteClick}
+            />
+          </Box>
+        )}
+      </Grid>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
@@ -207,7 +201,7 @@ const ExerciseList: React.FC = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </div>
+    </Grid>
   );
 };
 
