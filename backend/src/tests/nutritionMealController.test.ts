@@ -102,7 +102,6 @@ describe('Nutrition Meals API', () => {
   // Test PUT update nutrition meal
   it('PUT /api/nutrition-meals/:id - should update an existing nutrition meal', async () => {
     const nutritionMeal = await NutritionMeal.create(mockNutritionMeal);
-    console.log(nutritionMeal._id, '=============nutritionMeal');
     const response = await request(app)
       .put(`/api/nutrition-meals/${nutritionMeal._id}`)
       .set('Authorization', token)

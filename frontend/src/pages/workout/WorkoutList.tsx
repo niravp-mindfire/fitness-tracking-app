@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
 } from '@mui/material';
 import SnackAlert from '../../component/SnackAlert';
 import WorkoutForm from './WorkoutForm';
@@ -38,7 +39,7 @@ const WorkoutList = () => {
     isOpen: false,
     editId: '',
   });
-  // Only fetch data when search term, sort field, or order changes
+
   useEffect(() => {
     getAllData();
   }, [dispatch, searchTerm, sortField, sortOrder]);
@@ -143,48 +144,52 @@ const WorkoutList = () => {
   };
 
   return (
-    <div>
-      <h1>Workout List</h1>
-      <Box display="flex" justifyContent="space-between" mb={3}>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <h1>Workout List</h1>
+      </Grid>
+      <Grid item xs={12} sm={6}>
         <TextField
           variant="outlined"
           label="Search"
           value={searchTerm}
           onChange={handleSearchChange}
-          sx={{ width: '300px' }}
+          data-testid="workoutlist-search"
+          fullWidth
         />
+      </Grid>
+      <Grid item xs={12} sm={6} container justifyContent="flex-end">
         <Button
           variant="contained"
           color="primary"
-          onClick={() => {
-            setFormModel({
-              isOpen: true,
-              editId: '',
-            });
-          }}
+          onClick={() => setFormModel({ isOpen: true, editId: '' })}
         >
           Add Workout
         </Button>
-      </Box>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={tableData}
-          onSort={handleSort}
-          onPageChange={handlePageChange}
-          totalCount={totalCount}
-          rowsPerPage={10}
-          handleEdit={(id) => {
-            setFormModel({
-              isOpen: true,
-              editId: id,
-            });
-          }}
-          handleDelete={handleDeleteWorkout}
-        />
-      )}
+      </Grid>
+      <Grid item xs={12}>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <DataTable
+              columns={columns}
+              data={tableData}
+              onSort={handleSort}
+              onPageChange={handlePageChange}
+              totalCount={totalCount}
+              rowsPerPage={10}
+              handleEdit={(id) => {
+                setFormModel({
+                  isOpen: true,
+                  editId: id,
+                });
+              }}
+              handleDelete={handleDeleteWorkout}
+            />
+          </Box>
+        )}
+      </Grid>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Workout</DialogTitle>
         <DialogContent>
@@ -213,7 +218,7 @@ const WorkoutList = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </div>
+    </Grid>
   );
 };
 

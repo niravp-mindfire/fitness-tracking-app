@@ -1,11 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import {
-  fetchWorkoutExercises,
-  deleteWorkoutExercise,
-} from '../../features/workoutExercise/workoutExerciseSlice';
-import DataTable from '../../component/Datatable';
-import { RootState, useAppDispatch } from '../../app/store';
 import {
   Box,
   TextField,
@@ -15,26 +8,33 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
 } from '@mui/material';
-import { path } from '../../utils/path';
-import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import {
+  fetchWorkoutExercises,
+  deleteWorkoutExercise,
+} from '../../features/workoutExercise/workoutExerciseSlice';
+import DataTable from '../../component/Datatable';
+import { TableColumn } from '../../utils/types';
 import SnackAlert from '../../component/SnackAlert';
 import WorkoutExerciseForm from './WorkoutExerciseForm';
 
-const WorkoutExerciseList = () => {
+const WorkoutExerciseList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { workoutExercises, totalCount, loading } = useSelector(
-    (state: RootState) => state.workoutExercise,
+
+  const { workoutExercises, totalCount, loading } = useAppSelector(
+    (state) => state.workoutExercise,
   );
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortBy, setSortBy] = useState('createdAt');
-  const [sortOrder, setSortOrder] = useState('desc');
-  const [search, setSearch] = useState('');
+
+  const [search, setSearch] = useState<string>('');
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortBy, setSortBy] = useState<string>('createdAt');
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [formModel, setFormModel] = useState({
     isOpen: false,
     editId: '',
@@ -42,7 +42,7 @@ const WorkoutExerciseList = () => {
 
   useEffect(() => {
     getAllData();
-  }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
+  }, [dispatch, search, page, rowsPerPage, sortBy, sortOrder]);
 
   const getAllData = () => {
     dispatch(
@@ -51,7 +51,7 @@ const WorkoutExerciseList = () => {
         limit: rowsPerPage,
         search,
         sort: sortBy,
-        order: sortOrder as 'asc' | 'desc',
+        order: sortOrder,
       }),
     );
   };
@@ -90,7 +90,7 @@ const WorkoutExerciseList = () => {
     setDeleteId(null);
   };
 
-  const columns = [
+  const columns: TableColumn[] = [
     { field: 'workoutId', headerName: 'Workout', sorting: true },
     { field: 'exerciseId', headerName: 'Exercise', sorting: true },
     { field: 'sets', headerName: 'Sets', sorting: true },
@@ -100,8 +100,8 @@ const WorkoutExerciseList = () => {
 
   const tableData = workoutExercises?.map((workoutExercise: any) => ({
     id: workoutExercise._id,
-    workoutId: `Duration: ${workoutExercise?.workoutId?.duration} - Date: ${new Date(workoutExercise?.workoutId?.date).toDateString()}`, // Ensure this is a string
-    exerciseId: workoutExercise?.exerciseId?.name, // Ensure this is a string
+    workoutId: `Duration: ${workoutExercise?.workoutId?.duration} - Date: ${new Date(workoutExercise?.workoutId?.date).toDateString()}`,
+    exerciseId: workoutExercise?.exerciseId?.name,
     sets: workoutExercise?.sets,
     reps: workoutExercise?.reps,
     weight: workoutExercise?.weight,
@@ -125,16 +125,20 @@ const WorkoutExerciseList = () => {
   };
 
   return (
-    <div>
-      <h1>Workout Exercise List</h1>
-      <Box display="flex" justifyContent="space-between" mb={3}>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <h1>Workout Exercise List</h1>
+      </Grid>
+      <Grid item xs={12} sm={6}>
         <TextField
           variant="outlined"
           label="Search"
           value={search}
           onChange={handleSearchChange}
-          sx={{ width: '300px' }}
+          fullWidth // Make TextField full width
         />
+      </Grid>
+      <Grid item xs={12} sm={6} container justifyContent="flex-end">
         <Button
           variant="contained"
           color="primary"
@@ -142,21 +146,25 @@ const WorkoutExerciseList = () => {
         >
           Add Workout
         </Button>
-      </Box>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={tableData}
-          totalCount={totalCount}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          onSort={handleSort}
-          handleDelete={handleDeleteWorkoutExercise}
-          handleEdit={handleEditWorkout}
-        />
-      )}
+      </Grid>
+      <Grid item xs={12}>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <DataTable
+              columns={columns}
+              data={tableData}
+              totalCount={totalCount}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              onSort={handleSort}
+              handleDelete={handleDeleteWorkoutExercise}
+              handleEdit={handleEditWorkout}
+            />
+          </Box>
+        )}
+      </Grid>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Workout Exercise</DialogTitle>
         <DialogContent>
@@ -185,7 +193,7 @@ const WorkoutExerciseList = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </div>
+    </Grid>
   );
 };
 

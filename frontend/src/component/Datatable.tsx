@@ -36,7 +36,8 @@ const DataTable: React.FC<DataTableProps> = ({
   const [orderBy, setOrderBy] = React.useState<string>('');
 
   const handleSort = (column: any) => {
-    const newOrder: 'asc' | 'desc' = orderBy === column.field && order === 'asc' ? 'desc' : 'asc';
+    const newOrder: 'asc' | 'desc' =
+      orderBy === column.field && order === 'asc' ? 'desc' : 'asc';
     setOrder(newOrder);
     setOrderBy(column.field);
     onSort(column.field, newOrder);
@@ -49,18 +50,24 @@ const DataTable: React.FC<DataTableProps> = ({
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Table sx={{ width: '100%' }}>
+      <Table sx={{ width: '100%' }} data-testid="data-table">
         <TableHead>
           <TableRow>
             {/* Add an empty header for the expandable column */}
-            <TableCell sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }} />
+            <TableCell
+              sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}
+            />
             {columns.map((column: TableColumn) => (
-              <TableCell key={column.field} sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
+              <TableCell
+                key={column.field}
+                sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}
+              >
                 {column.sorting ? (
                   <TableSortLabel
                     active={orderBy === column.field}
                     direction={orderBy === column.field ? order : 'asc'}
                     onClick={() => handleSort(column)}
+                    data-testid={`sort-label-${column.field}`}
                   >
                     {column.headerName}
                   </TableSortLabel>
@@ -69,7 +76,9 @@ const DataTable: React.FC<DataTableProps> = ({
                 )}
               </TableCell>
             ))}
-            <TableCell sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>Actions</TableCell>
+            <TableCell sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
+              Actions
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -88,20 +97,38 @@ const DataTable: React.FC<DataTableProps> = ({
                   {/* Expand/Collapse Button Column */}
                   <TableCell>
                     {expandable && (
-                      <Button onClick={() => toggleRow && toggleRow(row.id)}>
-                        {expandedRows?.includes(row.id) ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
+                      <Button
+                        onClick={() => toggleRow && toggleRow(row.id)}
+                        data-testid={`toggle-row-${row.id}`}
+                      >
+                        {expandedRows?.includes(row.id) ? (
+                          <KeyboardArrowDownIcon />
+                        ) : (
+                          <ChevronRightIcon />
+                        )}
                       </Button>
                     )}
                   </TableCell>
                   {/* Other Data Columns */}
                   {columns.map((column: TableColumn) => (
-                    <TableCell key={column.field}>{row[column.field]}</TableCell>
+                    <TableCell
+                      key={column.field}
+                      data-testid={`cell-${column.field}-${row.id}`}
+                    >
+                      {row[column.field]}
+                    </TableCell>
                   ))}
                   <TableCell>
-                    <Button onClick={() => handleEdit(row.id)}>
+                    <Button
+                      onClick={() => handleEdit(row.id)}
+                      data-testid={`edit-button-${row.id}`}
+                    >
                       <EditIcon />
                     </Button>
-                    <Button onClick={() => handleDelete(row.id)}>
+                    <Button
+                      onClick={() => handleDelete(row.id)}
+                      data-testid={`delete-button-${row.id}`}
+                    >
                       <DeleteIcon color="error" />
                     </Button>
                   </TableCell>
@@ -126,6 +153,7 @@ const DataTable: React.FC<DataTableProps> = ({
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
+          data-testid="pagination"
         />
       </Box>
     </Box>

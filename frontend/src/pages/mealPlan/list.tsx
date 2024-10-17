@@ -20,13 +20,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
   Table,
   TableHead,
   TableRow,
   TableCell,
   TableBody,
 } from '@mui/material';
-import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
 import MealPlanForm from './form';
 
@@ -41,12 +41,13 @@ const MealPlanList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [expandedRows, setExpandedRows] = useState<string[]>([]); // Track expanded rows
+  const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [formModel, setFormModel] = useState({
     isOpen: false,
     editId: '',
   });
+
   useEffect(() => {
     getAllData();
   }, [dispatch, searchTerm, sortField, sortOrder]);
@@ -119,7 +120,7 @@ const MealPlanList = () => {
       getAllData();
       setSnackbarOpen(true);
     }
-  }, [deleteId, dispatch, searchTerm, sortField, sortOrder]);
+  }, [deleteId, dispatch]);
 
   const handleCloseDialog = useCallback(() => {
     setDialogOpen(false);
@@ -142,13 +143,13 @@ const MealPlanList = () => {
         title: mealPlan.title,
         description: mealPlan.description,
         createdAt: new Date(mealPlan.createdAt).toLocaleDateString(),
-        meals: mealPlan.meals, // Pass the meals data for expandable rows
+        meals: mealPlan.meals,
       })),
     [mealPlans],
   );
 
   const renderExpandableRow = (mealPlan: MealPlan) => {
-    const meals = mealPlan.meals || []; // Fetch the meals related to this meal plan
+    const meals = mealPlan.meals || [];
 
     return (
       <Table>
@@ -197,52 +198,59 @@ const MealPlanList = () => {
   };
 
   return (
-    <div>
-      <h1>Meal Plan List</h1>
-      <Box display="flex" justifyContent="space-between" mb={3}>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <h1>Meal Plan List</h1>
+      </Grid>
+      <Grid item xs={12} sm={6} md={8}>
         <TextField
           variant="outlined"
           label="Search"
           value={searchTerm}
           onChange={handleSearchChange}
-          sx={{ width: '300px' }}
+          fullWidth
         />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4} container justifyContent="flex-end">
         <Button variant="contained" color="primary" onClick={handleAddMealPlan}>
           Add Meal Plan
         </Button>
-      </Box>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={tableData}
-          onSort={handleSort}
-          onPageChange={handlePageChange}
-          totalCount={totalCount}
-          rowsPerPage={10}
-          handleEdit={handleEditMealPlan}
-          handleDelete={handleDeleteMealPlan}
-          expandable={true}
-          expandedRows={expandedRows}
-          toggleRow={toggleRow}
-          renderExpandableRow={renderExpandableRow}
-        />
-      )}
-
+      </Grid>
+      <Grid item xs={12}>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <DataTable
+              columns={columns}
+              data={tableData}
+              onSort={handleSort}
+              onPageChange={handlePageChange}
+              totalCount={totalCount}
+              rowsPerPage={10}
+              handleEdit={handleEditMealPlan}
+              handleDelete={handleDeleteMealPlan}
+              renderExpandableRow={renderExpandableRow} // Ensure expandable rows are rendered
+              expandedRows={expandedRows} // Pass expanded rows to DataTable
+              toggleRow={toggleRow} // Function to toggle expanded rows
+            />
+          </Box>
+        )}
+      </Grid>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>Delete Meal Plan</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this meal plan?
+            Are you sure you want to delete this meal plan? This action cannot
+            be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="primary">
-            Confirm
+          <Button onClick={handleConfirmDelete} color="secondary">
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
@@ -257,8 +265,8 @@ const MealPlanList = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </div>
+    </Grid>
   );
 };
 
-export default MealPlanList;
+export default React.memo(MealPlanList);

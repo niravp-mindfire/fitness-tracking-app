@@ -21,7 +21,7 @@ import { forgetPasswordSchema } from '../utils/validationSchema';
 import { forgetPasswordInitialValue } from '../utils/initialValues';
 import { toast } from 'react-toastify';
 
-const ForgetPassword = () => {
+const ForgetPassword: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loading = useAppSelector(selectAuthLoading);
@@ -41,7 +41,7 @@ const ForgetPassword = () => {
         console.error('Forget password request failed:', error);
       }
     },
-    [dispatch, navigate],
+    [dispatch],
   );
 
   return (
@@ -53,11 +53,16 @@ const ForgetPassword = () => {
           flexDirection: 'column',
           alignItems: 'center',
         }}
+        data-testid="forget-password-form"
       >
         <Typography component="h1" variant="h5">
           Forgot Password
         </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 4 }}>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          sx={{ mb: 4, textAlign: 'center' }}
+        >
           Enter your email address and we'll send you a link to reset your
           password.
         </Typography>
@@ -75,16 +80,17 @@ const ForgetPassword = () => {
                   margin="normal"
                   fullWidth
                   id="email"
-                  disabled={isSubmitting}
                   label="Email Address"
                   name="email"
                   autoComplete="email"
                   autoFocus
+                  disabled={isSubmitting || loading}
                   error={!!error || errors.email}
                   helperText={<ErrorMessage name="email" />}
                   InputProps={{
                     style: { height: '56px' }, // Consistent height
                   }}
+                  inputProps={{ 'data-testid': 'email-input' }} // Added here
                 />
                 <Button
                   type="submit"
@@ -92,13 +98,22 @@ const ForgetPassword = () => {
                   variant="contained"
                   color="primary"
                   disabled={isSubmitting || loading}
-                  sx={{ mt: 3, mb: 2 }}
+                  sx={{
+                    mt: 3,
+                    mb: 2,
+                    height: '48px', // Consistent button height
+                  }}
+                  data-testid="submit-button" // Added here
                 >
                   Send Reset Link{' '}
                   {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
                 </Button>
                 {error && (
-                  <Typography color="error" sx={{ mb: 2 }}>
+                  <Typography
+                    color="error"
+                    sx={{ mb: 2, textAlign: 'center' }}
+                    data-testid="error-message"
+                  >
                     {error}
                   </Typography>
                 )}
@@ -111,4 +126,4 @@ const ForgetPassword = () => {
   );
 };
 
-export default ForgetPassword;
+export default React.memo(ForgetPassword);

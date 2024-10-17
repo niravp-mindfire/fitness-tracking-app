@@ -51,6 +51,10 @@ const Login = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          padding: { xs: 2, sm: 4 }, // Add responsive padding
+          backgroundColor: '#fff',
+          borderRadius: 2,
+          boxShadow: 3, // Add box shadow for a card-like appearance
         }}
       >
         <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
@@ -78,11 +82,12 @@ const Login = () => {
                   autoComplete="email"
                   autoFocus
                   disabled={isSubmitting}
-                  error={!!error || errors.email}
+                  error={!!error || !!errors.email}
                   helperText={<ErrorMessage name="email" />}
                   InputProps={{
-                    style: { height: '56px' }, // Consistent height
+                    style: { height: '56px' }, // Consistent height for fields
                   }}
+                  data-testid="email-field" // Added test ID
                 />
 
                 <Field
@@ -96,11 +101,12 @@ const Login = () => {
                   disabled={isSubmitting}
                   id="password"
                   autoComplete="current-password"
-                  error={!!error || errors.password} // Show error styling if there's an error
+                  error={!!error || !!errors.password}
                   helperText={<ErrorMessage name="password" />}
                   InputProps={{
                     style: { height: '56px' }, // Consistent height
                   }}
+                  data-testid="password-field" // Added test ID
                 />
 
                 <Button
@@ -109,24 +115,35 @@ const Login = () => {
                   variant="contained"
                   color="primary"
                   disabled={isSubmitting || loading}
-                  sx={{ mt: 3, mb: 2 }}
+                  sx={{ mt: 3, mb: 2, height: 48 }}
+                  data-testid="login-button" // Added test ID
                 >
                   Sign In{' '}
                   {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
                 </Button>
 
                 {error && (
-                  <Typography color="error" sx={{ mb: 2 }}>
+                  <Typography
+                    color="error"
+                    sx={{ mb: 2 }}
+                    data-testid="error-message"
+                  >
                     {error}
                   </Typography>
                 )}
 
-                <Grid container>
-                  <Grid item xs>
+                <Grid
+                  container
+                  justifyContent="space-between"
+                  sx={{ flexWrap: 'nowrap' }}
+                >
+                  <Grid item>
                     <Button
                       onClick={() => navigate('/forgot-password')}
                       variant="text"
                       color="primary"
+                      sx={{ textDecoration: 'underline' }}
+                      data-testid="forgot-password-button" // Added test ID
                     >
                       Forgot Password?
                     </Button>
@@ -136,6 +153,8 @@ const Login = () => {
                       onClick={() => navigate('/register')}
                       variant="text"
                       color="primary"
+                      sx={{ textDecoration: 'underline' }}
+                      data-testid="register-button" // Added test ID
                     >
                       Create Account
                     </Button>

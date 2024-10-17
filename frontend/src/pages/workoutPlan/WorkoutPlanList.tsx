@@ -15,11 +15,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Snackbar,
-  Alert,
+  Grid,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
 import WorkoutPlanForm from './WorkoutPlanForm';
 
@@ -29,6 +27,7 @@ const WorkoutPlanList = () => {
   const { workoutPlans, totalCount, loading } = useSelector(
     (state: RootState) => state.workoutPlan,
   );
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortBy, setSortBy] = useState('createdAt');
@@ -36,11 +35,12 @@ const WorkoutPlanList = () => {
   const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [formModel, setFormModel] = useState({
     isOpen: false,
     editId: '',
   });
+
   useEffect(() => {
     getAllData();
   }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
@@ -128,34 +128,39 @@ const WorkoutPlanList = () => {
   };
 
   return (
-    <div>
-      <h1>Workout Plan List</h1>
-      <Box display="flex" justifyContent="space-between" mb={3}>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <h1>Workout Plan List</h1>
+      </Grid>
+      <Grid item xs={12} md={6}>
         <TextField
           variant="outlined"
           label="Search"
           value={search}
           onChange={handleSearchChange}
-          sx={{ width: '300px' }}
+          fullWidth // Make TextField full width
         />
+      </Grid>
+      <Grid item xs={12} md={6} container justifyContent="flex-end">
         <Button
           variant="contained"
           onClick={() => setFormModel({ isOpen: true, editId: '' })}
         >
           Add Workout Plan
         </Button>
-      </Box>
-
-      <DataTable
-        columns={columns}
-        data={tableData}
-        onSort={handleSort}
-        onPageChange={handlePageChange}
-        totalCount={totalCount}
-        rowsPerPage={rowsPerPage}
-        handleEdit={handleEditWorkoutPlan}
-        handleDelete={handleDeleteWorkoutPlan}
-      />
+      </Grid>
+      <Grid item xs={12}>
+        <DataTable
+          columns={columns}
+          data={tableData}
+          onSort={handleSort}
+          onPageChange={handlePageChange}
+          totalCount={totalCount}
+          rowsPerPage={rowsPerPage}
+          handleEdit={handleEditWorkoutPlan}
+          handleDelete={handleDeleteWorkoutPlan}
+        />
+      </Grid>
 
       {/* Confirmation Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
@@ -183,7 +188,7 @@ const WorkoutPlanList = () => {
         type={`success`}
         message={`Record Deleted Successfully`}
       />
-    </div>
+    </Grid>
   );
 };
 
