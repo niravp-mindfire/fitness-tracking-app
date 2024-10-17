@@ -1,5 +1,10 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useMediaQuery, Theme } from '@mui/material';
+import {
+  useMediaQuery,
+  Theme,
+  ThemeProvider,
+  createTheme,
+} from '@mui/material'; // Import ThemeProvider and createTheme
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../features/auth/auth'; // Adjust the import based on your structure
@@ -28,9 +33,10 @@ const Admin: React.FC<AdminProps> = ({ children }) => {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div data-testid="admin-container" style={{ display: 'flex' }}>
       <Sidebar handleLogout={handleLogout} />
       <main
+        data-testid="admin-main"
         style={{
           flexGrow: 1,
           padding: '16px',

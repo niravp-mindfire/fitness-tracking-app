@@ -87,6 +87,7 @@ const MyProfile = () => {
           component="h1"
           variant="h5"
           sx={{ mb: 3, textAlign: 'center' }}
+          data-testid="profile-title"
         >
           My Profile
         </Typography>
@@ -111,6 +112,7 @@ const MyProfile = () => {
                           name="profile.firstName"
                           helperText={<ErrorMessage name="profile.firstName" />}
                           error={!!error || !!errors?.profile?.firstName}
+                          data-testid="first-name-input"
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
@@ -123,6 +125,7 @@ const MyProfile = () => {
                           disabled={isSubmitting}
                           helperText={<ErrorMessage name="profile.lastName" />}
                           error={!!error || !!errors?.profile?.lastName}
+                          data-testid="last-name-input"
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
@@ -138,6 +141,7 @@ const MyProfile = () => {
                           InputLabelProps={{ shrink: true }}
                           helperText={<ErrorMessage name="profile.dob" />}
                           error={!!error || !!errors?.profile?.dob}
+                          data-testid="dob-input"
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
@@ -153,6 +157,7 @@ const MyProfile = () => {
                           InputProps={{ readOnly: true }}
                           helperText={<ErrorMessage name="profile.age" />}
                           error={!!error || !!errors?.profile?.age}
+                          data-testid="age-input"
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
@@ -165,6 +170,7 @@ const MyProfile = () => {
                             label="Gender"
                             disabled={isSubmitting}
                             error={!!error || !!errors?.profile?.gender}
+                            data-testid="gender-select"
                           >
                             <MenuItem value="Male">Male</MenuItem>
                             <MenuItem value="Female">Female</MenuItem>
@@ -187,6 +193,7 @@ const MyProfile = () => {
                           type="number"
                           helperText={<ErrorMessage name="profile.height" />}
                           error={!!error || !!errors?.profile?.height}
+                          data-testid="height-input"
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
@@ -200,6 +207,7 @@ const MyProfile = () => {
                           type="number"
                           helperText={<ErrorMessage name="profile.weight" />}
                           error={!!error || !!errors?.profile?.weight}
+                          data-testid="weight-input"
                         />
                       </Grid>
                     </Grid>
@@ -227,6 +235,7 @@ const MyProfile = () => {
                                   disabled={isSubmitting}
                                   label="Goal Type"
                                   name={`fitnessGoals.${index}.goalType`}
+                                  data-testid={`goal-type-${index}`}
                                 />
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.goalType`}
@@ -242,6 +251,7 @@ const MyProfile = () => {
                                   label="Target Value"
                                   name={`fitnessGoals.${index}.targetValue`}
                                   type="number"
+                                  data-testid={`target-value-${index}`}
                                 />
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.targetValue`}
@@ -257,6 +267,7 @@ const MyProfile = () => {
                                   label="Current Value"
                                   name={`fitnessGoals.${index}.currentValue`}
                                   type="number"
+                                  data-testid={`current-value-${index}`}
                                 />
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.currentValue`}
@@ -276,22 +287,25 @@ const MyProfile = () => {
                                   value={formatDateForInput(
                                     values.fitnessGoals[index].targetDate,
                                   )}
+                                  data-testid={`target-date-${index}`}
                                 />
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.targetDate`}
                                   component={Typography}
                                 />
                               </Grid>
+                              <Grid item xs={12} sm={6} md={3}>
+                                <Button
+                                  onClick={() => remove(index)}
+                                  variant="outlined"
+                                  color="secondary"
+                                  disabled={isSubmitting}
+                                  data-testid={`remove-goal-${index}`}
+                                >
+                                  Remove Goal
+                                </Button>
+                              </Grid>
                             </Grid>
-                            <Button
-                              onClick={() => remove(index)}
-                              variant="contained"
-                              color="secondary"
-                              sx={{ mt: 2 }}
-                              disabled={isSubmitting}
-                            >
-                              Remove Goal
-                            </Button>
                           </Box>
                         ))}
                         <Button
@@ -303,9 +317,9 @@ const MyProfile = () => {
                               targetDate: '',
                             })
                           }
-                          variant="contained"
-                          color="primary"
+                          variant="outlined"
                           disabled={isSubmitting}
+                          data-testid="add-goal"
                         >
                           Add Goal
                         </Button>
@@ -314,30 +328,21 @@ const MyProfile = () => {
                   </FieldArray>
                 </CardContent>
               </Card>
-
-              {/* Submit Button */}
-              <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting || loading}
-                  startIcon={
-                    loading ? (
-                      <CircularProgress size={20} color="inherit" />
-                    ) : null
-                  }
-                >
-                  Update Profile
-                </Button>
+              <Box sx={{ mt: 4, textAlign: 'center' }}>
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    data-testid="submit-button"
+                  >
+                    Save Changes
+                  </Button>
+                )}
               </Box>
-
-              {error && (
-                <Typography color="error" sx={{ mt: 2 }}>
-                  {error}
-                </Typography>
-              )}
             </Form>
           )}
         </Formik>

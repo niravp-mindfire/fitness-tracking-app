@@ -17,13 +17,11 @@ import {
 } from '../../features/workoutExercise/workoutExerciseSlice';
 import DataTable from '../../component/Datatable';
 import { TableColumn } from '../../utils/types';
-import { useNavigate } from 'react-router-dom';
 import SnackAlert from '../../component/SnackAlert';
 import WorkoutExerciseForm from './WorkoutExerciseForm';
 
 const WorkoutExerciseList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const { workoutExercises, totalCount, loading } = useAppSelector(
     (state) => state.workoutExercise,

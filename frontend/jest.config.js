@@ -9,4 +9,5 @@ module.exports = {
   ],
   coverageDirectory: 'coverage', // Directory where Jest should output its coverage files
   coverageReporters: ['json', 'lcov', 'text', 'clover'], // Types of reports to generate
+  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
 };

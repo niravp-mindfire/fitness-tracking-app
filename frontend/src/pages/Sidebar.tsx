@@ -105,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
             Admin Panel
           </Typography>
         )}
-        <IconButton onClick={toggleSidebar}>
+        <IconButton onClick={toggleSidebar} data-testid="sidebar-toggle-btn">
           {isCollapsed ? <Menu /> : <ChevronLeft />}
         </IconButton>
       </Box>

@@ -154,6 +154,7 @@ const WorkoutList = () => {
           label="Search"
           value={searchTerm}
           onChange={handleSearchChange}
+          data-testid="workoutlist-search"
           fullWidth
         />
       </Grid>

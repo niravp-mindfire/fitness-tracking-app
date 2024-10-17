@@ -32,8 +32,12 @@ const Dashboard = () => {
   };
 
   return (
-    <Box sx={{ padding: 4 }}>
-      <Typography variant="h4" sx={{ marginBottom: 4 }}>
+    <Box sx={{ padding: 4 }} data-testid="dashboard">
+      <Typography
+        variant="h4"
+        sx={{ marginBottom: 4 }}
+        data-testid="dashboard-title"
+      >
         Welcome to the Dashboard
       </Typography>
       <Box
@@ -43,6 +47,7 @@ const Dashboard = () => {
           borderRadius: 2,
           boxShadow: 2,
         }}
+        data-testid="chart-container"
       >
         <ProgressTrackingChart data={chartData} />
       </Box>
