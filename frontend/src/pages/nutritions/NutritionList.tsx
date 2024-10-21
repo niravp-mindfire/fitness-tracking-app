@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
   fetchNutritionEntries,
   selectAllNutritionEntries,
@@ -44,18 +44,20 @@ const NutritionList: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
+  const debouncedSearchTerm = useDebounce(searchTerm, 300); // Use the hook with a 300ms delay
+
   // Fetch all nutrition entries
   const fetchNutritions = useCallback(() => {
     dispatch(
       fetchNutritionEntries({
         page: 1,
         limit: 10,
-        search: searchTerm,
+        search: debouncedSearchTerm, // Use debounced search term
         sort: sortField,
         order: sortOrder,
       }),
     );
-  }, [dispatch, searchTerm, sortField, sortOrder]);
+  }, [dispatch, debouncedSearchTerm, sortField, sortOrder]);
 
   // Effect to fetch data when dependencies change
   useEffect(() => {
@@ -72,31 +74,42 @@ const NutritionList: React.FC = () => {
       fetchNutritionEntries({
         page: newPage + 1,
         limit: 10,
-        search: searchTerm,
+        search: debouncedSearchTerm,
         sort: sortField,
         order: sortOrder,
       }),
     );
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+  const handleDeleteNutrition = (id: string) => {
+    setDeleteId(id);
+    setDialogOpen(true);
   };
 
-  const openEditModal = (id: string) => {
+  const handleConfirmDelete = async () => {
+    if (deleteId) {
+      await dispatch(deleteNutrition(deleteId));
+      setDialogOpen(false);
+      setDeleteId(null);
+      fetchNutritions();
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleEditNutrition = (id: string) => {
     setEditNutritionId(id);
     setModalOpen(true);
   };
 
-  const confirmDeleteNutrition = () => {
-    if (deleteId) {
-      dispatch(deleteNutrition(deleteId)).then(() => {
-        fetchNutritions();
-        setSnackbarOpen(true);
-      });
-      setDialogOpen(false);
-      setDeleteId(null);
-    }
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setDeleteId(null);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setEditNutritionId(undefined);
+    fetchNutritions(); // Re-fetch data on modal close
   };
 
   const columns = useMemo(
@@ -122,49 +135,45 @@ const NutritionList: React.FC = () => {
   );
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <h1>Nutrition List</h1>
-      </Grid>
-      <Grid item xs={12} sm={6} md={8}>
-        <TextField
-          variant="outlined"
-          label="Search"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          fullWidth
+    <div>
+      <h1>Nutrition List</h1>
+      <Box mb={3}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              label="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} display="flex" justifyContent="flex-end">
+            <Button variant="contained" onClick={() => setModalOpen(true)}>
+              Add Nutrition
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={tableData}
+          onSort={handleSort}
+          onPageChange={handlePageChange}
+          totalCount={totalCount}
+          rowsPerPage={10}
+          handleEdit={handleEditNutrition}
+          handleDelete={(id) => {
+            setDeleteId(id);
+            setDialogOpen(true);
+          }}
         />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4} container justifyContent="flex-end">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setModalOpen(true)}
-        >
-          Add Nutrition
-        </Button>
-      </Grid>
-      <Grid item xs={12}>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <DataTable
-            columns={columns}
-            data={tableData}
-            onSort={handleSort}
-            onPageChange={handlePageChange}
-            totalCount={totalCount}
-            rowsPerPage={10}
-            handleEdit={openEditModal}
-            handleDelete={(id) => {
-              setDeleteId(id);
-              setDialogOpen(true);
-            }}
-          />
-        )}
-      </Grid>
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle>Delete Nutrition Entry</DialogTitle>
+      )}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Delete Nutrition</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Are you sure you want to delete this nutrition entry? This action
@@ -172,27 +181,27 @@ const NutritionList: React.FC = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)} color="primary">
+          <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={confirmDeleteNutrition} color="secondary">
+          <Button onClick={handleConfirmDelete} color="secondary">
             Delete
           </Button>
         </DialogActions>
       </Dialog>
       <NutritionForm
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={handleCloseModal}
         id={editNutritionId}
       />
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}
         type="success"
-        message="Record deleted successfully"
+        message="Nutrition entry deleted successfully"
       />
-    </Grid>
+    </div>
   );
 };
 
-export default React.memo(NutritionList);
+export default NutritionList;

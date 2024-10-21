@@ -1,19 +1,12 @@
 import express from 'express';
-import mongoose from 'mongoose';
+
 import cors from 'cors';
 import dotenv from 'dotenv';
+import router from './routes';
+import { connectDB } from './config/db';
 
-import userRouter from './routes/userRouter';
-import workOutRouter from './routes/workOutRouter';
-import workoutExerciseRouter from './routes/workoutExerciseRouter';
-import workoutPlanRouter from './routes/workoutPlanRouter';
-import exerciseRouter from './routes/exerciseRouter';
-import foodItemRoutes from './routes/foodItemRoutes';
-import mealPlanRouter from './routes/mealPlanRoutes';
-import nutritionRouter from './routes/nutritionRoutes';
-import nutritionMealsRouter from './routes/nutritionMealRoutes';
-import challengesRouter from './routes/challengeRoutes';
-import progressTrackingRouter from './routes/progressTrackingRouter';
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 
 dotenv.config();
 
@@ -23,37 +16,37 @@ export const PORT = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 
-app.get('/test', (req, res) => {
-  res.json('Hello world');
-});
-
-app.use('/api', userRouter);
-app.use('/api/workouts', workOutRouter);
-app.use('/api/workout-exercise', workoutExerciseRouter);
-app.use('/api/workout-plan', workoutPlanRouter);
-app.use('/api/exercises', exerciseRouter);
-app.use('/api/food-items', foodItemRoutes);
-app.use('/api/meal-plans', mealPlanRouter);
-app.use('/api/nutritious', nutritionRouter);
-app.use('/api/nutrition-meals', nutritionMealsRouter);
-app.use('/api/challenges', challengesRouter);
-app.use('/api/progress-tracking', progressTrackingRouter);
-
-let server: ReturnType<typeof app.listen>;
-
-mongoose
-  .connect(process.env.MONGO_URI!)
-  .then(() => {
-    server = app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
-  });
-
-export const closeServer = () => {
-  server?.close(); // Close the server if it exists
+// Swagger definition
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0', // Specify the OpenAPI version
+    info: {
+      title: 'My API', // Title of the API
+      version: '1.0.0', // Version of the API
+      description: 'API documentation for my application',
+      contact: {
+        name: 'Nirav', // Your name
+        email: 'niravp@mindfiresolutions.com', // Your email
+      },
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}`,
+      },
+    ],
+  },
+  apis: ['./routes/*.ts'],
 };
+
+// Initialize swagger-jsdoc
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
+// Set up Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// Use the imported routes
+app.use(router);
+
+connectDB(PORT, app);
 
 export default app;

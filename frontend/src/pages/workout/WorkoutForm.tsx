@@ -139,6 +139,7 @@ const WorkoutForm: React.FC<DialogProps> = ({
                 : ''
             }
             sx={{ mt: 2 }}
+            inputProps={{ min: 0, max: 300 }}
           />
           <TextField
             fullWidth

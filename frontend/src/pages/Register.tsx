@@ -206,6 +206,7 @@ const Register = () => {
                   helperText={<ErrorMessage name="profile.height" />}
                   error={!!error || !!errors?.profile?.height}
                   data-testid="height-input"
+                  inputProps={{ min: 0, max: 300 }}
                 />
 
                 <Field
@@ -221,6 +222,7 @@ const Register = () => {
                   helperText={<ErrorMessage name="profile.weight" />}
                   error={!!error || !!errors?.profile?.weight}
                   data-testid="weight-input"
+                  inputProps={{ min: 0, max: 500 }}
                 />
 
                 <Button

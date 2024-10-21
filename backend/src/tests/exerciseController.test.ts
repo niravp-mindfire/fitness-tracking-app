@@ -1,8 +1,9 @@
 import request from 'supertest';
-import app, { closeServer } from '../index';
+import app from '../index';
 import mongoose from 'mongoose';
-import { generateToken } from '../controllers/userController';
+import { generateToken } from '../middleware/authMiddleware';
 import Exercise from '../models/Exercise';
+import { closeServer } from '../config/db';
 
 // Define the shape of the exercise data
 interface ExerciseData {

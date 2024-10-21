@@ -39,17 +39,30 @@ const WorkoutList = () => {
     isOpen: false,
     editId: '',
   });
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
   useEffect(() => {
-    getAllData();
-  }, [dispatch, searchTerm, sortField, sortOrder]);
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // Set the debounce delay (in milliseconds)
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (debouncedSearchTerm.length >= 3) {
+      getAllData();
+    }
+  }, [dispatch, debouncedSearchTerm, sortField, sortOrder]);
 
   const getAllData = () => {
     dispatch(
       fetchWorkouts({
         page: 1,
         limit: 10,
-        search: searchTerm,
+        search: debouncedSearchTerm,
         sort: sortField,
         order: sortOrder,
       }),
@@ -69,13 +82,13 @@ const WorkoutList = () => {
         fetchWorkouts({
           page: newPage + 1,
           limit: 10,
-          search: searchTerm,
+          search: debouncedSearchTerm,
           sort: sortField,
           order: sortOrder,
         }),
       );
     },
-    [dispatch, searchTerm, sortField, sortOrder],
+    [dispatch, debouncedSearchTerm, sortField, sortOrder],
   );
 
   const handleSearchChange = useCallback(
@@ -99,14 +112,14 @@ const WorkoutList = () => {
         fetchWorkouts({
           page: 1,
           limit: 10,
-          search: searchTerm,
+          search: debouncedSearchTerm,
           sort: sortField,
           order: sortOrder,
         }),
       );
       setSnackbarOpen(true);
     }
-  }, [deleteId, dispatch, searchTerm, sortField, sortOrder]);
+  }, [deleteId, dispatch, debouncedSearchTerm, sortField, sortOrder]);
 
   const handleCloseDialog = useCallback(() => {
     setDialogOpen(false);

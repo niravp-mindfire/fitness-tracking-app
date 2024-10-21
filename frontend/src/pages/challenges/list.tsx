@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   TextField,
@@ -11,7 +11,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
   fetchChallenges,
   deleteChallenge,
@@ -45,20 +45,26 @@ const ChallengeList: React.FC = () => {
     editId: '',
   });
 
+  // Debounce search term with a delay of 300ms
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   useEffect(() => {
     getAllData();
-  }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
+  }, [dispatch, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
 
   const getAllData = () => {
-    dispatch(
-      fetchChallenges({
-        search: searchTerm,
-        page: page + 1,
-        limit: rowsPerPage,
-        sort: orderBy,
-        order,
-      }),
-    );
+    // Only fetch data if the search term has at least 3 characters
+    if (debouncedSearchTerm.length >= 3) {
+      dispatch(
+        fetchChallenges({
+          search: debouncedSearchTerm,
+          page: page + 1,
+          limit: rowsPerPage,
+          sort: orderBy,
+          order,
+        }),
+      );
+    }
   };
 
   const handleSort = (field: string, newOrder: 'asc' | 'desc') => {

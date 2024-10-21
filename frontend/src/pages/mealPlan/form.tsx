@@ -310,6 +310,7 @@ const MealPlanForm: React.FC<DialogProps> = ({
                         )
                       }
                       fullWidth
+                      inputProps={{ min: 1, max: 100 }}
                     />
                   </Grid>
 

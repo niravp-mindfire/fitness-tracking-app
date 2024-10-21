@@ -2,21 +2,33 @@ import { Request, Response } from 'express';
 import ProgressTracking from '../models/ProgressTracking';
 import { errorResponse, successResponse } from '../utils/responseFormat';
 import mongoose from 'mongoose';
+import { Messages } from '../utils/constants';
 
-export const getProgressTrackingById = async (req: Request, res: Response): Promise<Response> => {
+export const getProgressTrackingById = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { id } = req.params;
 
   try {
     const progressTracking = await ProgressTracking.findById(id);
 
     if (!progressTracking) {
-      return res.status(404).json(errorResponse('Progress tracking not found'));
+      return res
+        .status(404)
+        .json(errorResponse(Messages.PROGRESS_TRACKING_NOT_FOUND));
     }
 
-    return res.status(200).json(successResponse(progressTracking, 'Progress tracking fetched successfully'));
+    return res
+      .status(200)
+      .json(
+        successResponse(progressTracking, Messages.PROGRESS_TRACKING_RETRIEVED)
+      );
   } catch (error) {
     console.error('Error fetching progress tracking:', error);
-    return res.status(500).json(errorResponse('Error fetching progress tracking', error));
+    return res
+      .status(500)
+      .json(errorResponse(Messages.ERROR_FETCHING_PROGRESS_TRACKING, error));
   }
 };
 
@@ -36,9 +48,15 @@ export const addProgressTracking = async (req: any, res: Response) => {
 
     await progressTracking.save();
 
-    return res.status(201).json(successResponse(progressTracking, 'Progress tracking added successfully'));
+    return res
+      .status(201)
+      .json(
+        successResponse(progressTracking, Messages.PROGRESS_TRACKING_ADDED)
+      );
   } catch (error) {
-    return res.status(500).json(errorResponse('Error adding progress tracking', error));
+    return res
+      .status(500)
+      .json(errorResponse(Messages.ERROR_ADDING_PROGRESS_TRACKING, error));
   }
 };
 
@@ -49,17 +67,32 @@ export const updateProgressTracking = async (req: Request, res: Response) => {
 
     const progressTracking = await ProgressTracking.findByIdAndUpdate(
       id,
-      { date, weight, bodyFatPercentage, muscleMass, notes, updatedAt: Date.now() },
+      {
+        date,
+        weight,
+        bodyFatPercentage,
+        muscleMass,
+        notes,
+        updatedAt: Date.now(),
+      },
       { new: true }
     );
 
     if (!progressTracking) {
-      return res.status(404).json(errorResponse('Progress tracking not found'));
+      return res
+        .status(404)
+        .json(errorResponse(Messages.PROGRESS_TRACKING_NOT_FOUND));
     }
 
-    return res.status(200).json(successResponse(progressTracking, 'Progress tracking updated successfully'));
+    return res
+      .status(200)
+      .json(
+        successResponse(progressTracking, Messages.PROGRESS_TRACKING_UPDATED)
+      );
   } catch (error) {
-    return res.status(500).json(errorResponse('Error updating progress tracking', error));
+    return res
+      .status(500)
+      .json(errorResponse(Messages.ERROR_UPDATING_PROGRESS_TRACKING, error));
   }
 };
 
@@ -70,12 +103,18 @@ export const deleteProgressTracking = async (req: Request, res: Response) => {
     const progressTracking = await ProgressTracking.findByIdAndDelete(id);
 
     if (!progressTracking) {
-      return res.status(404).json(errorResponse('Progress tracking not found'));
+      return res
+        .status(404)
+        .json(errorResponse(Messages.PROGRESS_TRACKING_NOT_FOUND));
     }
 
-    return res.status(200).json(successResponse({}, 'Progress tracking deleted successfully'));
+    return res
+      .status(200)
+      .json(successResponse({}, Messages.PROGRESS_TRACKING_DELETED));
   } catch (error) {
-    return res.status(500).json(errorResponse('Error deleting progress tracking', error));
+    return res
+      .status(500)
+      .json(errorResponse(Messages.ERROR_DELETING_PROGRESS_TRACKING, error));
   }
 };
 
@@ -97,7 +136,9 @@ export const getUserProgressTracking = async (req: Request, res: Response) => {
     }
 
     const skip = (Number(page) - 1) * Number(limit);
-    const progressTracking = await ProgressTracking.find(query).skip(skip).limit(Number(limit));
+    const progressTracking = await ProgressTracking.find(query)
+      .skip(skip)
+      .limit(Number(limit));
 
     const total = await ProgressTracking.countDocuments(query);
 
@@ -109,7 +150,11 @@ export const getUserProgressTracking = async (req: Request, res: Response) => {
       progressTracking,
     });
   } catch (error) {
-    return res.status(500).json(errorResponse('Error fetching progress tracking', error));
+    return res
+      .status(500)
+      .json(
+        errorResponse(Messages.ERROR_FETCHING_USER_PROGRESS_TRACKINGS, error)
+      );
   }
 };
 
@@ -131,7 +176,9 @@ export const getAllProgressTracking = async (req: any, res: Response) => {
     }
 
     const skip = (Number(page) - 1) * Number(limit);
-    const progressTracking = await ProgressTracking.find(query).skip(skip).limit(Number(limit));
+    const progressTracking = await ProgressTracking.find(query)
+      .skip(skip)
+      .limit(Number(limit));
 
     const total = await ProgressTracking.countDocuments(query);
 
@@ -143,7 +190,9 @@ export const getAllProgressTracking = async (req: any, res: Response) => {
       progressTracking,
     });
   } catch (error) {
-    return res.status(500).json(errorResponse('Error fetching progress tracking', error));
+    return res
+      .status(500)
+      .json(errorResponse(Messages.ERROR_FETCHING_PROGRESS_TRACKINGS, error));
   }
 };
 
@@ -152,25 +201,25 @@ export const trackProgress = async (req: any, res: Response) => {
 
   // Validate ObjectId
   if (!mongoose.isValidObjectId(userId)) {
-    return res.status(400).json(errorResponse('Invalid user ID format.'));
+    return res.status(400).json(errorResponse(Messages.INVALID_USER_ID_FORMAT));
   }
   const userIdObjectId = new mongoose.Types.ObjectId(userId);
-  
+
   try {
     const progressData = await ProgressTracking.aggregate([
       { $match: { userId: userIdObjectId } },
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } }, // Group by date
-          avgWeight: { $avg: "$weight" }, // Average weight
-          avgBodyFatPercentage: { $avg: "$bodyFatPercentage" }, // Average body fat percentage
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$date' } }, // Group by date
+          avgWeight: { $avg: '$weight' }, // Average weight
+          avgBodyFatPercentage: { $avg: '$bodyFatPercentage' }, // Average body fat percentage
         },
       },
       {
         $project: {
-          date: "$_id", // Set the date field
-          weight: "$avgWeight", // Use avgWeight in the response
-          bodyFatPercentage: "$avgBodyFatPercentage", // Use avgBodyFatPercentage in the response
+          date: '$_id', // Set the date field
+          weight: '$avgWeight', // Use avgWeight in the response
+          bodyFatPercentage: '$avgBodyFatPercentage', // Use avgBodyFatPercentage in the response
           _id: 0, // Exclude the default _id field
         },
       },
@@ -178,19 +227,27 @@ export const trackProgress = async (req: any, res: Response) => {
     ]);
 
     if (progressData.length === 0) {
-      return res.status(404).json(errorResponse('No progress data found for this user.'));
+      return res
+        .status(404)
+        .json(errorResponse(Messages.NO_PROGRESS_DATA_FOUND));
     }
 
     // Format the response to match your sample data structure
-    const formattedData = progressData.map(entry => ({
+    const formattedData = progressData.map((entry) => ({
       date: entry.date,
       weight: entry.weight, // Average weight
       bodyFatPercentage: entry.bodyFatPercentage, // Average body fat percentage
     }));
 
-    return res.status(200).json(successResponse(formattedData, 'Progress data fetched successfully'));
+    return res
+      .status(200)
+      .json(
+        successResponse(formattedData, 'Progress data fetched successfully')
+      );
   } catch (error) {
     console.error('Error fetching progress data:', error);
-    return res.status(500).json(errorResponse('Error fetching progress data', error));
+    return res
+      .status(500)
+      .json(errorResponse(Messages.ERROR_FETCHING_PROGRESS_DATA, error));
   }
 };
