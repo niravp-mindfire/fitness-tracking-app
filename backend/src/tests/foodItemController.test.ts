@@ -32,14 +32,16 @@ let foodItemId: string;
 let token: string; // Mock token for authentication
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.TEST_MONGO_URI!);
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
+  }
 
   // Create a mock food item to use in tests
   const foodItem: any = await FoodItem.create(mockFoodItem);
   foodItemId = foodItem._id.toString();
 
   // Mock user token (implement your token generation logic)
-  token = 'Bearer ' + generateToken({ id: 'mockUserId' });
+  token = 'Bearer ' + generateToken({ id: '123456' });
 });
 
 afterAll(async () => {
