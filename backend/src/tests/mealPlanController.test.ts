@@ -6,11 +6,13 @@ import mongoose from 'mongoose';
 import { generateToken } from '../middleware/authMiddleware';
 
 let token: string;
-const mockUserId = new mongoose.Types.ObjectId();
+const mockUserId = '123456';
 
 beforeAll(async () => {
   // Connect to test database
-  await mongoose.connect(process.env.TEST_MONGO_URI!);
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
+  }
   const mockUser = {
     _id: mockUserId,
     username: 'updateduser',
