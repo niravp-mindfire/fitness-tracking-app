@@ -12,7 +12,7 @@ jest.mock('nodemailer');
 
 beforeAll(async () => {
   // Use a testing database URI
-  const testDbUri = process.env.TEST_MONGO_URI; // Ensure to set this in your test environment
+  const testDbUri = '123456'; // Ensure to set this in your test environment
   await mongoose.connect(testDbUri!);
 });
 

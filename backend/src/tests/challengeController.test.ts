@@ -28,7 +28,10 @@ beforeAll(async () => {
 });
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.TEST_MONGO_URI!);
+  // Check if Mongoose is already connected
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
+  }
 });
 
 afterAll(async () => {
