@@ -41,12 +41,12 @@ jobs:
         working-directory: backend
         run: |
           npm install
-          npm test
+          npm run test
 
       # Install dependencies, run tests, and build the frontend
       - name: Install frontend dependencies and build
         working-directory: frontend
         run: |
           npm install
-          npm test
+          npm run test
           npm run build

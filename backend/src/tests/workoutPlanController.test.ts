@@ -3,17 +3,15 @@ import app from '../index'; // Import your Express app
 import WorkoutPlan from '../models/WorkoutPlans'; // Adjust the path to your model
 import mongoose from 'mongoose';
 import { generateToken } from '../middleware/authMiddleware';
-import { closeServer } from '../config/db';
+import { closeServer, connectDB } from '../config/db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 let token: string;
-const mockUserId = '123456'; // Generate a valid ObjectId
+const mockUserId = new mongoose.Types.ObjectId();
 
 beforeAll(async () => {
-  // Use a testing database URI
-  const testDbUri = process.env.TEST_MONGO_URI; // Ensure to set this in your test environment
-  await mongoose.connect(testDbUri!);
+  connectDB(process.env.TEST_MONGO_URI!, process.env.TEST_PORT, app);
 
   // Generate a JWT token for authentication
   const mockUser = {
@@ -21,6 +19,7 @@ beforeAll(async () => {
     username: 'testuser',
     email: 'test@example.com',
     role: 'user',
+    test: true,
   };
   token = 'Bearer ' + generateToken(mockUser); // Generate token for authenticated requests
 });
@@ -28,8 +27,7 @@ beforeAll(async () => {
 afterAll(async () => {
   // Clean up your test database if necessary
   await WorkoutPlan.deleteMany({});
-  await mongoose.disconnect();
-  closeServer(); // Ensure the server closes
+  await closeServer(); // Ensure the server closes
 });
 
 // Mock Workout Plan data with all required fields

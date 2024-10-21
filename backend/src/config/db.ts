@@ -2,19 +2,22 @@ import mongoose from 'mongoose';
 
 let server: any;
 
-export const connectDB = (PORT: any, app: any) => {
-  mongoose
-    .connect(process.env.MONGO_URI!)
-    .then(() => {
-      server = app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+export const connectDB = (URL: any, PORT: any, app: any) => {
+  if (!server) {
+    mongoose
+      .connect(URL)
+      .then(() => {
+        server = app.listen(PORT, () => {
+          console.log(`Server running on port ${PORT}`);
+        });
+      })
+      .catch((err) => {
+        console.error('MongoDB connection error:', err);
       });
-    })
-    .catch((err) => {
-      console.error('MongoDB connection error:', err);
-    });
+  }
 };
 
-export const closeServer = () => {
-  server?.close(); // Close the server if it exists
+export const closeServer = async () => {
+  await mongoose.connection.close();
+  await server.close();
 };

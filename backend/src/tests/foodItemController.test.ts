@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../index'; // Assuming your Express app is exported from index.ts
 import mongoose from 'mongoose';
 import FoodItem from '../models/FoodItem';
-import { closeServer } from '../config/db';
+import { closeServer, connectDB } from '../config/db';
 import { generateToken } from '../middleware/authMiddleware';
 
 interface Macronutrients {
@@ -32,23 +32,26 @@ let foodItemId: string;
 let token: string; // Mock token for authentication
 
 beforeAll(async () => {
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
-  }
+  connectDB(process.env.TEST_MONGO_URI!, process.env.TEST_PORT, app);
 
   // Create a mock food item to use in tests
   const foodItem: any = await FoodItem.create(mockFoodItem);
   foodItemId = foodItem._id.toString();
-
+  const mockUser = {
+    _id: new mongoose.Types.ObjectId(),
+    username: 'updateduser',
+    email: 'test@example.com',
+    role: 'user',
+    test: true,
+  };
   // Mock user token (implement your token generation logic)
-  token = 'Bearer ' + generateToken({ id: '123456' });
+  token = 'Bearer ' + generateToken(mockUser);
 });
 
 afterAll(async () => {
   // Cleanup: Delete the mock food item and disconnect from DB
   await FoodItem.deleteMany({});
-  await mongoose.disconnect();
-  closeServer(); // Close the server after tests
+  await closeServer(); // Ensure the server closes
 });
 
 describe('Food Item API', () => {
