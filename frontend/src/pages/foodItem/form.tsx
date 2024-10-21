@@ -131,6 +131,7 @@ const FoodItemForm: React.FC<DialogProps> = ({
                 : ''
             }
             sx={{ mt: 2 }}
+            inputProps={{ min: 0, max: 5000 }}
           />
           <TextField
             fullWidth
@@ -145,6 +146,7 @@ const FoodItemForm: React.FC<DialogProps> = ({
                 : ''
             }
             sx={{ mt: 2 }}
+            inputProps={{ min: 0, max: 500 }}
           />
           <TextField
             fullWidth
@@ -162,6 +164,7 @@ const FoodItemForm: React.FC<DialogProps> = ({
                 : ''
             }
             sx={{ mt: 2 }}
+            inputProps={{ min: 0, max: 1000 }}
           />
           <TextField
             fullWidth
@@ -176,6 +179,7 @@ const FoodItemForm: React.FC<DialogProps> = ({
                 : ''
             }
             sx={{ mt: 2 }}
+            inputProps={{ min: 0, max: 1000 }}
           />
           <Button
             type="submit"

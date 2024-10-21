@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   TextField,
@@ -8,8 +8,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
+  Typography,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
   fetchChallenges,
   deleteChallenge,
@@ -42,20 +44,27 @@ const ChallengeList: React.FC = () => {
     isOpen: false,
     editId: '',
   });
+
+  // Debounce search term with a delay of 300ms
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   useEffect(() => {
     getAllData();
-  }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
+  }, [dispatch, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
 
   const getAllData = () => {
-    dispatch(
-      fetchChallenges({
-        search: searchTerm,
-        page: page + 1,
-        limit: rowsPerPage,
-        sort: orderBy,
-        order,
-      }),
-    );
+    // Only fetch data if the search term has at least 3 characters
+    if (debouncedSearchTerm.length >= 3) {
+      dispatch(
+        fetchChallenges({
+          search: debouncedSearchTerm,
+          page: page + 1,
+          limit: rowsPerPage,
+          sort: orderBy,
+          order,
+        }),
+      );
+    }
   };
 
   const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
@@ -74,7 +83,6 @@ const ChallengeList: React.FC = () => {
   const handleDeleteClick = (id: string) => {
     setSelectedChallengeId(id);
     setDialogOpen(true);
-    getAllData();
   };
 
   const handleConfirmDelete = () => {
@@ -121,27 +129,34 @@ const ChallengeList: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Challenge List</h1>
-      <Box display="flex" justifyContent="space-between" mb={2}>
-        <TextField
-          value={searchTerm}
-          onChange={handleSearchChange}
-          label="Search Challenge"
-          variant="outlined"
-          sx={{ width: '300px' }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddChallenge}
-        >
-          Add Challenge
-        </Button>
-      </Box>
+    <Box padding={2}>
+      <Typography variant="h4" gutterBottom>
+        Challenge List
+      </Typography>
+      <Grid container spacing={2} mb={2} alignItems="center">
+        <Grid item xs={12} sm={8}>
+          <TextField
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearchChange}
+            label="Search Challenge"
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleAddChallenge}
+          >
+            Add Challenge
+          </Button>
+        </Grid>
+      </Grid>
 
       {loading ? (
-        <p>Loading...</p>
+        <Typography variant="h6">Loading...</Typography>
       ) : (
         <DataTable
           columns={columns}
@@ -186,7 +201,7 @@ const ChallengeList: React.FC = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </div>
+    </Box>
   );
 };
 

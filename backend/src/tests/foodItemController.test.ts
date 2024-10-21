@@ -2,8 +2,8 @@ import request from 'supertest';
 import app from '../index'; // Assuming your Express app is exported from index.ts
 import mongoose from 'mongoose';
 import FoodItem from '../models/FoodItem';
-import { closeServer } from '../index'; // Function to close the server after tests
-import { generateToken } from '../controllers/userController';
+import { closeServer } from '../config/db';
+import { generateToken } from '../middleware/authMiddleware';
 
 interface Macronutrients {
   proteins: number;

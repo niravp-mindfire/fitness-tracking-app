@@ -8,37 +8,35 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
+  Typography,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
-  fetchExercises,
-  deleteExercise,
-} from '../../features/exercise/exerciseSlice';
+  fetchChallenges,
+  deleteChallenge,
+} from '../../features/challenges/challenge';
 import DataTable from '../../component/Datatable';
 import { TableColumn } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
-import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
-import ExerciseForm from './ExerciseForm';
+import ChallengeForm from './ExerciseForm';
 
-const ExerciseList: React.FC = () => {
+const ChallengeList: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { exercises, totalCount, loading } = useAppSelector(
-    (state) => state.exercise,
+  const { challenges, totalCount, loading } = useAppSelector(
+    (state) => state.challenge,
   );
 
-  // Local state for managing search, sort, pagination, and date filters
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<string>('name');
+  const [orderBy, setOrderBy] = useState<string>('title');
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(
+  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
     null,
   );
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -46,93 +44,78 @@ const ExerciseList: React.FC = () => {
     isOpen: false,
     editId: '',
   });
-  // Fetch exercises when component mounts or state changes
+
+  // Debounce search term with a delay of 500ms
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   useEffect(() => {
     getAllData();
-  }, [
-    dispatch,
-    searchTerm,
-    page,
-    rowsPerPage,
-    orderBy,
-    order,
-    startDate,
-    endDate,
-  ]);
+  }, [dispatch, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
 
   const getAllData = () => {
-    dispatch(
-      fetchExercises({
-        search: searchTerm,
-        page: page + 1, // Page numbers are 1-indexed in the backend
-        limit: rowsPerPage,
-        sort: orderBy,
-        order,
-        startDate,
-        endDate,
-      }),
-    );
+    // Only fetch data if the search term has at least 3 characters
+    if (debouncedSearchTerm.length >= 3) {
+      dispatch(
+        fetchChallenges({
+          search: debouncedSearchTerm,
+          page: page + 1,
+          limit: rowsPerPage,
+          sort: orderBy,
+          order,
+        }),
+      );
+    }
   };
 
-  // Handle sorting
   const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
     setOrder(newOrder);
     setOrderBy(field);
   };
 
-  // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  // Handle pagination
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
 
-  // Handle delete confirmation dialog
   const handleDeleteClick = (id: string) => {
-    setSelectedExerciseId(id);
+    setSelectedChallengeId(id);
     setDialogOpen(true);
   };
 
-  // Confirm deletion
   const handleConfirmDelete = () => {
-    if (selectedExerciseId) {
-      dispatch(deleteExercise(selectedExerciseId));
-      getAllData();
+    if (selectedChallengeId) {
+      dispatch(deleteChallenge(selectedChallengeId));
     }
     setDialogOpen(false);
     setSnackbarOpen(true);
   };
 
-  // Close delete confirmation dialog
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
 
-  // Handle adding a new exercise
-  const handleAddExercise = () => {
+  const handleAddChallenge = () => {
     setFormModel({
       isOpen: true,
       editId: '',
     });
   };
 
-  // Handle editing an existing exercise
-  const handleEditExercise = (id: string) => {
+  const handleEditChallenge = (id: string) => {
     setFormModel({
       isOpen: true,
       editId: id,
     });
   };
 
-  // Table columns definition
   const columns: TableColumn[] = [
-    { field: 'name', headerName: 'Name', sorting: true },
-    { field: 'type', headerName: 'Type', sorting: true },
-    { field: 'category', headerName: 'Category', sorting: true },
+    { field: 'title', headerName: 'Title', sorting: true },
     { field: 'description', headerName: 'Description', sorting: false },
+    { field: 'startDate', headerName: 'Start Date', sorting: true },
+    { field: 'endDate', headerName: 'End Date', sorting: true },
   ];
 
   const handleClose = (fetch: boolean) => {
@@ -146,38 +129,49 @@ const ExerciseList: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Exercise List</h1>
-      <Box display="flex" justifyContent="space-between" mb={2}>
-        <TextField
-          value={searchTerm}
-          onChange={handleSearchChange}
-          label="Search Exercise"
-          variant="outlined"
-          sx={{ width: '300px' }}
-        />
-        <Button variant="contained" color="primary" onClick={handleAddExercise}>
-          Add Exercise
-        </Button>
-      </Box>
+    <Box padding={2}>
+      <Typography variant="h4" gutterBottom>
+        Challenge List
+      </Typography>
+      <Grid container spacing={2} mb={2} alignItems="center">
+        <Grid item xs={12} sm={8}>
+          <TextField
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearchChange}
+            label="Search Challenge"
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleAddChallenge}
+          >
+            Add Challenge
+          </Button>
+        </Grid>
+      </Grid>
 
       {loading ? (
-        <p>Loading...</p>
+        <Typography variant="h6">Loading...</Typography>
       ) : (
         <DataTable
           columns={columns}
-          data={exercises.map((exercise) => ({
-            id: exercise._id,
-            name: exercise.name,
-            type: exercise.type,
-            category: exercise.category,
-            description: exercise.description,
+          data={challenges.map((challenge: any) => ({
+            id: challenge._id,
+            title: challenge.title,
+            description: challenge.description,
+            startDate: challenge?.startDate?.split('T')[0],
+            endDate: challenge?.endDate?.split('T')[0],
           }))}
           onSort={handleSort}
           totalCount={totalCount}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
-          handleEdit={handleEditExercise}
+          handleEdit={handleEditChallenge}
           handleDelete={handleDeleteClick}
         />
       )}
@@ -186,17 +180,17 @@ const ExerciseList: React.FC = () => {
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this exercise?
+            Are you sure you want to delete this challenge?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleConfirmDelete} color="secondary">
+          <Button onClick={handleConfirmDelete} color="primary">
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-      <ExerciseForm
+      <ChallengeForm
         open={formModel?.isOpen}
         onClose={handleClose}
         id={formModel?.editId}
@@ -207,8 +201,8 @@ const ExerciseList: React.FC = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </div>
+    </Box>
   );
 };
 
-export default ExerciseList;
+export default ChallengeList;

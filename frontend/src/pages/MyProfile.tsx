@@ -24,16 +24,18 @@ import {
 } from '../features/profile/profileSlice';
 import { toast } from 'react-toastify';
 import { ProfileFormValues } from '../utils/types';
-import { calculateAge, formatDateForInput } from '../utils/common'; // Assuming you have this function
+import { calculateAge, formatDateForInput } from '../utils/common';
 
 const MyProfile = () => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.profile.loading);
   const userProfile = useAppSelector((state) => state.profile.data);
   const error = useAppSelector((state) => state.profile.error);
+
   const fetchProfile = async () => {
     await dispatch(getProfile()).unwrap();
   };
+
   useEffect(() => {
     fetchProfile();
   }, [dispatch]);
@@ -44,16 +46,15 @@ const MyProfile = () => {
 
   const handleSubmit = useCallback(
     async (values: ProfileFormValues) => {
-      // Calculate age from DOB
       const age = calculateAge(values.profile.dob);
       const dob = values.profile.dob
         ? new Date(values.profile.dob).toISOString().split('T')[0]
         : null;
       const userData: any = {
-        firstName: values.profile.firstName, // Keeping the original structure
+        firstName: values.profile.firstName,
         lastName: values.profile.lastName,
-        dob, // Assign the formatted date of birth
-        age, // Assign the calculated age
+        dob,
+        age,
         gender: values.profile.gender,
         height: values.profile.height,
         weight: values.profile.weight,
@@ -72,16 +73,22 @@ const MyProfile = () => {
   );
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 4,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          padding: { xs: 0, sm: 3 },
         }}
       >
-        <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+        <Typography
+          component="h1"
+          variant="h5"
+          sx={{ mb: 3, textAlign: 'center' }}
+          data-testid="profile-title"
+        >
           My Profile
         </Typography>
         <Formik
@@ -92,10 +99,10 @@ const MyProfile = () => {
           {({ isSubmitting, values, errors }) => (
             <Form>
               <Box sx={{ mb: 4 }}>
-                <Card variant="outlined">
+                <Card variant="outlined" sx={{ padding: { xs: 0, sm: 3 } }}>
                   <CardContent>
                     <Grid container spacing={2}>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} sm={6}>
                         <Field
                           as={TextField}
                           variant="outlined"
@@ -104,10 +111,11 @@ const MyProfile = () => {
                           disabled={isSubmitting}
                           name="profile.firstName"
                           helperText={<ErrorMessage name="profile.firstName" />}
-                          error={!!error || errors?.profile?.firstName}
+                          error={!!error || !!errors?.profile?.firstName}
+                          data-testid="first-name-input"
                         />
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} sm={6}>
                         <Field
                           as={TextField}
                           variant="outlined"
@@ -116,10 +124,11 @@ const MyProfile = () => {
                           name="profile.lastName"
                           disabled={isSubmitting}
                           helperText={<ErrorMessage name="profile.lastName" />}
-                          error={!!error || errors?.profile?.lastName}
+                          error={!!error || !!errors?.profile?.lastName}
+                          data-testid="last-name-input"
                         />
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} sm={6}>
                         <Field
                           as={TextField}
                           variant="outlined"
@@ -131,10 +140,11 @@ const MyProfile = () => {
                           value={formatDateForInput(userProfile?.profile?.dob)}
                           InputLabelProps={{ shrink: true }}
                           helperText={<ErrorMessage name="profile.dob" />}
-                          error={!!error || errors?.profile?.dob}
+                          error={!!error || !!errors?.profile?.dob}
+                          data-testid="dob-input"
                         />
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} sm={6}>
                         <Field
                           as={TextField}
                           variant="outlined"
@@ -143,13 +153,17 @@ const MyProfile = () => {
                           name="profile.age"
                           type="number"
                           disabled={isSubmitting}
-                          value={calculateAge(values.profile.dob)} // Calculate age based on DOB
-                          InputProps={{ readOnly: true }} // Make age read-only
+                          value={calculateAge(values.profile.dob)}
+                          InputProps={{
+                            readOnly: true,
+                            inputProps: { max: 120 },
+                          }}
                           helperText={<ErrorMessage name="profile.age" />}
-                          error={!!error || errors?.profile?.age}
+                          error={!!error || !!errors?.profile?.age}
+                          data-testid="age-input"
                         />
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} sm={6}>
                         <FormControl variant="outlined" fullWidth>
                           <InputLabel id="gender-label">Gender</InputLabel>
                           <Field
@@ -158,7 +172,8 @@ const MyProfile = () => {
                             name="profile.gender"
                             label="Gender"
                             disabled={isSubmitting}
-                            error={!!error || errors?.profile?.gender}
+                            error={!!error || !!errors?.profile?.gender}
+                            data-testid="gender-select"
                           >
                             <MenuItem value="Male">Male</MenuItem>
                             <MenuItem value="Female">Female</MenuItem>
@@ -170,7 +185,7 @@ const MyProfile = () => {
                           />
                         </FormControl>
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} sm={6}>
                         <Field
                           as={TextField}
                           variant="outlined"
@@ -180,10 +195,12 @@ const MyProfile = () => {
                           disabled={isSubmitting}
                           type="number"
                           helperText={<ErrorMessage name="profile.height" />}
-                          error={!!error || errors?.profile?.height}
+                          error={!!error || !!errors?.profile?.height}
+                          data-testid="height-input"
+                          inputProps={{ max: 300 }}
                         />
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} sm={6}>
                         <Field
                           as={TextField}
                           variant="outlined"
@@ -193,7 +210,9 @@ const MyProfile = () => {
                           disabled={isSubmitting}
                           type="number"
                           helperText={<ErrorMessage name="profile.weight" />}
-                          error={!!error || errors?.profile?.weight}
+                          error={!!error || !!errors?.profile?.weight}
+                          data-testid="weight-input"
+                          inputProps={{ min: 0, max: 500 }}
                         />
                       </Grid>
                     </Grid>
@@ -202,7 +221,7 @@ const MyProfile = () => {
               </Box>
 
               {/* Fitness Goals Section */}
-              <Card variant="outlined">
+              <Card variant="outlined" sx={{ padding: { xs: 0, sm: 3 } }}>
                 <CardContent>
                   <Typography variant="h6" sx={{ mb: 2 }}>
                     Fitness Goals
@@ -213,7 +232,7 @@ const MyProfile = () => {
                         {values.fitnessGoals.map((goal: any, index: number) => (
                           <Box key={index} sx={{ mb: 2 }}>
                             <Grid container spacing={2}>
-                              <Grid item xs={12} md={3}>
+                              <Grid item xs={12} sm={6} md={3}>
                                 <Field
                                   as={TextField}
                                   variant="outlined"
@@ -221,13 +240,14 @@ const MyProfile = () => {
                                   disabled={isSubmitting}
                                   label="Goal Type"
                                   name={`fitnessGoals.${index}.goalType`}
+                                  data-testid={`goal-type-${index}`}
                                 />
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.goalType`}
                                   component={Typography}
                                 />
                               </Grid>
-                              <Grid item xs={12} md={3}>
+                              <Grid item xs={12} sm={6} md={3}>
                                 <Field
                                   as={TextField}
                                   variant="outlined"
@@ -236,13 +256,15 @@ const MyProfile = () => {
                                   label="Target Value"
                                   name={`fitnessGoals.${index}.targetValue`}
                                   type="number"
+                                  data-testid={`target-value-${index}`}
+                                  inputProps={{ min: 0, max: 200 }}
                                 />
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.targetValue`}
                                   component={Typography}
                                 />
                               </Grid>
-                              <Grid item xs={12} md={3}>
+                              <Grid item xs={12} sm={6} md={3}>
                                 <Field
                                   as={TextField}
                                   variant="outlined"
@@ -251,13 +273,15 @@ const MyProfile = () => {
                                   label="Current Value"
                                   name={`fitnessGoals.${index}.currentValue`}
                                   type="number"
+                                  data-testid={`current-value-${index}`}
+                                  inputProps={{ min: 0, max: 200 }}
                                 />
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.currentValue`}
                                   component={Typography}
                                 />
                               </Grid>
-                              <Grid item xs={12} md={3}>
+                              <Grid item xs={12} sm={6} md={3}>
                                 <Field
                                   as={TextField}
                                   variant="outlined"
@@ -270,38 +294,39 @@ const MyProfile = () => {
                                   value={formatDateForInput(
                                     values.fitnessGoals[index].targetDate,
                                   )}
+                                  data-testid={`target-date-${index}`}
                                 />
-
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.targetDate`}
                                   component={Typography}
                                 />
                               </Grid>
+                              <Grid item xs={12} sm={6} md={3}>
+                                <Button
+                                  onClick={() => remove(index)}
+                                  variant="outlined"
+                                  color="secondary"
+                                  disabled={isSubmitting}
+                                  data-testid={`remove-goal-${index}`}
+                                >
+                                  Remove Goal
+                                </Button>
+                              </Grid>
                             </Grid>
-                            <Button
-                              onClick={() => remove(index)}
-                              variant="contained"
-                              color="secondary"
-                              sx={{ mt: 2 }}
-                              disabled={isSubmitting}
-                            >
-                              Remove Goal
-                            </Button>
                           </Box>
                         ))}
                         <Button
                           onClick={() =>
                             push({
                               goalType: '',
-                              targetValue: 0,
-                              currentValue: 0,
+                              targetValue: '',
+                              currentValue: '',
                               targetDate: '',
                             })
                           }
-                          variant="contained"
-                          color="primary"
-                          sx={{ mt: 2 }}
+                          variant="outlined"
                           disabled={isSubmitting}
+                          data-testid="add-goal"
                         >
                           Add Goal
                         </Button>
@@ -310,20 +335,21 @@ const MyProfile = () => {
                   </FieldArray>
                 </CardContent>
               </Card>
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                disabled={isSubmitting}
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Update Profile{' '}
-                {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
-              </Button>
-
-              {error && <Typography color="error">{error}</Typography>}
+              <Box sx={{ mt: 4, textAlign: 'center' }}>
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    data-testid="submit-button"
+                  >
+                    Save Changes
+                  </Button>
+                )}
+              </Box>
             </Form>
           )}
         </Formik>

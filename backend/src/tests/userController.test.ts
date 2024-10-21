@@ -1,9 +1,10 @@
 import request from 'supertest';
-import app, { closeServer } from '../index';
+import app from '../index';
 import User from '../models/User';
 import { successResponse, errorResponse } from '../utils/responseFormat';
-import { generateToken } from '../controllers/userController';
+import { generateToken } from '../middleware/authMiddleware';
 import mongoose from 'mongoose';
+import { closeServer } from '../config/db';
 
 // Jest Mocks
 jest.mock('../models/User');

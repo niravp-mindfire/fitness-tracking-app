@@ -19,45 +19,41 @@ export const registerUser = createAsyncThunk<
   { token: string },
   { username: string; email: string; password: string; profile: any },
   { rejectValue: string }
->(
-  'auth/registerUser',
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(apiUrl.REGISTER, userData);
-      return response.data; // Return response data on success
-    } catch (error: any) {
-      return rejectWithValue(error.response.data.message || 'Registration failed'); // Handle errors
-    }
+>('auth/registerUser', async (userData, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.post(apiUrl.REGISTER, userData);
+    return response.data; // Return response data on success
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response.data.message || 'Registration failed',
+    ); // Handle errors
   }
-);
+});
 
 // Async thunk for user login
 export const loginUser = createAsyncThunk<
   { token: string },
   { email: string; password: string },
   { rejectValue: string }
->(
-  'auth/loginUser',
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(apiUrl.LOGIN, userData);
-      return response.data.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data.message || 'Login failed');
-    }
+>('auth/loginUser', async (userData, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.post(apiUrl.LOGIN, userData);
+    return response.data.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data.message || 'Login failed');
   }
-);
+});
 
 export const forgetPassword = createAsyncThunk(
   'auth/forgetPassword',
   async (values: { email: string }, { rejectWithValue }) => {
     try {
-    const response = await axiosInstance.post(apiUrl.FORGET_PASSWORD, values);
-    return response.data.data;
+      const response = await axiosInstance.post(apiUrl.FORGET_PASSWORD, values);
+      return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data.message || 'Login failed');
     }
-  }
+  },
 );
 
 // Slice for authentication
@@ -86,25 +82,33 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = null;
       })
-      .addCase(registerUser.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false;
-        state.error = action.payload || 'Registration failed';
-      })
+      .addCase(
+        registerUser.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          state.error = action.payload || 'Registration failed';
+        },
+      )
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.isAuthenticated = true;
-        state.token = action.payload.token;
-        localStorage.setItem('token', action.payload.token);
-        localStorage.setItem('role', action.payload.role);
+        state.token = action?.payload?.token;
+        localStorage.setItem('token', action?.payload?.token);
+        localStorage.setItem('refreshToken', action?.payload?.refreshToken);
+        localStorage.setItem('role', action?.payload?.role);
         state.error = null;
       })
-      .addCase(loginUser.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false;
-        state.error = action.payload || 'Login failed';
-      }).addCase(forgetPassword.pending, (state) => {
+      .addCase(
+        loginUser.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          state.error = action.payload || 'Login failed';
+        },
+      )
+      .addCase(forgetPassword.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
@@ -113,17 +117,17 @@ const authSlice = createSlice({
       })
       .addCase(forgetPassword.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "";
-      });;
+        state.error = action.error.message || '';
+      });
   },
 });
 
 // Export the actions and reducer
-export const { logout, initializeAuth } = authSlice.actions; 
-export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;
+export const { logout, initializeAuth } = authSlice.actions;
+export const selectIsAuthenticated = (state: RootState) =>
+  state.auth.isAuthenticated;
 export const selectAuthLoading = (state: RootState) => state.auth.loading;
 export const selectAuthError = (state: RootState) => state.auth.error;
 export const selectAuthToken = (state: RootState) => state.auth.token;
 
 export default authSlice.reducer;
-

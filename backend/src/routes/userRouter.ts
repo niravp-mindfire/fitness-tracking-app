@@ -7,7 +7,9 @@ import {
   editProfile,
   getAllUsers,
   getMyProfile,
+  refreshAccessToken,
 } from '../controllers/userController'; // Adjust the import based on your directory structure
+import { authenticateToken } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
@@ -19,10 +21,12 @@ router.post('/forget-password', forgetPassword);
 
 router.post('/reset-password/:resetToken', resetPassword);
 
-router.put('/edit-profile', editProfile);
+router.put('/edit-profile', authenticateToken, editProfile);
 
-router.get('/my-profile', getMyProfile);
+router.get('/my-profile', authenticateToken, getMyProfile);
 
-router.get('/users', getAllUsers);
+router.get('/users', authenticateToken, getAllUsers);
+
+router.post('/refresh', refreshAccessToken);
 
 export default router;

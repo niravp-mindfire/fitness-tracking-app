@@ -3,7 +3,7 @@ import app from '../index';
 import MealPlan from '../models/MealPlans';
 import FoodItem from '../models/FoodItem';
 import mongoose from 'mongoose';
-import { generateToken } from '../controllers/userController';
+import { generateToken } from '../middleware/authMiddleware';
 
 let token: string;
 const mockUserId = new mongoose.Types.ObjectId();

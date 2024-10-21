@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
   fetchNutritionEntries,
   selectAllNutritionEntries,
@@ -20,113 +20,97 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
 } from '@mui/material';
-import { path } from '../../utils/path';
 import NutritionForm from './NutritionForm';
 import SnackAlert from '../../component/SnackAlert';
 
-const NutritionList = () => {
+const NutritionList: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const nutritions: any = useAppSelector(selectAllNutritionEntries);
+
+  // Selectors
+  const nutritions = useAppSelector(selectAllNutritionEntries);
   const loading = useAppSelector(selectNutritionLoading);
-  const totalCount: number = useAppSelector(selectTotalNutritionEntries);
+  const totalCount = useAppSelector(selectTotalNutritionEntries);
   const sortField = useAppSelector((state) => state.nutrition.sort);
   const sortOrder = useAppSelector((state) => state.nutrition.order);
+
+  // Local state
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [editNutrition, setEditNutrition] = useState<string | undefined>();
+  const [editNutritionId, setEditNutritionId] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
 
-  const handleCloseModal = (type = false) => {
-    setOpenModal(false);
-    setEditNutrition(undefined);
-    if (type) {
-      getAllNutritions();
-    }
-  };
-  const getAllNutritions = () => {
+  const debouncedSearchTerm = useDebounce(searchTerm, 300); // Use the hook with a 300ms delay
+
+  // Fetch all nutrition entries
+  const fetchNutritions = useCallback(() => {
     dispatch(
       fetchNutritionEntries({
         page: 1,
         limit: 10,
-        search: searchTerm,
+        search: debouncedSearchTerm, // Use debounced search term
+        sort: sortField,
+        order: sortOrder,
+      }),
+    );
+  }, [dispatch, debouncedSearchTerm, sortField, sortOrder]);
+
+  // Effect to fetch data when dependencies change
+  useEffect(() => {
+    fetchNutritions();
+  }, [fetchNutritions]);
+
+  // Handlers
+  const handleSort = (field: string) => {
+    dispatch(updateSort(field));
+  };
+
+  const handlePageChange = (newPage: number) => {
+    dispatch(
+      fetchNutritionEntries({
+        page: newPage + 1,
+        limit: 10,
+        search: debouncedSearchTerm,
         sort: sortField,
         order: sortOrder,
       }),
     );
   };
-  // Fetch data when search term, sort field, or order changes
-  useEffect(() => {
-    getAllNutritions();
-  }, [dispatch, searchTerm, sortField, sortOrder]);
 
-  const handleSort = useCallback(
-    (field: any) => {
-      dispatch(updateSort(field));
-    },
-    [dispatch],
-  );
-
-  const handlePageChange = useCallback(
-    (newPage: number) => {
-      dispatch(
-        fetchNutritionEntries({
-          page: newPage + 1,
-          limit: 10,
-          search: searchTerm,
-          sort: sortField,
-          order: sortOrder,
-        }),
-      );
-    },
-    [dispatch, searchTerm, sortField, sortOrder],
-  );
-
-  const handleSearchChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(event.target.value);
-    },
-    [],
-  );
-
-  const handleEditNutrition = (id: any) => {
-    setEditNutrition(id);
-    handleOpenModal();
-  };
-
-  const handleDeleteNutrition = useCallback((id: string) => {
+  const handleDeleteNutrition = (id: string) => {
     setDeleteId(id);
     setDialogOpen(true);
-  }, []);
+  };
 
-  const handleConfirmDelete = useCallback(async () => {
+  const handleConfirmDelete = async () => {
     if (deleteId) {
       await dispatch(deleteNutrition(deleteId));
       setDialogOpen(false);
       setDeleteId(null);
-      dispatch(
-        fetchNutritionEntries({
-          page: 1,
-          limit: 10,
-          search: searchTerm,
-          sort: sortField,
-          order: sortOrder,
-        }),
-      );
+      fetchNutritions();
       setSnackbarOpen(true);
     }
-  }, [deleteId, dispatch, searchTerm, sortField, sortOrder]);
+  };
 
-  const handleCloseDialog = useCallback(() => {
+  const handleEditNutrition = (id: string) => {
+    setEditNutritionId(id);
+    setModalOpen(true);
+  };
+
+  const handleCloseDialog = () => {
     setDialogOpen(false);
     setDeleteId(null);
-  }, []);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setEditNutritionId(undefined);
+    fetchNutritions(); // Re-fetch data on modal close
+  };
 
   const columns = useMemo(
     () => [
@@ -144,7 +128,7 @@ const NutritionList = () => {
         date: new Date(nutrition.date).toLocaleDateString(),
         notes: nutrition.notes,
         createdAt: nutrition?.createdAt
-          ? new Date(nutrition?.createdAt).toLocaleDateString()
+          ? new Date(nutrition.createdAt).toLocaleDateString()
           : '-',
       })),
     [nutritions],
@@ -153,17 +137,23 @@ const NutritionList = () => {
   return (
     <div>
       <h1>Nutrition List</h1>
-      <Box display="flex" justifyContent="space-between" mb={3}>
-        <TextField
-          variant="outlined"
-          label="Search"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          sx={{ width: '300px' }}
-        />
-        <Button variant="contained" color="primary" onClick={handleOpenModal}>
-          Add Nutrition
-        </Button>
+      <Box mb={3}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              label="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} display="flex" justifyContent="flex-end">
+            <Button variant="contained" onClick={() => setModalOpen(true)}>
+              Add Nutrition
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
       {loading ? (
         <p>Loading...</p>
@@ -176,7 +166,10 @@ const NutritionList = () => {
           totalCount={totalCount}
           rowsPerPage={10}
           handleEdit={handleEditNutrition}
-          handleDelete={handleDeleteNutrition}
+          handleDelete={(id) => {
+            setDeleteId(id);
+            setDialogOpen(true);
+          }}
         />
       )}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
@@ -197,18 +190,18 @@ const NutritionList = () => {
         </DialogActions>
       </Dialog>
       <NutritionForm
-        id={editNutrition}
-        open={openModal}
+        open={modalOpen}
         onClose={handleCloseModal}
+        id={editNutritionId}
       />
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}
-        type={`success`}
-        message={`Record deleted successfully`}
+        type="success"
+        message="Nutrition entry deleted successfully"
       />
     </div>
   );
 };
 
-export default React.memo(NutritionList);
+export default NutritionList;

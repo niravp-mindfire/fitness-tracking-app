@@ -55,7 +55,7 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
 
   const exercises = useAppSelector((state) => state.exercise.exercises);
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Local error state
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const error = useAppSelector(selectWorkoutPlanError);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [isSave, setIsSave] = useState(false);
@@ -72,7 +72,7 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
         await dispatch(fetchExercises(defaultPagination));
       } catch (error) {
         console.error('Failed to fetch data:', error);
-        setErrorMessage('Failed to fetch workout plan data.'); // Update error state
+        setErrorMessage('Failed to fetch workout plan data.');
       } finally {
         setLoading(false);
       }
@@ -125,7 +125,7 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
         setIsSave(true);
         onClose(true);
       } catch (error) {
-        setSnackbarOpen(true); // Open snackbar on error
+        setSnackbarOpen(true);
       }
     },
   });
@@ -226,6 +226,7 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
               error={formik.touched.duration && Boolean(formik.errors.duration)}
               helperText={formik.touched.duration && formik.errors.duration}
               margin="normal"
+              inputProps={{ min: 0, max: 52 }}
             />
 
             <Typography variant="h6" sx={{ mt: 3 }}>
@@ -240,7 +241,7 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
                 key={index}
                 sx={{ mt: 1 }}
               >
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     select
                     label="Exercise"
@@ -274,7 +275,7 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
                   </TextField>
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={12} sm={2}>
                   <TextField
                     label="Sets"
                     name={`sets-${index}`}
@@ -304,10 +305,11 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
                       formik.errors.exercises &&
                       typeof formik.errors.exercises !== 'string'
                     }
+                    inputProps={{ min: 1, max: 100 }}
                   />
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={12} sm={2}>
                   <TextField
                     label="Reps"
                     name={`reps-${index}`}
@@ -337,13 +339,15 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
                       formik.errors.exercises &&
                       typeof formik.errors.exercises !== 'string'
                     }
+                    inputProps={{ min: 1, max: 100 }}
                   />
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={12} sm={2}>
                   <IconButton
                     onClick={() => handleRemoveExercise(index)}
                     color="error"
+                    disabled={formik.isSubmitting}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -353,38 +357,35 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
 
             <Button
               startIcon={<AddCircleOutlineIcon />}
-              onClick={handleAddExercise}
               variant="outlined"
+              onClick={handleAddExercise}
               sx={{ mt: 2 }}
             >
               Add Exercise
             </Button>
 
-            <Box sx={{ mt: 3 }}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={loading}
-              >
-                {loading ? <CircularProgress size={24} /> : 'Save'}
-              </Button>
-            </Box>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              disabled={formik.isSubmitting}
+              sx={{ mt: 3 }}
+            >
+              {formik.isSubmitting ? (
+                <CircularProgress size={24} />
+              ) : (
+                'Save Workout Plan'
+              )}
+            </Button>
           </Box>
         </DialogContent>
       </Dialog>
 
       <SnackAlert
-        snackbarOpen={isSave}
-        setSnackbarOpen={setIsSave}
-        type={`success`}
-        message={`Record saved successfully`}
-      />
-      <SnackAlert
-        snackbarOpen={snackbarOpen}
-        setSnackbarOpen={setSnackbarOpen}
-        type={`error`}
-        message={error || 'An error occurred!'}
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        severity={error ? 'error' : 'success'}
+        message={error || 'Workout plan saved successfully!'}
       />
     </>
   );

@@ -1,8 +1,9 @@
 import request from 'supertest';
-import app, { closeServer } from '../index';
+import app from '../index';
 import Nutrition from '../models/Nutrition';
 import mongoose from 'mongoose';
-import { generateToken } from '../controllers/userController';
+import { generateToken } from '../middleware/authMiddleware';
+import { closeServer } from '../config/db';
 
 let token: string;
 const mockUserId = new mongoose.Types.ObjectId();

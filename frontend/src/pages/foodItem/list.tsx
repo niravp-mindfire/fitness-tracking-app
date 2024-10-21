@@ -8,8 +8,11 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
+  Stack,
+  Typography,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
   fetchFoodItems,
   deleteFoodItem,
@@ -17,7 +20,6 @@ import {
 import DataTable from '../../component/Datatable';
 import { TableColumn } from '../../utils/types';
 import { useNavigate } from 'react-router-dom';
-import { path } from '../../utils/path';
 import SnackAlert from '../../component/SnackAlert';
 import FoodItemForm from './form';
 
@@ -43,20 +45,27 @@ const FoodItemList: React.FC = () => {
     isOpen: false,
     editId: '',
   });
+
+  // Debounce search term with a delay of 500ms
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   useEffect(() => {
     getAllData();
-  }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
+  }, [dispatch, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
 
   const getAllData = () => {
-    dispatch(
-      fetchFoodItems({
-        search: searchTerm,
-        page: page + 1,
-        limit: rowsPerPage,
-        sort: orderBy,
-        order,
-      }),
-    );
+    // Only fetch data if the search term has at least 3 characters
+    if (debouncedSearchTerm.length >= 3) {
+      dispatch(
+        fetchFoodItems({
+          search: debouncedSearchTerm,
+          page: page + 1,
+          limit: rowsPerPage,
+          sort: orderBy,
+          order,
+        }),
+      );
+    }
   };
 
   const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
@@ -79,7 +88,7 @@ const FoodItemList: React.FC = () => {
 
   const handleConfirmDelete = () => {
     if (selectedFoodItemId) {
-      dispatch(deleteFoodItem(selectedFoodItemId)).then((res) => {
+      dispatch(deleteFoodItem(selectedFoodItemId)).then(() => {
         getAllData();
       });
     }
@@ -124,23 +133,36 @@ const FoodItemList: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Food Item List</h1>
-      <Box display="flex" justifyContent="space-between" mb={2}>
-        <TextField
-          value={searchTerm}
-          onChange={handleSearchChange}
-          label="Search Food Item"
-          variant="outlined"
-          sx={{ width: '300px' }}
-        />
-        <Button variant="contained" color="primary" onClick={handleAddFoodItem}>
-          Add Food Item
-        </Button>
-      </Box>
+    <Box padding={2}>
+      <Typography variant="h4" gutterBottom>
+        Food Item List
+      </Typography>
+      <Stack spacing={2} mb={2}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={8} md={6}>
+            <TextField
+              value={searchTerm}
+              onChange={handleSearchChange}
+              label="Search Food Item"
+              variant="outlined"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} md={6}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddFoodItem}
+              fullWidth
+            >
+              Add Food Item
+            </Button>
+          </Grid>
+        </Grid>
+      </Stack>
 
       {loading ? (
-        <p>Loading...</p>
+        <Typography variant="h6">Loading...</Typography>
       ) : (
         <DataTable
           columns={columns}
@@ -186,7 +208,7 @@ const FoodItemList: React.FC = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </div>
+    </Box>
   );
 };
 

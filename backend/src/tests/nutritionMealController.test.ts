@@ -1,9 +1,10 @@
 // nutritionMealController.test.ts
 import request from 'supertest';
-import app, { closeServer } from '../index'; // Import your Express app
+import app from '../index'; // Import your Express app
 import NutritionMeal from '../models/NutritionMeals';
 import mongoose from 'mongoose';
-import { generateToken } from '../controllers/userController';
+import { generateToken } from '../middleware/authMiddleware';
+import { closeServer } from '../config/db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
@@ -102,7 +103,6 @@ describe('Nutrition Meals API', () => {
   // Test PUT update nutrition meal
   it('PUT /api/nutrition-meals/:id - should update an existing nutrition meal', async () => {
     const nutritionMeal = await NutritionMeal.create(mockNutritionMeal);
-    console.log(nutritionMeal._id, '=============nutritionMeal');
     const response = await request(app)
       .put(`/api/nutrition-meals/${nutritionMeal._id}`)
       .set('Authorization', token)

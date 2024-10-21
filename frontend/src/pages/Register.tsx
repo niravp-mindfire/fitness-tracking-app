@@ -1,4 +1,3 @@
-// src/pages/Register.tsx
 import React, { useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
@@ -19,6 +18,8 @@ import {
   Select,
   InputLabel,
   FormControl,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { RegisterFormValues } from '../utils/types';
 import { calculateAge } from '../utils/common';
@@ -30,6 +31,8 @@ const Register = () => {
   const navigate = useNavigate();
   const loading = useAppSelector(selectAuthLoading);
   const error = useAppSelector(selectAuthError);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const initialValues = useMemo(() => registerInitialValue, []);
 
@@ -55,8 +58,9 @@ const Register = () => {
   );
 
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth={isMobile ? 'sm' : 'xs'}>
       <Box
+        data-testid="register-form"
         sx={{
           marginTop: 8,
           display: 'flex',
@@ -64,7 +68,11 @@ const Register = () => {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5">
+        <Typography
+          component="h1"
+          variant={isMobile ? 'h6' : 'h5'}
+          data-testid="register-title"
+        >
           Register
         </Typography>
         <Formik
@@ -86,7 +94,8 @@ const Register = () => {
                   label="First Name"
                   name="profile.firstName"
                   helperText={<ErrorMessage name="profile.firstName" />}
-                  error={!!error || errors?.profile?.firstName}
+                  error={!!error || !!errors?.profile?.firstName}
+                  data-testid="firstName-input"
                 />
 
                 <Field
@@ -99,8 +108,10 @@ const Register = () => {
                   label="Last Name"
                   name="profile.lastName"
                   helperText={<ErrorMessage name="profile.lastName" />}
-                  error={!!error || errors?.profile?.lastName}
+                  error={!!error || !!errors?.profile?.lastName}
+                  data-testid="lastName-input"
                 />
+
                 <Field
                   as={TextField}
                   variant="outlined"
@@ -111,7 +122,8 @@ const Register = () => {
                   label="Username"
                   name="username"
                   helperText={<ErrorMessage name="username" />}
-                  error={!!error || errors?.username}
+                  error={!!error || !!errors?.username}
+                  data-testid="username-input"
                 />
 
                 <Field
@@ -124,7 +136,8 @@ const Register = () => {
                   label="Email Address"
                   name="email"
                   helperText={<ErrorMessage name="email" />}
-                  error={!!error || errors?.email}
+                  error={!!error || !!errors?.email}
+                  data-testid="email-input"
                 />
 
                 <Field
@@ -139,7 +152,8 @@ const Register = () => {
                   id="password"
                   autoComplete="current-password"
                   helperText={<ErrorMessage name="password" />}
-                  error={!!error || errors?.password}
+                  error={!!error || !!errors?.password}
+                  data-testid="password-input"
                 />
 
                 <Field
@@ -156,7 +170,8 @@ const Register = () => {
                     shrink: true,
                   }}
                   helperText={<ErrorMessage name="profile.dob" />}
-                  error={!!error || errors?.profile?.dob}
+                  error={!!error || !!errors?.profile?.dob}
+                  data-testid="dob-input"
                 />
 
                 {/* Gender Dropdown */}
@@ -170,7 +185,8 @@ const Register = () => {
                     disabled={isSubmitting}
                     label="Gender"
                     helperText={<ErrorMessage name="profile.gender" />}
-                    error={!!error || errors?.profile?.gender}
+                    error={!!error || !!errors?.profile?.gender}
+                    data-testid="gender-select"
                   >
                     <MenuItem value="Male">Male</MenuItem>
                     <MenuItem value="Female">Female</MenuItem>
@@ -188,7 +204,9 @@ const Register = () => {
                   name="profile.height"
                   type="number"
                   helperText={<ErrorMessage name="profile.height" />}
-                  error={!!error || errors?.profile?.height}
+                  error={!!error || !!errors?.profile?.height}
+                  data-testid="height-input"
+                  inputProps={{ min: 0, max: 300 }}
                 />
 
                 <Field
@@ -202,8 +220,11 @@ const Register = () => {
                   name="profile.weight"
                   type="number"
                   helperText={<ErrorMessage name="profile.weight" />}
-                  error={!!error || errors?.profile?.weight}
+                  error={!!error || !!errors?.profile?.weight}
+                  data-testid="weight-input"
+                  inputProps={{ min: 0, max: 500 }}
                 />
+
                 <Button
                   type="submit"
                   fullWidth
@@ -211,12 +232,17 @@ const Register = () => {
                   color="primary"
                   disabled={isSubmitting}
                   sx={{ mt: 3, mb: 2 }}
+                  data-testid="register-button"
                 >
                   Register{' '}
                   {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
                 </Button>
                 {error && (
-                  <Typography color="error" sx={{ mb: 2 }}>
+                  <Typography
+                    color="error"
+                    sx={{ mb: 2 }}
+                    data-testid="error-message"
+                  >
                     {error}
                   </Typography>
                 )}
