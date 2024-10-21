@@ -1,9 +1,9 @@
 import request from 'supertest';
-import app, { closeServer } from '../index';
+import app from '../index';
 import mongoose from 'mongoose';
 import Challenge from '../models/Challenges';
-import { generateToken } from '../controllers/userController';
-
+import { generateToken } from '../middleware/authMiddleware';
+import { closeServer } from '../config/db';
 // Define the shape of the challenge data
 interface ChallengeData {
   title: string;

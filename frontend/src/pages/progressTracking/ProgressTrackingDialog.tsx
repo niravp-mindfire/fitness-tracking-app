@@ -86,7 +86,12 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
   }, [currentProgressTracking, id]);
 
   const validationSchema = Yup.object({
-    weight: Yup.number().required('Weight is required').positive().integer(),
+    weight: Yup.number()
+      .required('Weight is required')
+      .min(0, 'Weight cannot be negative')
+      .max(500, 'Weight cannot exceed 500 kg')
+      .positive()
+      .integer(),
     date: Yup.date().required('Date is required'),
     bodyFatPercentage: Yup.number().positive().integer().nullable(),
     muscleMass: Yup.number().positive().integer().nullable(),
@@ -179,6 +184,7 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
             error={formik.touched.weight && Boolean(formik.errors.weight)}
             helperText={formik.touched.weight ? formik.errors.weight : ''}
             margin="normal"
+            inputProps={{ min: 1, max: 300 }}
           />
           <TextField
             fullWidth
@@ -190,6 +196,7 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
             InputLabelProps={{ shrink: true }}
             onChange={formik.handleChange}
             margin="normal"
+            inputProps={{ min: 0, max: 100 }}
           />
           <TextField
             fullWidth
@@ -201,6 +208,7 @@ const ProgressTrackingDialog: React.FC<ProgressTrackingDialogProps> = ({
             InputLabelProps={{ shrink: true }}
             onChange={formik.handleChange}
             margin="normal"
+            inputProps={{ min: 0 }}
           />
           <TextField
             fullWidth

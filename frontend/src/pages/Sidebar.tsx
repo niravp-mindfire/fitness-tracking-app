@@ -1,3 +1,5 @@
+// src/pages/admin/Sidebar.tsx
+
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery, Theme } from '@mui/material';
 import {
@@ -30,23 +32,26 @@ import { path } from '../utils/path';
 const expandedWidth = 240; // Width when sidebar is expanded
 const collapsedWidth = 60; // Width when sidebar is collapsed
 
+// Update SidebarProps to include isCollapsed
 interface SidebarProps {
   handleLogout: () => void;
+  isCollapsed: boolean; // Add this line
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+const Sidebar: React.FC<SidebarProps> = ({ handleLogout, isCollapsed }) => {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed); // Maintain local state
+
   const location = useLocation(); // Get current location
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down('sm'),
   );
 
   useEffect(() => {
-    setIsCollapsed(isMobile);
+    setIsSidebarCollapsed(isMobile);
   }, [isMobile]);
 
   const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+    setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
   const menuItems = [
@@ -77,10 +82,10 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
     <Drawer
       variant="permanent"
       sx={{
-        width: isCollapsed ? collapsedWidth : expandedWidth,
+        width: isSidebarCollapsed ? collapsedWidth : expandedWidth,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: isCollapsed ? collapsedWidth : expandedWidth,
+          width: isSidebarCollapsed ? collapsedWidth : expandedWidth,
           boxSizing: 'border-box',
           transition: 'width 0.3s', // Smooth transition for width changes
         },
@@ -91,10 +96,10 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
           padding: 2,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: isCollapsed ? 'center' : 'space-between',
+          justifyContent: isSidebarCollapsed ? 'center' : 'space-between',
         }}
       >
-        {!isCollapsed && (
+        {!isSidebarCollapsed && (
           <Typography
             variant="h6"
             sx={{
@@ -106,7 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
           </Typography>
         )}
         <IconButton onClick={toggleSidebar} data-testid="sidebar-toggle-btn">
-          {isCollapsed ? <Menu /> : <ChevronLeft />}
+          {isSidebarCollapsed ? <Menu /> : <ChevronLeft />}
         </IconButton>
       </Box>
       <List>
@@ -119,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
             selected={location.pathname === item.path} // Highlight selected item
             sx={{
               width: '100%',
-              justifyContent: isCollapsed ? 'center' : 'flex-start',
+              justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
               backgroundColor:
                 location.pathname === item.path ? '#f0f0f0' : 'transparent', // Change background on selection
               '&:hover': {
@@ -131,13 +136,13 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
             <ListItemIcon
               sx={{
                 minWidth: 0,
-                mr: isCollapsed ? 'auto' : 2,
+                mr: isSidebarCollapsed ? 'auto' : 2,
                 justifyContent: 'center',
               }}
             >
               {item.icon}
             </ListItemIcon>
-            {!isCollapsed && <ListItemText primary={item.text} />}
+            {!isSidebarCollapsed && <ListItemText primary={item.text} />}
           </ListItemButton>
         ))}
       </List>

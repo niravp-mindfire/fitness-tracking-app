@@ -317,6 +317,7 @@ const NutritionMealDialog: React.FC<NutritionMealDialogProps> = ({
                   }
                   fullWidth
                   sx={{ mt: 2 }}
+                  inputProps={{ min: 1, max: 100 }}
                 />
               </Grid>
               <Grid item xs={2}>

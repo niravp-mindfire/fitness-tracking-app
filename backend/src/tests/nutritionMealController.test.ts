@@ -1,9 +1,10 @@
 // nutritionMealController.test.ts
 import request from 'supertest';
-import app, { closeServer } from '../index'; // Import your Express app
+import app from '../index'; // Import your Express app
 import NutritionMeal from '../models/NutritionMeals';
 import mongoose from 'mongoose';
-import { generateToken } from '../controllers/userController';
+import { generateToken } from '../middleware/authMiddleware';
+import { closeServer } from '../config/db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 

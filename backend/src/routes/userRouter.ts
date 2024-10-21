@@ -7,6 +7,7 @@ import {
   editProfile,
   getAllUsers,
   getMyProfile,
+  refreshAccessToken,
 } from '../controllers/userController'; // Adjust the import based on your directory structure
 import { authenticateToken } from '../middleware/authMiddleware';
 
@@ -25,5 +26,7 @@ router.put('/edit-profile', authenticateToken, editProfile);
 router.get('/my-profile', authenticateToken, getMyProfile);
 
 router.get('/users', authenticateToken, getAllUsers);
+
+router.post('/refresh', refreshAccessToken);
 
 export default router;

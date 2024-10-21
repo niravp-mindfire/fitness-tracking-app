@@ -10,8 +10,9 @@ import {
   DialogActions,
   Grid,
   Stack,
+  Typography,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
   fetchFoodItems,
   deleteFoodItem,
@@ -45,20 +46,26 @@ const FoodItemList: React.FC = () => {
     editId: '',
   });
 
+  // Debounce search term with a delay of 500ms
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   useEffect(() => {
     getAllData();
-  }, [dispatch, searchTerm, page, rowsPerPage, orderBy, order]);
+  }, [dispatch, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
 
   const getAllData = () => {
-    dispatch(
-      fetchFoodItems({
-        search: searchTerm,
-        page: page + 1,
-        limit: rowsPerPage,
-        sort: orderBy,
-        order,
-      }),
-    );
+    // Only fetch data if the search term has at least 3 characters
+    if (debouncedSearchTerm.length >= 3) {
+      dispatch(
+        fetchFoodItems({
+          search: debouncedSearchTerm,
+          page: page + 1,
+          limit: rowsPerPage,
+          sort: orderBy,
+          order,
+        }),
+      );
+    }
   };
 
   const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
@@ -81,7 +88,7 @@ const FoodItemList: React.FC = () => {
 
   const handleConfirmDelete = () => {
     if (selectedFoodItemId) {
-      dispatch(deleteFoodItem(selectedFoodItemId)).then((res) => {
+      dispatch(deleteFoodItem(selectedFoodItemId)).then(() => {
         getAllData();
       });
     }
@@ -126,8 +133,10 @@ const FoodItemList: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Food Item List</h1>
+    <Box padding={2}>
+      <Typography variant="h4" gutterBottom>
+        Food Item List
+      </Typography>
       <Stack spacing={2} mb={2}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={8} md={6}>
@@ -144,6 +153,7 @@ const FoodItemList: React.FC = () => {
               variant="contained"
               color="primary"
               onClick={handleAddFoodItem}
+              fullWidth
             >
               Add Food Item
             </Button>
@@ -152,7 +162,7 @@ const FoodItemList: React.FC = () => {
       </Stack>
 
       {loading ? (
-        <p>Loading...</p>
+        <Typography variant="h6">Loading...</Typography>
       ) : (
         <DataTable
           columns={columns}
@@ -198,7 +208,7 @@ const FoodItemList: React.FC = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </div>
+    </Box>
   );
 };
 

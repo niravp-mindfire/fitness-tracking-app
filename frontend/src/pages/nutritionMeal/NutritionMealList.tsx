@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import NutritionMealModal from './NutritionMealForm';
 import SnackAlert from '../../component/SnackAlert';
+import { useDebounce } from '../../app/hooks';
 
 const NutritionMealList = () => {
   const dispatch = useAppDispatch();
@@ -35,16 +36,19 @@ const NutritionMealList = () => {
   const [editId, setEditId] = useState();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
+  // Create a debounced search value
+  const debouncedSearch = useDebounce(search, 300); // Adjust delay as needed
+
   useEffect(() => {
     getAllData();
-  }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
+  }, [dispatch, page, rowsPerPage, sortBy, sortOrder, debouncedSearch]); // Use debouncedSearch here
 
   const getAllData = () => {
     dispatch(
       fetchNutritionMeals({
         page: page + 1,
         limit: rowsPerPage,
-        search,
+        search: debouncedSearch, // Use debounced search value
         sort: sortBy,
         order: sortOrder as 'asc' | 'desc',
       }),
