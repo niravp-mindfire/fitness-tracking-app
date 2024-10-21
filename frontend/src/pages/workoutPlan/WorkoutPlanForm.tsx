@@ -226,6 +226,7 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
               error={formik.touched.duration && Boolean(formik.errors.duration)}
               helperText={formik.touched.duration && formik.errors.duration}
               margin="normal"
+              inputProps={{ min: 0, max: 52 }}
             />
 
             <Typography variant="h6" sx={{ mt: 3 }}>
@@ -304,6 +305,7 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
                       formik.errors.exercises &&
                       typeof formik.errors.exercises !== 'string'
                     }
+                    inputProps={{ min: 1, max: 100 }}
                   />
                 </Grid>
 
@@ -337,6 +339,7 @@ const WorkoutPlanForm: React.FC<DialogProps> = ({
                       formik.errors.exercises &&
                       typeof formik.errors.exercises !== 'string'
                     }
+                    inputProps={{ min: 1, max: 100 }}
                   />
                 </Grid>
 

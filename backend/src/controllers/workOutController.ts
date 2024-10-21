@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import Workout from '../models/Workout';
-import WorkoutExercise from "../models/WorkoutExercises"
+import WorkoutExercise from '../models/WorkoutExercises';
 import { errorResponse, successResponse } from '../utils/responseFormat';
+import { Messages } from '../utils/constants';
 
 export const getAllWorkouts = async (req: any, res: Response) => {
   try {
@@ -37,7 +38,9 @@ export const getAllWorkouts = async (req: any, res: Response) => {
 
     if (Number(page) === -1 && Number(limit) === -1) {
       // If both page and limit are -1, fetch all workouts
-      workouts = await Workout.find(query).sort({ [sort as string]: order === 'asc' ? 1 : -1 });
+      workouts = await Workout.find(query).sort({
+        [sort as string]: order === 'asc' ? 1 : -1,
+      });
     } else {
       // Calculate skip and apply limit
       const skip = (Number(page) - 1) * Number(limit);
@@ -50,35 +53,41 @@ export const getAllWorkouts = async (req: any, res: Response) => {
         .limit(Number(limit));
     }
 
-    res.status(200).json(successResponse({
-      total,
-      page: Number(page),
-      limit: Number(limit),
-      totalPages: Math.ceil(total / Number(limit)),
-      workouts,
-    }, 'Workouts retrieved successfully'));
-
+    res.status(200).json(
+      successResponse(
+        {
+          total,
+          page: Number(page),
+          limit: Number(limit),
+          totalPages: Math.ceil(total / Number(limit)),
+          workouts,
+        },
+        Messages.WORKOUTS_RETRIEVED_SUCCESS
+      )
+    );
   } catch (err) {
-    res.status(500).json(errorResponse('Server error', err));
+    res.status(500).json(errorResponse(Messages.SERVER_ERROR, err));
   }
 };
 
 export const getWorkoutById = async (req: any, res: Response) => {
-  const { id } = req.params;  // Extract workout ID from request parameters
-  const userId = req?.user?.userId;  // Get the user ID from the request (if using authentication)
+  const { id } = req.params; // Extract workout ID from request parameters
+  const userId = req?.user?.userId; // Get the user ID from the request (if using authentication)
 
   try {
     // Find the workout by its ID and ensure it belongs to the logged-in user
     const workout = await Workout.findOne({ _id: id, userId });
 
     if (!workout) {
-      return res.status(404).json(errorResponse('Workout not found'));
+      return res.status(404).json(errorResponse(Messages.WORKOUT_NOT_FOUND));
     }
 
     // Return the workout data in the response
-    res.status(200).json(successResponse(workout, 'Workout retrieved successfully'));
+    res
+      .status(200)
+      .json(successResponse(workout, Messages.WORKOUT_RETRIEVED_SUCCESS));
   } catch (err) {
-    res.status(500).json(errorResponse('Error retrieving workout', err));
+    res.status(500).json(errorResponse(Messages.WORKOUT_RETRIVE_ERROR, err));
   }
 };
 
@@ -96,9 +105,11 @@ export const createWorkout = async (req: any, res: Response) => {
     });
 
     const savedWorkout = await newWorkout.save();
-    res.status(201).json(successResponse(savedWorkout, 'Workout created successfully'));
+    res
+      .status(201)
+      .json(successResponse(savedWorkout, Messages.WORKOUT_CREATED_SUCCESS));
   } catch (err) {
-    res.status(500).json(errorResponse('Error creating workout', err));
+    res.status(500).json(errorResponse(Messages.WORKOUT_CREATE_ERROR, err));
   }
 };
 
@@ -116,12 +127,14 @@ export const updateWorkout = async (req: any, res: Response) => {
     );
 
     if (!updatedWorkout) {
-      return res.status(404).json({ message: 'Workout not found' });
+      return res.status(404).json({ message: Messages.WORKOUT_NOT_FOUND });
     }
 
-    res.status(200).json(successResponse(updatedWorkout, 'Workout updated successfully'));
+    res
+      .status(200)
+      .json(successResponse(updatedWorkout, Messages.WORKOUT_UPDATED_SUCCESS));
   } catch (err) {
-    res.status(500).json(errorResponse('Error updating workout', err));
+    res.status(500).json(errorResponse(Messages.WORKOUT_UPDATE_ERROR, err));
   }
 };
 
@@ -137,18 +150,26 @@ export const deleteWorkout = async (req: any, res: Response) => {
     });
 
     if (!deletedWorkout) {
-      return res.status(404).json({ message: 'Workout not found' });
+      return res.status(404).json({ message: Messages.WORKOUT_NOT_FOUND });
     }
 
-    res.status(200).json(successResponse(null, 'Workout deleted successfully'));
+    res
+      .status(200)
+      .json(successResponse(null, Messages.WORKOUT_DELETED_SUCCESS));
   } catch (err) {
     res.status(500).json(errorResponse('Error deleting workout', err));
   }
 };
 
 export const getWorkoutExercises = async (req: Request, res: Response) => {
-  const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc', search = '' } = req.query;
-  
+  const {
+    page = 1,
+    limit = 10,
+    sortBy = 'createdAt',
+    sortOrder = 'desc',
+    search = '',
+  } = req.query;
+
   const searchQuery = search
     ? {
         $or: [
@@ -169,9 +190,16 @@ export const getWorkoutExercises = async (req: Request, res: Response) => {
 
     const totalCount = await WorkoutExercise.countDocuments(searchQuery);
 
-    res.json(successResponse({ workoutExercises, totalCount }, 'Workout exercises fetched successfully'));
+    res.json(
+      successResponse(
+        { workoutExercises, totalCount },
+        Messages.WORKOUT_EXERCISES_FETCHED_SUCCESS
+      )
+    );
   } catch (err) {
-    res.status(500).json(errorResponse('Error fetching workout exercises', err));
+    res
+      .status(500)
+      .json(errorResponse(Messages.WORKOUT_EXERCISES_FETCHED_ERROR, err));
   }
 };
 
@@ -191,9 +219,18 @@ export const addExerciseToWorkout = async (req: any, res: Response) => {
 
     await workoutExercise.save();
 
-    res.status(201).json(successResponse(workoutExercise, 'Exercise added to workout successfully'));
+    res
+      .status(201)
+      .json(
+        successResponse(
+          workoutExercise,
+          Messages.WORKOUT_EXERCISE_ADDED_SUCCESS
+        )
+      );
   } catch (err) {
-    res.status(500).json(errorResponse('Error adding exercise to workout', err));
+    res
+      .status(500)
+      .json(errorResponse(Messages.WORKOUT_EXERCISE_ADD_ERROR, err));
   }
 };
 
@@ -205,7 +242,9 @@ export const updateWorkoutExercise = async (req: Request, res: Response) => {
   try {
     const workoutExercise = await WorkoutExercise.findById(id);
     if (!workoutExercise) {
-      return res.status(404).json(errorResponse('Workout exercise not found'));
+      return res
+        .status(404)
+        .json(errorResponse(Messages.WORKOUT_EXERCISE_NOT_FOUND));
     }
 
     workoutExercise.sets = sets || workoutExercise.sets;
@@ -213,25 +252,44 @@ export const updateWorkoutExercise = async (req: Request, res: Response) => {
     workoutExercise.weight = weight || workoutExercise.weight;
 
     await workoutExercise.save();
-    res.json(successResponse(workoutExercise, 'Workout exercise updated successfully'));
+    res.json(
+      successResponse(
+        workoutExercise,
+        Messages.WORKOUT_EXERCISE_UPDATED_SUCCESS
+      )
+    );
   } catch (err) {
-    res.status(500).json(errorResponse('Error updating workout exercise', err));
+    res
+      .status(500)
+      .json(errorResponse(Messages.WORKOUT_EXERCISE_UPDATE_ERROR, err));
   }
 };
 
 // Remove an exercise from a workout
-export const removeExerciseFromWorkout = async (req: Request, res: Response) => {
+export const removeExerciseFromWorkout = async (
+  req: Request,
+  res: Response
+) => {
   const { id } = req.params; // workout exercise ID
 
   try {
     const workoutExercise = await WorkoutExercise.findByIdAndDelete(id);
     if (!workoutExercise) {
-      return res.status(404).json(errorResponse('Workout exercise not found'));
+      return res
+        .status(404)
+        .json(errorResponse(Messages.WORKOUT_EXERCISE_NOT_FOUND));
     }
 
-    res.json(successResponse(workoutExercise, 'Exercise removed from workout successfully'));
+    res.json(
+      successResponse(
+        workoutExercise,
+        Messages.WORKOUT_EXERCISE_REMOVED_SUCCESS
+      )
+    );
   } catch (err) {
-    res.status(500).json(errorResponse('Error removing exercise from workout', err));
+    res
+      .status(500)
+      .json(errorResponse(Messages.WORKOUT_EXERCISE_REMOVE_ERROR, err));
   }
 };
 
@@ -239,17 +297,19 @@ export const getWorkoutExerciseById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-      const workoutExercise = await WorkoutExercise.findById(id)
-          .populate('workoutId') // Populate workout details if needed
-          .populate('exerciseId'); // Populate exercise details if needed
+    const workoutExercise = await WorkoutExercise.findById(id)
+      .populate('workoutId') // Populate workout details if needed
+      .populate('exerciseId'); // Populate exercise details if needed
 
-      if (!workoutExercise) {
-          return res.status(404).json({ message: 'Workout Exercise not found' });
-      }
+    if (!workoutExercise) {
+      return res
+        .status(404)
+        .json({ message: Messages.WORKOUT_EXERCISE_NOT_FOUND });
+    }
 
-      return res.status(200).json(workoutExercise);
+    return res.status(200).json(workoutExercise);
   } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Server error' });
+    console.error(error);
+    return res.status(500).json({ message: Messages.SERVER_ERROR });
   }
 };

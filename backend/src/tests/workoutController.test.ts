@@ -1,13 +1,16 @@
 import request from 'supertest';
-import app, { closeServer } from '../index';
+import app from '../index';
 import mongoose from 'mongoose';
-import { generateToken } from '../controllers/userController';
+import { generateToken } from '../middleware/authMiddleware';
+import { closeServer } from '../config/db';
 
 let token: string;
-const mockUserId = new mongoose.Types.ObjectId(); // Generate a valid ObjectId
+const mockUserId = '123456'; // Generate a valid ObjectId
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.TEST_MONGO_URI!); // Connect to test database
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
+  }
 
   // Prepare a mock user to generate a token
   const mockUser = {

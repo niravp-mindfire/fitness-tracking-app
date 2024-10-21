@@ -31,13 +31,14 @@ interface IUser extends Document {
   };
   fitnessGoals: IFitnessGoal[];
   role: UserRole; // New field for role
-  createdAt: Date;
-  updatedAt: Date;
+  refreshToken?: string; // Field for storing refresh token
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
+  createdAt: Date;
+  updatedAt: Date;
   setPassword: (password: string) => Promise<void>;
   comparePassword: (password: string) => Promise<boolean>;
-  setResetPasswordExpires: () => void;  // Add the method signature
+  setResetPasswordExpires: () => void;
 }
 
 // User Schema
@@ -63,6 +64,7 @@ const UserSchema: Schema<IUser> = new Schema({
     },
   ],
   role: { type: String, enum: Object.values(UserRole), default: UserRole.User }, // Role field with default as 'user'
+  refreshToken: { type: String }, // Field for storing refresh token
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
   createdAt: { type: Date, default: Date.now },

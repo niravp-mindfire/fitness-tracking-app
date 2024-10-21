@@ -1,31 +1,20 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import {
-  useMediaQuery,
-  Theme,
-  ThemeProvider,
-  createTheme,
-} from '@mui/material'; // Import ThemeProvider and createTheme
+// src/pages/admin/index.tsx
+
+import React, { ReactNode } from 'react';
+import { useSidebar } from '../component/SidebarContext';
+import Sidebar from './Sidebar';
 import { useDispatch } from 'react-redux';
+import { logout } from '../features/auth/auth';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../features/auth/auth'; // Adjust the import based on your structure
-import Sidebar from './Sidebar'; // Adjust the import based on your structure
 
 interface AdminProps {
-  children: ReactNode; // Define children prop type
+  children: ReactNode; // Define the type for the children prop
 }
 
 const Admin: React.FC<AdminProps> = ({ children }) => {
+  const { isCollapsed } = useSidebar(); // Use the context
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const isMobile = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down('sm'),
-  ); // Detect mobile view
-
-  // Automatically collapse the sidebar on mobile
-  useEffect(() => {
-    setIsCollapsed(isMobile);
-  }, [isMobile]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -34,7 +23,7 @@ const Admin: React.FC<AdminProps> = ({ children }) => {
 
   return (
     <div data-testid="admin-container" style={{ display: 'flex' }}>
-      <Sidebar handleLogout={handleLogout} />
+      <Sidebar isCollapsed={isCollapsed} handleLogout={handleLogout} />
       <main
         data-testid="admin-main"
         style={{

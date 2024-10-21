@@ -154,7 +154,10 @@ const MyProfile = () => {
                           type="number"
                           disabled={isSubmitting}
                           value={calculateAge(values.profile.dob)}
-                          InputProps={{ readOnly: true }}
+                          InputProps={{
+                            readOnly: true,
+                            inputProps: { max: 120 },
+                          }}
                           helperText={<ErrorMessage name="profile.age" />}
                           error={!!error || !!errors?.profile?.age}
                           data-testid="age-input"
@@ -194,6 +197,7 @@ const MyProfile = () => {
                           helperText={<ErrorMessage name="profile.height" />}
                           error={!!error || !!errors?.profile?.height}
                           data-testid="height-input"
+                          inputProps={{ max: 300 }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
@@ -208,6 +212,7 @@ const MyProfile = () => {
                           helperText={<ErrorMessage name="profile.weight" />}
                           error={!!error || !!errors?.profile?.weight}
                           data-testid="weight-input"
+                          inputProps={{ min: 0, max: 500 }}
                         />
                       </Grid>
                     </Grid>
@@ -252,6 +257,7 @@ const MyProfile = () => {
                                   name={`fitnessGoals.${index}.targetValue`}
                                   type="number"
                                   data-testid={`target-value-${index}`}
+                                  inputProps={{ min: 0, max: 200 }}
                                 />
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.targetValue`}
@@ -268,6 +274,7 @@ const MyProfile = () => {
                                   name={`fitnessGoals.${index}.currentValue`}
                                   type="number"
                                   data-testid={`current-value-${index}`}
+                                  inputProps={{ min: 0, max: 200 }}
                                 />
                                 <ErrorMessage
                                   name={`fitnessGoals.${index}.currentValue`}

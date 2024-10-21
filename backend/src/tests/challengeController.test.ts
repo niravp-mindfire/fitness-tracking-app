@@ -1,9 +1,9 @@
 import request from 'supertest';
-import app, { closeServer } from '../index';
+import app from '../index';
 import mongoose from 'mongoose';
 import Challenge from '../models/Challenges';
-import { generateToken } from '../controllers/userController';
-
+import { generateToken } from '../middleware/authMiddleware';
+import { closeServer } from '../config/db';
 // Define the shape of the challenge data
 interface ChallengeData {
   title: string;
@@ -28,7 +28,10 @@ beforeAll(async () => {
 });
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.TEST_MONGO_URI!);
+  // Check if Mongoose is already connected
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
+  }
 });
 
 afterAll(async () => {

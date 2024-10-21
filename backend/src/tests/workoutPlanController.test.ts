@@ -1,13 +1,14 @@
 import request from 'supertest';
-import app, { closeServer } from '../index'; // Import your Express app
+import app from '../index'; // Import your Express app
 import WorkoutPlan from '../models/WorkoutPlans'; // Adjust the path to your model
 import mongoose from 'mongoose';
-import { generateToken } from '../controllers/userController';
+import { generateToken } from '../middleware/authMiddleware';
+import { closeServer } from '../config/db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 let token: string;
-const mockUserId = new mongoose.Types.ObjectId(); // Generate a valid ObjectId
+const mockUserId = '123456'; // Generate a valid ObjectId
 
 beforeAll(async () => {
   // Use a testing database URI

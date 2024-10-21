@@ -1,41 +1,77 @@
 // src/utils/axiosInstance.ts
 import axios from 'axios';
-import { toast } from 'react-toastify'; // Import toast for notifications
+import { toast } from 'react-toastify';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_ENDPOINT, // Replace with your actual API endpoint
+  baseURL: process.env.REACT_APP_API_ENDPOINT,
 });
 
-// Add a request interceptor to include the token
+// Function to refresh the access token
+const refreshAccessToken = async () => {
+  try {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    // Send a request to the refresh token endpoint
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_ENDPOINT}/auth/refresh`,
+      { refreshToken },
+    );
+    const { token } = response.data; // Assuming the new access token is returned as 'token'
+
+    // Save the new token to localStorage
+    localStorage.setItem('token', token);
+    return token;
+  } catch (error) {
+    throw new Error('Failed to refresh token');
+  }
+};
+
+// Request interceptor to include the token in requests
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token'); // Retrieve token from local storage
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`; // Set the Authorization header
+      config.headers['Authorization'] = `Bearer ${token}`; // Set Authorization header
     }
-    return config; // Return the modified config
+    return config;
   },
   (error) => {
     return Promise.reject(error); // Handle request error
-  }
+  },
 );
 
-// Add a response interceptor to handle 401 errors
+// Response interceptor to handle 401 errors (token expiration)
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response; // Return the response as is
-  },
-  (error) => {
+  (response) => response, // Return the response as is for successful requests
+  async (error) => {
+    const originalRequest = error.config;
     const { response } = error;
-    if (response && response.status === 401) {
-      // Handle 401 Unauthorized
-      localStorage.removeItem('token'); // Remove the token from local storage
-      toast.error("Session expired. Please log in again."); // Show notification
-      // Redirect to the login page
-      window.location.href = '/'; // Adjust the path as necessary
+
+    // Check if the error is a 401 and the token has expired
+    if (response && response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true; // Prevent infinite retry loops
+
+      try {
+        // Attempt to refresh the token
+        const newAccessToken = await refreshAccessToken();
+        // Update the Authorization header with the new token and retry the original request
+        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        return axiosInstance(originalRequest); // Retry the original request with new token
+      } catch (refreshError) {
+        // If refreshing the token fails (e.g., refresh token expired), log the user out
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        toast.error('Session expired. Please log in again.');
+        window.location.href = '/login'; // Redirect to login page
+        return Promise.reject(refreshError);
+      }
     }
-    return Promise.reject(error); // Return the error for further handling
-  }
+
+    return Promise.reject(error); // Return the error if it's not a token issue or refresh fails
+  },
 );
 
 export default axiosInstance;

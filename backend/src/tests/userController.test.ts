@@ -1,9 +1,10 @@
 import request from 'supertest';
-import app, { closeServer } from '../index';
+import app from '../index';
 import User from '../models/User';
 import { successResponse, errorResponse } from '../utils/responseFormat';
-import { generateToken } from '../controllers/userController';
+import { generateToken } from '../middleware/authMiddleware';
 import mongoose from 'mongoose';
+import { closeServer } from '../config/db';
 
 // Jest Mocks
 jest.mock('../models/User');
@@ -11,7 +12,7 @@ jest.mock('nodemailer');
 
 beforeAll(async () => {
   // Use a testing database URI
-  const testDbUri = process.env.TEST_MONGO_URI; // Ensure to set this in your test environment
+  const testDbUri = '123456'; // Ensure to set this in your test environment
   await mongoose.connect(testDbUri!);
 });
 

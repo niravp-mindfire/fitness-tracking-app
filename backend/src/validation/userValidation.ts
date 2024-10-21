@@ -3,14 +3,20 @@ import { check, validationResult } from 'express-validator';
 // Validation for user registration
 export const validateRegisterUser = [
   check('username')
-    .notEmpty().withMessage('Username is required')
-    .isLength({ min: 3 }).withMessage('Username must be at least 3 characters long'),
+    .notEmpty()
+    .withMessage('Username is required')
+    .isLength({ min: 3 })
+    .withMessage('Username must be at least 3 characters long'),
   check('email')
-    .notEmpty().withMessage('Email is required')
-    .isEmail().withMessage('Invalid email address'),
+    .notEmpty()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Invalid email address'),
   check('password')
-    .notEmpty().withMessage('Password is required')
-    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+    .notEmpty()
+    .withMessage('Password is required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long'),
   (req: any, res: any, next: any) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -23,10 +29,11 @@ export const validateRegisterUser = [
 // Validation for user login
 export const validateLoginUser = [
   check('email')
-    .notEmpty().withMessage('Email is required')
-    .isEmail().withMessage('Invalid email address'),
-  check('password')
-    .notEmpty().withMessage('Password is required'),
+    .notEmpty()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Invalid email address'),
+  check('password').notEmpty().withMessage('Password is required'),
   (req: any, res: any, next: any) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -39,8 +46,10 @@ export const validateLoginUser = [
 // Validation for forgot password
 export const validateForgetPassword = [
   check('email')
-    .notEmpty().withMessage('Email is required')
-    .isEmail().withMessage('Invalid email address'),
+    .notEmpty()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Invalid email address'),
   (req: any, res: any, next: any) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -53,8 +62,10 @@ export const validateForgetPassword = [
 // Validation for resetting password
 export const validateResetPassword = [
   check('password')
-    .notEmpty().withMessage('Password is required')
-    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+    .notEmpty()
+    .withMessage('Password is required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long'),
   (req: any, res: any, next: any) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -64,32 +75,39 @@ export const validateResetPassword = [
   },
 ];
 
-
 export const validateEditProfile = [
   check('firstName')
     .optional()
-    .isString().withMessage('First name must be a string'),
+    .isString()
+    .withMessage('First name must be a string'),
   check('lastName')
     .optional()
-    .isString().withMessage('Last name must be a string'),
+    .isString()
+    .withMessage('Last name must be a string'),
   check('age')
     .optional()
-    .isInt({ min: 0 }).withMessage('Age must be a positive integer'),
+    .isInt({ min: 0 })
+    .withMessage('Age must be a positive integer'),
   check('gender')
     .optional()
-    .isIn(['Male', 'Female']).withMessage('Invalid gender value'),
+    .isIn(['Male', 'Female'])
+    .withMessage('Invalid gender value'),
   check('dob')
     .optional()
-    .isDate().withMessage('Date of birth must be a valid date'),
+    .isDate()
+    .withMessage('Date of birth must be a valid date'),
   check('height')
     .optional()
-    .isFloat({ min: 0 }).withMessage('Height must be a positive number'),
+    .isFloat({ min: 0 })
+    .withMessage('Height must be a positive number'),
   check('weight')
     .optional()
-    .isFloat({ min: 0 }).withMessage('Weight must be a positive number'),
+    .isFloat({ min: 0 })
+    .withMessage('Weight must be a positive number'),
   check('fitnessGoals')
     .optional()
-    .isArray().withMessage('Fitness goals must be an array')
+    .isArray()
+    .withMessage('Fitness goals must be an array')
     .custom((value) => {
       for (const goal of value) {
         if (typeof goal !== 'object' || goal === null) {
@@ -118,4 +136,3 @@ export const validateEditProfile = [
     next();
   },
 ];
-
