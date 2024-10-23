@@ -2,15 +2,13 @@ import request from 'supertest';
 import app from '../index';
 import mongoose from 'mongoose';
 import { generateToken } from '../middleware/authMiddleware';
-import { closeServer } from '../config/db';
+import { closeServer, connectDB } from '../config/db';
 
 let token: string;
-const mockUserId = '123456'; // Generate a valid ObjectId
+const mockUserId = new mongoose.Types.ObjectId();
 
 beforeAll(async () => {
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
-  }
+  connectDB(process.env.TEST_MONGO_URI!, process.env.TEST_PORT, app);
 
   // Prepare a mock user to generate a token
   const mockUser = {
@@ -18,13 +16,13 @@ beforeAll(async () => {
     username: 'updateduser',
     email: 'test@example.com',
     role: 'user',
+    test: true,
   };
   token = 'Bearer ' + generateToken(mockUser); // Generate token for authenticated requests
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  closeServer(); // ensure the server closes
+  await closeServer(); // Ensure the server closes
 });
 
 describe('Workout API', () => {

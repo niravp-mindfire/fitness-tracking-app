@@ -24,16 +24,12 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const newUser = new User({ username, email, profile, role: 'user' });
     await newUser.setPassword(password);
-    const refreshToken = generateRefreshToken(newUser);
-    newUser.refreshToken = refreshToken;
-    await newUser.save();
 
-    const token = generateToken(newUser);
+    await newUser.save();
     res
       .status(StatusCodes.CREATED)
-      .json(successResponse({ token }, Messages.USER_REGISTER_SUCCESS));
+      .json(successResponse({ success: true }, Messages.USER_REGISTER_SUCCESS));
   } catch (error) {
-    console.error(error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(errorResponse(Messages.USER_REGISTER_ERROR, error));

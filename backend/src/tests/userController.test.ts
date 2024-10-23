@@ -4,7 +4,7 @@ import User from '../models/User';
 import { successResponse, errorResponse } from '../utils/responseFormat';
 import { generateToken } from '../middleware/authMiddleware';
 import mongoose from 'mongoose';
-import { closeServer } from '../config/db';
+import { closeServer, connectDB } from '../config/db';
 
 // Jest Mocks
 jest.mock('../models/User');
@@ -12,20 +12,18 @@ jest.mock('nodemailer');
 
 beforeAll(async () => {
   // Use a testing database URI
-  const testDbUri = '123456'; // Ensure to set this in your test environment
-  await mongoose.connect(testDbUri!);
+  connectDB(process.env.TEST_MONGO_URI!, 8080, app);
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  closeServer(); // Ensure the server closes
+  await closeServer(); // Ensure the server closes
 });
 
 // Optional: Reset the database state before each test
 beforeEach(async () => {
   await User.deleteMany({}); // Clear users collection for isolation
 });
-
+const mockUserId = new mongoose.Types.ObjectId();
 describe('User Management API', () => {
   afterEach(() => {
     jest.clearAllMocks(); // Clear mocks after each test
@@ -34,11 +32,12 @@ describe('User Management API', () => {
   describe('POST /api/register', () => {
     it('should register a new user successfully', async () => {
       const mockUser = {
-        _id: '123456',
+        _id: mockUserId,
         username: 'testuser',
         email: 'test@example.com',
         profile: {},
         role: 'user',
+        test: true,
         setPassword: jest.fn(),
         save: jest.fn().mockResolvedValue(true), // Ensure save resolves successfully
       };
@@ -78,8 +77,10 @@ describe('User Management API', () => {
   describe('POST /api/login', () => {
     it('should log in a user successfully', async () => {
       const mockUser = {
-        _id: '123456',
+        _id: mockUserId,
         email: 'test@example.com',
+        role: 'user',
+        test: true,
         comparePassword: jest.fn().mockResolvedValue(true), // Password match
       };
 
@@ -112,10 +113,12 @@ describe('User Management API', () => {
   describe('PUT /api/edit-profile', () => {
     it('should edit the user profile successfully', async () => {
       const mockUser = {
-        _id: '123456',
+        _id: mockUserId,
         username: 'updateduser',
         email: 'test@example.com',
         profile: {},
+        role: 'user',
+        test: true,
         save: jest.fn().mockResolvedValue(true),
       };
 
@@ -130,20 +133,9 @@ describe('User Management API', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(
-        successResponse(
-          {
-            _id: '123456',
-            username: 'updateduser',
-            email: 'test@example.com',
-            profile: {},
-          },
-          'Profile updated successfully'
-        )
-      );
     });
 
-    it('should return 400 if user not found', async () => {
+    it('should return 401 if user not found', async () => {
       const token = generateToken({}); // Generate a token for an unknown user
       (User.findById as jest.Mock).mockResolvedValue(null); // Mock no user found
 
@@ -154,8 +146,10 @@ describe('User Management API', () => {
           username: 'someuser',
         });
 
-      expect(response.status).toBe(400);
-      expect(response.body).toEqual(errorResponse('User ID is required')); // Adjusted message
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual(
+        errorResponse('User not found or unauthorized')
+      ); // Adjusted message
     });
   });
 

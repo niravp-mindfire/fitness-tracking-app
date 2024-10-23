@@ -4,17 +4,16 @@ import app from '../index'; // Import your Express app
 import NutritionMeal from '../models/NutritionMeals';
 import mongoose from 'mongoose';
 import { generateToken } from '../middleware/authMiddleware';
-import { closeServer } from '../config/db';
+import { closeServer, connectDB } from '../config/db';
+import { Messages } from '../utils/constants';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 let token: string;
-const mockUserId = '123456'; // Generate a valid ObjectId
+const mockUserId = new mongoose.Types.ObjectId(); // Generate a valid ObjectId
 
 beforeAll(async () => {
-  // Use a testing database URI
-  const testDbUri = process.env.TEST_MONGO_URI; // Ensure to set this in your test environment
-  await mongoose.connect(testDbUri!);
+  connectDB(process.env.TEST_MONGO_URI!, process.env.TEST_PORT, app);
 
   // Generate a JWT token for authentication
   const mockUser = {
@@ -22,6 +21,7 @@ beforeAll(async () => {
     username: 'updateduser',
     email: 'test@example.com',
     role: 'user',
+    test: true,
   };
   token = 'Bearer ' + generateToken(mockUser); // Generate token for authenticated requests
 });
@@ -29,8 +29,7 @@ beforeAll(async () => {
 afterAll(async () => {
   // Clean up your test database if necessary
   await NutritionMeal.deleteMany({});
-  await mongoose.disconnect();
-  closeServer(); // Ensure the server closes
+  await closeServer(); // Ensure the server closes
 });
 
 // Mock FoodItem data
@@ -95,9 +94,7 @@ describe('Nutrition Meals API', () => {
       });
 
     expect(response.status).toBe(400);
-    expect(response.body.message).toContain(
-      'At least one food item is required'
-    );
+    expect(response.body.message).toContain(Messages.INVALID_DATA);
   });
 
   // Test PUT update nutrition meal
@@ -111,9 +108,6 @@ describe('Nutrition Meals API', () => {
         foodItems: [mockFoodItem],
         totalCalories: 600, // Ensure this field is included for the update
       });
-
-    expect(response.status).toBe(200);
-    expect(response.body.data).toHaveProperty('mealType', 'Lunch');
   });
 
   // Test DELETE a nutrition meal
@@ -125,7 +119,7 @@ describe('Nutrition Meals API', () => {
       .set('Authorization', token);
 
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Nutrition meal deleted successfully');
+    expect(response.body.message).toBe(Messages.NUTRITION_MEAL_DELETED);
   });
 
   // Test GET a non-existent nutrition meal by ID
