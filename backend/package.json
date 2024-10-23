@@ -5,6 +5,7 @@
   "scripts": {
     "start": "npx nodemon ./src/index.ts",
     "test": "jest --coverage --runInBand",
+    "build": "tsc",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
   },
   "lint-staged": {

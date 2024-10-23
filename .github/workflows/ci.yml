@@ -41,7 +41,7 @@ jobs:
         working-directory: backend
         run: |
           npm install
-          npm run test
+          npm run test -- --detectOpenHandles
 
       # Install dependencies, run tests, and build the frontend
       - name: Install frontend dependencies and build
