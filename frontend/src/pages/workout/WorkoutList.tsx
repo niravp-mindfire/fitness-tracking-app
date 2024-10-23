@@ -20,6 +20,7 @@ import {
   DialogContentText,
   DialogActions,
   Grid,
+  CircularProgress,
 } from '@mui/material';
 import SnackAlert from '../../component/SnackAlert';
 import WorkoutForm from './WorkoutForm';
@@ -44,7 +45,7 @@ const WorkoutList = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-    }, 500); // Set the debounce delay (in milliseconds)
+    }, 500);
 
     return () => {
       clearTimeout(handler);
@@ -157,32 +158,39 @@ const WorkoutList = () => {
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <h1>Workout List</h1>
+    <Box className="container mx-auto mt-8 p-4">
+      <Grid container spacing={2} className="pb-4">
+        <Grid item xs={12}>
+          <h1 className="text-2xl font-semibold text-gray-800">Workout List</h1>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            variant="outlined"
+            label="Search Workouts"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            fullWidth
+            sx={{ mb: 2 }}
+            className="shadow-md"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} className="flex justify-end">
+          <Button
+            variant="contained"
+            color="primary"
+            className="bg-blue-600 hover:bg-blue-500 shadow-md"
+            onClick={() => setFormModel({ isOpen: true, editId: '' })}
+          >
+            Add Workout
+          </Button>
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          variant="outlined"
-          label="Search"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          data-testid="workoutlist-search"
-          fullWidth
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} container justifyContent="flex-end">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setFormModel({ isOpen: true, editId: '' })}
-        >
-          Add Workout
-        </Button>
-      </Grid>
-      <Grid item xs={12}>
+
+      <Grid item xs={12} className="bg-white shadow-lg rounded-lg p-4">
         {loading ? (
-          <p>Loading...</p>
+          <Box className="flex justify-center items-center h-64">
+            <CircularProgress />
+          </Box>
         ) : (
           <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
             <DataTable
@@ -203,6 +211,8 @@ const WorkoutList = () => {
           </Box>
         )}
       </Grid>
+
+      {/* Delete Confirmation Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Workout</DialogTitle>
         <DialogContent>
@@ -220,18 +230,22 @@ const WorkoutList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Workout Form Dialog */}
       <WorkoutForm
         open={formModel?.isOpen}
         onClose={handleClose}
         id={formModel?.editId}
       />
+
+      {/* Snackbar for delete success */}
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </Grid>
+    </Box>
   );
 };
 

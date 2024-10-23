@@ -15,11 +15,50 @@ import {
   TextField,
   Typography,
   Container,
+  styled,
 } from '@mui/material';
 import { ForgetPasswordFormValues } from '../utils/types';
 import { forgetPasswordSchema } from '../utils/validationSchema';
 import { forgetPasswordInitialValue } from '../utils/initialValues';
 import { toast } from 'react-toastify';
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+})) as typeof Typography;
+
+const StyledContainer = styled(Container)(({ theme }) => ({
+  minHeight: '100vh',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'linear-gradient(to bottom, #4caf50, #2196f3)', // Match your landing page
+  color: '#fff',
+  padding: theme.spacing(4),
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(4),
+  backgroundColor: '#ffffff',
+  borderRadius: '12px',
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+  width: '100%', // Make it full-width on smaller screens
+  maxWidth: '500px', // Limit width on larger screens
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#4caf50',
+  color: '#ffffff',
+  '&:hover': {
+    backgroundColor: '#388e3c',
+  },
+  marginTop: theme.spacing(3),
+  marginBottom: theme.spacing(2),
+  height: 48,
+}));
 
 const ForgetPassword: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -45,8 +84,8 @@ const ForgetPassword: React.FC = () => {
   );
 
   return (
-    <Container maxWidth="xs">
-      <Box
+    <StyledContainer maxWidth={false}>
+      <StyledBox
         sx={{
           marginTop: 8,
           display: 'flex',
@@ -55,17 +94,17 @@ const ForgetPassword: React.FC = () => {
         }}
         data-testid="forget-password-form"
       >
-        <Typography component="h1" variant="h5">
+        <StyledTypography component="h1" variant="h5" color="textSecondary">
           Forgot Password
-        </Typography>
-        <Typography
+        </StyledTypography>
+        <StyledTypography
           variant="body2"
           color="textSecondary"
           sx={{ mb: 4, textAlign: 'center' }}
         >
           Enter your email address and we'll send you a link to reset your
           password.
-        </Typography>
+        </StyledTypography>
         <Formik
           initialValues={initialValues}
           validationSchema={forgetPasswordSchema}
@@ -92,7 +131,7 @@ const ForgetPassword: React.FC = () => {
                   }}
                   inputProps={{ 'data-testid': 'email-input' }} // Added here
                 />
-                <Button
+                <StyledButton
                   type="submit"
                   fullWidth
                   variant="contained"
@@ -107,22 +146,22 @@ const ForgetPassword: React.FC = () => {
                 >
                   Send Reset Link{' '}
                   {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
-                </Button>
+                </StyledButton>
                 {error && (
-                  <Typography
+                  <StyledTypography
                     color="error"
                     sx={{ mb: 2, textAlign: 'center' }}
                     data-testid="error-message"
                   >
                     {error}
-                  </Typography>
+                  </StyledTypography>
                 )}
               </Box>
             </Form>
           )}
         </Formik>
-      </Box>
-    </Container>
+      </StyledBox>
+    </StyledContainer>
   );
 };
 
