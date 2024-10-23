@@ -5,7 +5,7 @@ import { path } from './utils/path';
 
 // Lazy load components
 const MyProfile = lazy(() => import('./pages/MyProfile'));
-const Admin = lazy(() => import('./pages/admin'));
+const LandingPage = lazy(() => import('./pages/LandingPage'));
 const WorkoutList = lazy(() => import('./pages/workout/WorkoutList'));
 const ExerciseList = lazy(() => import('./pages/exercises/Exercises'));
 const WorkoutExerciseList = lazy(
@@ -31,7 +31,8 @@ const ProgressTrackingList = lazy(
 
 // Route configuration
 export const routes = [
-  { path: path.HOME, element: <Login /> },
+  { path: path.HOME, element: <LandingPage /> },
+  { path: path.LOGIN, element: <Login /> },
   { path: path.REGISTER, element: <Register /> },
   { path: path.FORGET_PASSWORD, element: <ForgetPassword /> },
   // Admin routes

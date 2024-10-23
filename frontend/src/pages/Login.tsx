@@ -1,4 +1,4 @@
-// src/components/Login.tsx
+// src/pages/Login.tsx
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
@@ -21,6 +21,46 @@ import { AppDispatch } from '../app/store'; // Import the AppDispatch type
 import { LoginFormValues } from '../utils/types';
 import { loginSchema } from '../utils/validationSchema';
 import { loginInitialValue } from '../utils/initialValues';
+import { styled } from '@mui/material/styles';
+
+// Define a styled version of Typography that allows for the `component` prop
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+})) as typeof Typography;
+
+const StyledContainer = styled(Container)(({ theme }) => ({
+  minHeight: '100vh',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'linear-gradient(to bottom, #4caf50, #2196f3)', // Match your landing page
+  color: '#fff',
+  padding: theme.spacing(4),
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(4),
+  backgroundColor: '#ffffff',
+  borderRadius: '12px',
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+  width: '100%', // Make it full-width on smaller screens
+  maxWidth: '400px', // Limit width on larger screens
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#4caf50',
+  color: '#ffffff',
+  '&:hover': {
+    backgroundColor: '#388e3c',
+  },
+  marginTop: theme.spacing(3),
+  marginBottom: theme.spacing(2),
+  height: 48,
+}));
 
 const Login = () => {
   const dispatch: AppDispatch = useDispatch(); // Use AppDispatch type here
@@ -44,22 +84,11 @@ const Login = () => {
   );
 
   return (
-    <Container maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          padding: { xs: 2, sm: 4 }, // Add responsive padding
-          backgroundColor: '#fff',
-          borderRadius: 2,
-          boxShadow: 3, // Add box shadow for a card-like appearance
-        }}
-      >
-        <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+    <StyledContainer maxWidth={false}>
+      <StyledBox>
+        <StyledTypography component="h1" variant="h5" color="textSecondary">
           Welcome Back
-        </Typography>
+        </StyledTypography>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 4 }}>
           Please log in to your account
         </Typography>
@@ -109,18 +138,16 @@ const Login = () => {
                   data-testid="password-field" // Added test ID
                 />
 
-                <Button
+                <StyledButton
                   type="submit"
                   fullWidth
                   variant="contained"
-                  color="primary"
                   disabled={isSubmitting || loading}
-                  sx={{ mt: 3, mb: 2, height: 48 }}
                   data-testid="login-button" // Added test ID
                 >
                   Sign In{' '}
                   {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
-                </Button>
+                </StyledButton>
 
                 {error && (
                   <Typography
@@ -164,8 +191,8 @@ const Login = () => {
             </Form>
           )}
         </Formik>
-      </Box>
-    </Container>
+      </StyledBox>
+    </StyledContainer>
   );
 };
 

@@ -1,5 +1,3 @@
-// src/pages/admin/Sidebar.tsx
-
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery, Theme } from '@mui/material';
 import {
@@ -11,6 +9,7 @@ import {
   ListItemText,
   Typography,
   IconButton,
+  Tooltip,
 } from '@mui/material';
 import {
   Home,
@@ -32,16 +31,15 @@ import { path } from '../utils/path';
 const expandedWidth = 240; // Width when sidebar is expanded
 const collapsedWidth = 60; // Width when sidebar is collapsed
 
-// Update SidebarProps to include isCollapsed
 interface SidebarProps {
   handleLogout: () => void;
-  isCollapsed: boolean; // Add this line
+  isCollapsed: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ handleLogout, isCollapsed }) => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed); // Maintain local state
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed);
 
-  const location = useLocation(); // Get current location
+  const location = useLocation();
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down('sm'),
   );
@@ -87,7 +85,9 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout, isCollapsed }) => {
         '& .MuiDrawer-paper': {
           width: isSidebarCollapsed ? collapsedWidth : expandedWidth,
           boxSizing: 'border-box',
-          transition: 'width 0.3s', // Smooth transition for width changes
+          transition: 'width 0.3s ease', // Smooth transition for width
+          backgroundColor: '#fff', // Light theme background
+          borderRight: '1px solid #ddd',
         },
       }}
     >
@@ -103,8 +103,8 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout, isCollapsed }) => {
           <Typography
             variant="h6"
             sx={{
-              fontSize: { xs: '1rem', sm: '1.25rem' }, // Adjust font size based on screen size
-              padding: { xs: 1, sm: 2 }, // Adjust padding
+              fontSize: { xs: '1rem', sm: '1.25rem' },
+              padding: { xs: 1, sm: 2 },
             }}
           >
             Admin Panel
@@ -116,34 +116,41 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout, isCollapsed }) => {
       </Box>
       <List>
         {menuItems.map((item) => (
-          <ListItemButton
+          <Tooltip
+            title={isSidebarCollapsed ? item.text : ''}
+            placement="right"
             key={item.text}
-            component={item.action ? 'button' : Link}
-            to={item.path}
-            onClick={item.action}
-            selected={location.pathname === item.path} // Highlight selected item
-            sx={{
-              width: '100%',
-              justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
-              backgroundColor:
-                location.pathname === item.path ? '#f0f0f0' : 'transparent', // Change background on selection
-              '&:hover': {
-                backgroundColor:
-                  location.pathname === item.path ? '#e0e0e0' : '#f0f0f0', // Add hover effect
-              },
-            }}
           >
-            <ListItemIcon
+            <ListItemButton
+              component={item.action ? 'button' : Link}
+              to={item.path}
+              onClick={item.action}
+              selected={location.pathname === item.path}
               sx={{
-                minWidth: 0,
-                mr: isSidebarCollapsed ? 'auto' : 2,
-                justifyContent: 'center',
+                justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
+                backgroundColor:
+                  location.pathname === item.path ? '#f0f0f0' : 'transparent',
+                '&:hover': {
+                  backgroundColor: '#e0e0e0',
+                },
+                transition: 'all 0.2s ease-in-out',
+                width: '100%', // Ensure Logout button is full width
               }}
             >
-              {item.icon}
-            </ListItemIcon>
-            {!isSidebarCollapsed && <ListItemText primary={item.text} />}
-          </ListItemButton>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: isSidebarCollapsed ? 'auto' : 2,
+                  justifyContent: 'center',
+                  color:
+                    location.pathname === item.path ? '#1976d2' : 'inherit', // Same color as other icons
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              {!isSidebarCollapsed && <ListItemText primary={item.text} />}
+            </ListItemButton>
+          </Tooltip>
         ))}
       </List>
     </Drawer>
