@@ -14,13 +14,25 @@ interface DecodedToken {
 }
 
 export const generateToken = (user: any) => {
-  return jwt.sign(user, JWT_SECRET, {
+  const payload = {
+    _id: user?._id,
+    username: user?.username,
+    email: user?.email,
+    role: user?.role,
+  };
+  return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
   });
 };
 
 export const generateRefreshToken = (user: any) => {
-  return jwt.sign(user, JWT_SECRET, {
+  const payload = {
+    _id: user?._id,
+    username: user?.username,
+    email: user?.email,
+    role: user?.role,
+  };
+  return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_REFRESH_EXPIRES_IN,
   }); // Refresh token valid for 7 days
 };

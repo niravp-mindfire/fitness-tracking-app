@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -11,6 +11,8 @@ import {
   DialogTitle,
   IconButton,
   DialogContent,
+  Grid,
+  Typography,
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import {
@@ -21,6 +23,7 @@ import {
 } from '../../features/workout/workoutSlice';
 import { RootState, useAppDispatch } from '../../app/store';
 import { DialogProps } from '../../utils/types';
+
 // Validation schema
 const validationSchema = Yup.object({
   date: Yup.date().required('Date is required'),
@@ -39,7 +42,7 @@ const WorkoutForm: React.FC<DialogProps> = ({
   const existingWorkout = useSelector((state: RootState) =>
     id ? state.workout.currentWorkout : null,
   );
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Fetch workout by ID if we're in edit mode
   useEffect(() => {
@@ -55,7 +58,7 @@ const WorkoutForm: React.FC<DialogProps> = ({
   }, [dispatch]);
 
   const formik = useFormik({
-    enableReinitialize: true, // This allows formik to update its values when initialValues change
+    enableReinitialize: true,
     initialValues: {
       date: existingWorkout
         ? new Date(existingWorkout.date).toISOString().split('T')[0]
@@ -90,11 +93,14 @@ const WorkoutForm: React.FC<DialogProps> = ({
         onClose(false);
         formik.resetForm();
       }}
-      maxWidth="md"
+      maxWidth="sm"
       fullWidth
+      className="tailwind-dialog p-6"
     >
       <DialogTitle>
-        {id ? 'Edit Workout' : 'Add Workout'}
+        <Typography variant="h5" className="font-bold text-primary">
+          {id ? 'Edit Workout' : 'Add Workout'}
+        </Typography>
         <IconButton
           onClick={() => {
             onClose(false);
@@ -105,63 +111,80 @@ const WorkoutForm: React.FC<DialogProps> = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
+
       <DialogContent>
         <Box component="form" onSubmit={formik.handleSubmit}>
-          <TextField
-            fullWidth
-            label="Date"
-            type="date"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            disabled={formik.isSubmitting}
-            {...formik.getFieldProps('date')}
-            error={formik.touched.date && Boolean(formik.errors.date)}
-            helperText={
-              formik.touched.date && formik.errors.date
-                ? String(formik.errors.date)
-                : ''
-            }
-            inputProps={{
-              min: new Date().toISOString().split('T')[0],
-            }}
-          />
-          <TextField
-            fullWidth
-            label="Duration (minutes)"
-            type="number"
-            disabled={formik.isSubmitting}
-            {...formik.getFieldProps('duration')}
-            error={formik.touched.duration && Boolean(formik.errors.duration)}
-            helperText={
-              formik.touched.duration && formik.errors.duration
-                ? String(formik.errors.duration)
-                : ''
-            }
-            sx={{ mt: 2 }}
-            inputProps={{ min: 0, max: 300 }}
-          />
-          <TextField
-            fullWidth
-            label="Notes"
-            multiline
-            rows={4}
-            disabled={formik.isSubmitting}
-            {...formik.getFieldProps('notes')}
-            error={formik.touched.notes && Boolean(formik.errors.notes)}
-            helperText={
-              formik.touched.notes && formik.errors.notes
-                ? String(formik.errors.notes)
-                : ''
-            }
-            sx={{ mt: 2 }}
-          />
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Date"
+                type="date"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { marginTop: '6px' },
+                }}
+                disabled={formik.isSubmitting}
+                {...formik.getFieldProps('date')}
+                error={formik.touched.date && Boolean(formik.errors.date)}
+                helperText={
+                  formik.touched.date && formik.errors.date
+                    ? String(formik.errors.date)
+                    : ''
+                }
+                inputProps={{
+                  min: new Date().toISOString().split('T')[0],
+                }}
+                className="tailwind-input"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Duration (minutes)"
+                type="number"
+                disabled={formik.isSubmitting}
+                {...formik.getFieldProps('duration')}
+                error={
+                  formik.touched.duration && Boolean(formik.errors.duration)
+                }
+                helperText={
+                  formik.touched.duration && formik.errors.duration
+                    ? String(formik.errors.duration)
+                    : ''
+                }
+                inputProps={{ min: 0, max: 300 }}
+                className="tailwind-input"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Notes"
+                multiline
+                rows={4}
+                disabled={formik.isSubmitting}
+                {...formik.getFieldProps('notes')}
+                error={formik.touched.notes && Boolean(formik.errors.notes)}
+                helperText={
+                  formik.touched.notes && formik.errors.notes
+                    ? String(formik.errors.notes)
+                    : ''
+                }
+                className="tailwind-input"
+              />
+            </Grid>
+          </Grid>
+
           <Button
             color="primary"
             variant="contained"
             fullWidth
             type="submit"
-            sx={{ mt: 2 }}
+            sx={{ mt: 3 }}
+            className="mt-4 bg-primary hover:bg-primary-dark text-white py-2"
             disabled={loading}
           >
             {loading ? (
