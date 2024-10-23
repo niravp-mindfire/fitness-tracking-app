@@ -20,11 +20,50 @@ import {
   FormControl,
   useMediaQuery,
   useTheme,
+  styled,
 } from '@mui/material';
 import { RegisterFormValues } from '../utils/types';
 import { calculateAge } from '../utils/common';
 import { registerSchema } from '../utils/validationSchema';
 import { registerInitialValue } from '../utils/initialValues';
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+})) as typeof Typography;
+
+const StyledContainer = styled(Container)(({ theme }) => ({
+  minHeight: '100vh',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'linear-gradient(to bottom, #4caf50, #2196f3)', // Match your landing page
+  color: '#fff',
+  padding: theme.spacing(4),
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(4),
+  backgroundColor: '#ffffff',
+  borderRadius: '12px',
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+  width: '100%', // Make it full-width on smaller screens
+  maxWidth: '500px', // Limit width on larger screens
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#4caf50',
+  color: '#ffffff',
+  '&:hover': {
+    backgroundColor: '#388e3c',
+  },
+  marginTop: theme.spacing(3),
+  marginBottom: theme.spacing(2),
+  height: 48,
+}));
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -33,7 +72,6 @@ const Register = () => {
   const error = useAppSelector(selectAuthError);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
   const initialValues = useMemo(() => registerInitialValue, []);
 
   const handleSubmit = useCallback(
@@ -58,8 +96,8 @@ const Register = () => {
   );
 
   return (
-    <Container maxWidth={isMobile ? 'sm' : 'xs'}>
-      <Box
+    <StyledContainer maxWidth={false}>
+      <StyledBox
         data-testid="register-form"
         sx={{
           marginTop: 8,
@@ -68,13 +106,14 @@ const Register = () => {
           alignItems: 'center',
         }}
       >
-        <Typography
+        <StyledTypography
           component="h1"
           variant={isMobile ? 'h6' : 'h5'}
+          color="textSecondary"
           data-testid="register-title"
         >
           Register
-        </Typography>
+        </StyledTypography>
         <Formik
           initialValues={initialValues}
           validationSchema={registerSchema}
@@ -97,21 +136,19 @@ const Register = () => {
                   error={!!error || !!errors?.profile?.firstName}
                   data-testid="firstName-input"
                 />
-
                 <Field
                   as={TextField}
                   variant="outlined"
                   margin="normal"
-                  disabled={isSubmitting}
                   fullWidth
                   id="profile.lastName"
+                  disabled={isSubmitting}
                   label="Last Name"
                   name="profile.lastName"
                   helperText={<ErrorMessage name="profile.lastName" />}
                   error={!!error || !!errors?.profile?.lastName}
                   data-testid="lastName-input"
                 />
-
                 <Field
                   as={TextField}
                   variant="outlined"
@@ -125,7 +162,6 @@ const Register = () => {
                   error={!!error || !!errors?.username}
                   data-testid="username-input"
                 />
-
                 <Field
                   as={TextField}
                   variant="outlined"
@@ -139,7 +175,6 @@ const Register = () => {
                   error={!!error || !!errors?.email}
                   data-testid="email-input"
                 />
-
                 <Field
                   as={TextField}
                   variant="outlined"
@@ -155,7 +190,6 @@ const Register = () => {
                   error={!!error || !!errors?.password}
                   data-testid="password-input"
                 />
-
                 <Field
                   as={TextField}
                   variant="outlined"
@@ -173,7 +207,6 @@ const Register = () => {
                   error={!!error || !!errors?.profile?.dob}
                   data-testid="dob-input"
                 />
-
                 {/* Gender Dropdown */}
                 <FormControl variant="outlined" fullWidth margin="normal">
                   <InputLabel id="profile.gender-label">Gender</InputLabel>
@@ -184,7 +217,6 @@ const Register = () => {
                     name="profile.gender"
                     disabled={isSubmitting}
                     label="Gender"
-                    helperText={<ErrorMessage name="profile.gender" />}
                     error={!!error || !!errors?.profile?.gender}
                     data-testid="gender-select"
                   >
@@ -192,7 +224,6 @@ const Register = () => {
                     <MenuItem value="Female">Female</MenuItem>
                   </Field>
                 </FormControl>
-
                 <Field
                   as={TextField}
                   variant="outlined"
@@ -208,7 +239,6 @@ const Register = () => {
                   data-testid="height-input"
                   inputProps={{ min: 0, max: 300 }}
                 />
-
                 <Field
                   as={TextField}
                   variant="outlined"
@@ -224,8 +254,7 @@ const Register = () => {
                   data-testid="weight-input"
                   inputProps={{ min: 0, max: 500 }}
                 />
-
-                <Button
+                <StyledButton
                   type="submit"
                   fullWidth
                   variant="contained"
@@ -236,34 +265,38 @@ const Register = () => {
                 >
                   Register{' '}
                   {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
-                </Button>
+                </StyledButton>
                 {error && (
-                  <Typography
+                  <StyledTypography
                     color="error"
                     sx={{ mb: 2 }}
                     data-testid="error-message"
                   >
                     {error}
-                  </Typography>
+                  </StyledTypography>
                 )}
-
                 {/* Already have an account? */}
-                <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+                <StyledTypography
+                  color="textSecondary"
+                  variant="body2"
+                  align="center"
+                  sx={{ mt: 2 }}
+                >
                   Already have an account?
-                  <Button
+                  <StyledButton
                     onClick={() => navigate('/login')}
                     color="primary"
                     sx={{ textDecoration: 'underline', ml: 1 }}
                   >
                     Login
-                  </Button>
-                </Typography>
+                  </StyledButton>
+                </StyledTypography>
               </Box>
             </Form>
           )}
         </Formik>
-      </Box>
-    </Container>
+      </StyledBox>
+    </StyledContainer>
   );
 };
 

@@ -33,13 +33,13 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ padding: 4 }} data-testid="dashboard">
-      <Typography
+      {/* <Typography
         variant="h4"
         sx={{ marginBottom: 4 }}
         data-testid="dashboard-title"
       >
         Welcome to the Dashboard
-      </Typography>
+      </Typography> */}
       <Box
         sx={{
           padding: 2,
