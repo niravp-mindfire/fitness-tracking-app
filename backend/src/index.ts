@@ -47,6 +47,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Use the imported routes
 app.use(router);
 
-connectDB(PORT, app);
+connectDB(process.env.MONGO_URI!, PORT, app);
 
 export default app;

@@ -3,7 +3,7 @@ import app from '../index';
 import mongoose from 'mongoose';
 import { generateToken } from '../middleware/authMiddleware';
 import Exercise from '../models/Exercise';
-import { closeServer } from '../config/db';
+import { closeServer, connectDB } from '../config/db';
 
 // Define the shape of the exercise data
 interface ExerciseData {
@@ -17,9 +17,11 @@ let token: string;
 
 beforeAll(async () => {
   const mockUser = {
-    _id: '123456',
+    _id: new mongoose.Types.ObjectId(),
     username: 'updateduser',
     email: 'test@example.com',
+    role: 'user',
+    test: true,
   };
   // Generate the token
   token = 'Bearer ' + generateToken(mockUser);
@@ -27,14 +29,11 @@ beforeAll(async () => {
 
 beforeAll(async () => {
   // Check if Mongoose is already connected
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
-  }
+  connectDB(process.env.TEST_MONGO_URI!, process.env.TEST_PORT, app);
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  closeServer(); // Ensure the server closes
+  await closeServer(); // Ensure the server closes
 });
 
 describe('Exercise API', () => {

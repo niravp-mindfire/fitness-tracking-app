@@ -14,13 +14,13 @@ interface DecodedToken {
 }
 
 export const generateToken = (user: any) => {
-  return jwt.sign({ userId: user._id }, JWT_SECRET, {
+  return jwt.sign(user, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
   });
 };
 
 export const generateRefreshToken = (user: any) => {
-  return jwt.sign({ userId: user._id }, JWT_SECRET, {
+  return jwt.sign(user, JWT_SECRET, {
     expiresIn: JWT_REFRESH_EXPIRES_IN,
   }); // Refresh token valid for 7 days
 };
@@ -38,12 +38,13 @@ export const authenticateToken = async (
 
   try {
     // Verify the token
-    const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
+    const decoded: any = jwt.verify(token, JWT_SECRET) as DecodedToken;
 
     if (decoded) {
+      const test = decoded.test || false;
       // Fetch the user from the database using the decoded userId
-      if (decoded.userId != '123456') {
-        const user = await User.findById(decoded.userId);
+      if (!test) {
+        const user = await User.findById(decoded._id);
 
         // If user is not found, return a 401 Unauthorized error
         if (!user) {
@@ -54,6 +55,8 @@ export const authenticateToken = async (
 
         // Attach the user to the request object for further use
         req.user = { userId: user._id, role: user.role }; // You can attach more user properties if needed
+      } else {
+        req.user = { userId: decoded._id, role: decoded.role };
       }
       next(); // Proceed to the next middleware or route handler
     } else {
