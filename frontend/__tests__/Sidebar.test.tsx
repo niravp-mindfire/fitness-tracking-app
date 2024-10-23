@@ -13,7 +13,7 @@ describe('Sidebar Component', () => {
     return render(
       <ThemeProvider theme={theme}>
         <MemoryRouter>
-          <Sidebar handleLogout={mockHandleLogout} />
+          <Sidebar isCollapsed={false} handleLogout={mockHandleLogout} />
         </MemoryRouter>
       </ThemeProvider>,
     );

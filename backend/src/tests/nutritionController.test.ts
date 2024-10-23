@@ -3,27 +3,26 @@ import app from '../index';
 import Nutrition from '../models/Nutrition';
 import mongoose from 'mongoose';
 import { generateToken } from '../middleware/authMiddleware';
-import { closeServer } from '../config/db';
+import { closeServer, connectDB } from '../config/db';
 
 let token: string;
-const mockUserId = '123456';
+const mockUserId = new mongoose.Types.ObjectId();
 
 beforeAll(async () => {
   // Connect to test database
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
-  }
+  connectDB(process.env.TEST_MONGO_URI!, process.env.TEST_PORT, app);
   const mockUser = {
     _id: mockUserId,
     username: 'testuser',
     email: 'test@example.com',
+    role: 'user',
+    test: true,
   };
   token = 'Bearer ' + generateToken(mockUser);
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  closeServer(); // Ensure the server closes
+  await closeServer(); // Ensure the server closes
 });
 
 describe('Nutrition API', () => {

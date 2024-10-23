@@ -3,7 +3,7 @@ import app from '../index';
 import mongoose from 'mongoose';
 import Challenge from '../models/Challenges';
 import { generateToken } from '../middleware/authMiddleware';
-import { closeServer } from '../config/db';
+import { closeServer, connectDB } from '../config/db';
 // Define the shape of the challenge data
 interface ChallengeData {
   title: string;
@@ -29,23 +29,22 @@ beforeAll(async () => {
 
 beforeAll(async () => {
   // Check if Mongoose is already connected
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.TEST_MONGO_URI!, {});
-  }
+  connectDB(process.env.TEST_MONGO_URI!, process.env.TEST_PORT, app);
 });
 
 afterAll(async () => {
   await Challenge.deleteMany({ title: 'Test Challenge' });
   await Challenge.deleteMany({ title: 'Updated Challenge' });
-  await mongoose.disconnect();
-  closeServer(); // Ensure the server closes
+  await closeServer(); // Ensure the server closes
 });
 
 const createTestUserAndGetToken = async (): Promise<string> => {
   const mockUser = {
-    _id: '123456',
+    _id: new mongoose.Types.ObjectId(),
     username: 'updateduser',
     email: 'test@example.com',
+    role: 'user',
+    test: true,
   };
   return generateToken(mockUser);
 };
