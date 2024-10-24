@@ -21,6 +21,7 @@ import {
   DialogContentText,
   DialogActions,
   Grid,
+  CircularProgress,
 } from '@mui/material';
 import NutritionForm from './NutritionForm';
 import SnackAlert from '../../component/SnackAlert';
@@ -135,43 +136,57 @@ const NutritionList: React.FC = () => {
   );
 
   return (
-    <div>
-      <h1>Nutrition List</h1>
-      <Box mb={3}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={6}>
-            <TextField
-              variant="outlined"
-              label="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              fullWidth
+    <div className="container mx-auto mt-8 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 col-span-full">
+          Nutrition List
+        </h1>
+        <div className="col-span-1 sm:col-span-1">
+          <TextField
+            variant="outlined"
+            label="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            fullWidth // Make TextField full width
+            sx={{ backgroundColor: '#EBF2FA' }}
+          />
+        </div>
+        <div className="col-span-1 sm:col-span-1 flex justify-end">
+          <Button
+            variant="contained"
+            color="primary"
+            className="bg-primary hover:bg-secondary text-white shadow-md"
+            sx={{ width: 'auto' }}
+            onClick={() => setModalOpen(true)}
+          >
+            Add Nutrition
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white shadow-lg rounded-lg p-4">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <CircularProgress />
+          </div>
+        ) : (
+          <div className="max-h-96 overflow-auto">
+            <DataTable
+              columns={columns}
+              data={tableData}
+              onSort={handleSort}
+              onPageChange={handlePageChange}
+              totalCount={totalCount}
+              rowsPerPage={10}
+              handleEdit={handleEditNutrition}
+              handleDelete={(id) => {
+                setDeleteId(id);
+                setDialogOpen(true);
+              }}
             />
-          </Grid>
-          <Grid item xs={12} sm={6} display="flex" justifyContent="flex-end">
-            <Button variant="contained" onClick={() => setModalOpen(true)}>
-              Add Nutrition
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={tableData}
-          onSort={handleSort}
-          onPageChange={handlePageChange}
-          totalCount={totalCount}
-          rowsPerPage={10}
-          handleEdit={handleEditNutrition}
-          handleDelete={(id) => {
-            setDeleteId(id);
-            setDialogOpen(true);
-          }}
-        />
-      )}
+          </div>
+        )}
+      </div>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Nutrition</DialogTitle>
         <DialogContent>

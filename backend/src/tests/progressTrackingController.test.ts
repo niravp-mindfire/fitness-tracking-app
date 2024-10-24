@@ -26,8 +26,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  // Clean up your test database if necessary
-  await ProgressTracking.deleteMany({});
   await closeServer(); // Ensure the server closes
 });
 

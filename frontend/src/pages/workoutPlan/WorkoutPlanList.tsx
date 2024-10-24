@@ -16,6 +16,7 @@ import {
   DialogContentText,
   DialogActions,
   Grid,
+  CircularProgress,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SnackAlert from '../../component/SnackAlert';
@@ -128,39 +129,54 @@ const WorkoutPlanList = () => {
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <h1>Workout Plan List</h1>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <TextField
-          variant="outlined"
-          label="Search"
-          value={search}
-          onChange={handleSearchChange}
-          fullWidth // Make TextField full width
-        />
-      </Grid>
-      <Grid item xs={12} md={6} container justifyContent="flex-end">
-        <Button
-          variant="contained"
-          onClick={() => setFormModel({ isOpen: true, editId: '' })}
-        >
-          Add Workout Plan
-        </Button>
-      </Grid>
-      <Grid item xs={12}>
-        <DataTable
-          columns={columns}
-          data={tableData}
-          onSort={handleSort}
-          onPageChange={handlePageChange}
-          totalCount={totalCount}
-          rowsPerPage={rowsPerPage}
-          handleEdit={handleEditWorkoutPlan}
-          handleDelete={handleDeleteWorkoutPlan}
-        />
-      </Grid>
+    <div className="container mx-auto mt-8 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 col-span-full">
+          Workout Plan List
+        </h1>
+        <div className="col-span-1 sm:col-span-1">
+          <TextField
+            variant="outlined"
+            label="Search"
+            value={search}
+            onChange={handleSearchChange}
+            fullWidth // Make TextField full width
+            sx={{ backgroundColor: '#EBF2FA' }}
+          />
+        </div>
+        <div className="col-span-1 sm:col-span-1 flex justify-end">
+          <Button
+            variant="contained"
+            color="primary"
+            className="bg-primary hover:bg-secondary text-white shadow-md"
+            sx={{ width: 'auto' }}
+            onClick={() => setFormModel({ isOpen: true, editId: '' })}
+          >
+            Add Workout Plan
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white shadow-lg rounded-lg p-4">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <CircularProgress />
+          </div>
+        ) : (
+          <div className="max-h-96 overflow-auto">
+            <DataTable
+              columns={columns}
+              data={tableData}
+              onSort={handleSort}
+              onPageChange={handlePageChange}
+              totalCount={totalCount}
+              rowsPerPage={rowsPerPage}
+              handleEdit={handleEditWorkoutPlan}
+              handleDelete={handleDeleteWorkoutPlan}
+            />
+          </div>
+        )}
+      </div>
 
       {/* Confirmation Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
@@ -188,7 +204,7 @@ const WorkoutPlanList = () => {
         type={`success`}
         message={`Record Deleted Successfully`}
       />
-    </Grid>
+    </div>
   );
 };
 

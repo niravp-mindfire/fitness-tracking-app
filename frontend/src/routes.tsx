@@ -2,6 +2,7 @@
 
 import React, { lazy } from 'react';
 import { path } from './utils/path';
+import Test from './pages/Test';
 
 // Lazy load components
 const MyProfile = lazy(() => import('./pages/MyProfile'));
@@ -31,6 +32,7 @@ const ProgressTrackingList = lazy(
 
 // Route configuration
 export const routes = [
+  { path: '/test', element: <Test /> },
   { path: path.HOME, element: <LandingPage /> },
   { path: path.LOGIN, element: <Login /> },
   { path: path.REGISTER, element: <Register /> },

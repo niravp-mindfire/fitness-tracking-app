@@ -14,6 +14,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  CircularProgress,
 } from '@mui/material';
 import ProgressTrackingModal from './ProgressTrackingDialog';
 import SnackAlert from '../../component/SnackAlert';
@@ -118,40 +119,54 @@ const ProgressTrackingList = () => {
   };
 
   return (
-    <div>
-      <h1>Progress Tracking List</h1>
-      <Box display="flex" justifyContent="space-between" mb={3}>
-        <TextField
-          variant="outlined"
-          label="Search"
-          value={search}
-          onChange={handleSearchChange}
-          sx={{ width: '300px' }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
-          Add Progress Tracking
-        </Button>
-      </Box>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={tableData}
-          totalCount={totalCount}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          onSort={handleSort}
-          handleDelete={handleDeleteProgressTracking}
-          handleEdit={handleEditProgressTracking}
-        />
-      )}
+    <div className="container mx-auto mt-8 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 col-span-full">
+          Progress Tracking List
+        </h1>
+        <div className="col-span-1 sm:col-span-1">
+          <TextField
+            variant="outlined"
+            label="Search"
+            value={search}
+            onChange={handleSearchChange}
+            fullWidth // Make TextField full width
+            sx={{ backgroundColor: '#EBF2FA' }}
+          />
+        </div>
+        <div className="col-span-1 sm:col-span-1 flex justify-end">
+          <Button
+            variant="contained"
+            color="primary"
+            className="bg-primary hover:bg-secondary text-white shadow-md"
+            sx={{ width: 'auto' }}
+            onClick={() => setOpen(true)}
+          >
+            Add Progress
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white shadow-lg rounded-lg p-4">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <CircularProgress />
+          </div>
+        ) : (
+          <div className="max-h-96 overflow-auto">
+            <DataTable
+              columns={columns}
+              data={tableData}
+              totalCount={totalCount}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              onSort={handleSort}
+              handleDelete={handleDeleteProgressTracking}
+              handleEdit={handleEditProgressTracking}
+            />
+          </div>
+        )}
+      </div>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Progress Tracking</DialogTitle>
         <DialogContent>

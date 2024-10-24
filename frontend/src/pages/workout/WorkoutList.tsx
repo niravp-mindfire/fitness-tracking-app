@@ -11,7 +11,6 @@ import {
 import DataTable from '../../component/Datatable';
 import { Workout } from '../../utils/types';
 import {
-  Box,
   TextField,
   Button,
   Dialog,
@@ -19,7 +18,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Grid,
   CircularProgress,
 } from '@mui/material';
 import SnackAlert from '../../component/SnackAlert';
@@ -41,6 +39,7 @@ const WorkoutList = () => {
     editId: '',
   });
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  console.log(sortField, sortOrder, '=========here');
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -53,9 +52,7 @@ const WorkoutList = () => {
   }, [searchTerm]);
 
   useEffect(() => {
-    if (debouncedSearchTerm.length >= 3) {
-      getAllData();
-    }
+    getAllData();
   }, [dispatch, debouncedSearchTerm, sortField, sortOrder]);
 
   const getAllData = () => {
@@ -130,7 +127,7 @@ const WorkoutList = () => {
   const columns = useMemo(
     () => [
       { field: 'date', headerName: 'Date', sorting: true },
-      { field: 'duration', headerName: 'Duration', sorting: true },
+      { field: 'duration', headerName: 'Duration (Min)', sorting: true },
       { field: 'notes', headerName: 'Notes', sorting: false },
     ],
     [],
@@ -158,44 +155,45 @@ const WorkoutList = () => {
   };
 
   return (
-    <Box className="container mx-auto mt-8 p-4">
-      <Grid container spacing={2} className="pb-4">
-        <Grid item xs={12}>
-          <h1 className="text-2xl font-semibold text-gray-800">Workout List</h1>
-        </Grid>
-        <Grid item xs={12} sm={6}>
+    <div className="container mx-auto mt-8 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 col-span-full">
+          Workout List
+        </h1>
+        <div className="col-span-1 sm:col-span-1">
           <TextField
             variant="outlined"
             label="Search Workouts"
             value={searchTerm}
             onChange={handleSearchChange}
             fullWidth
-            sx={{ mb: 2 }}
-            className="shadow-md"
+            sx={{ backgroundColor: '#EBF2FA' }}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} className="flex justify-end">
+        </div>
+        <div className="col-span-1 sm:col-span-1 flex justify-end">
           <Button
             variant="contained"
-            color="primary"
-            className="bg-blue-600 hover:bg-blue-500 shadow-md"
+            className="bg-primary hover:bg-secondary text-white shadow-md"
             onClick={() => setFormModel({ isOpen: true, editId: '' })}
+            sx={{ width: 'auto' }}
           >
             Add Workout
           </Button>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
-      <Grid item xs={12} className="bg-white shadow-lg rounded-lg p-4">
+      <div className="bg-white shadow-lg rounded-lg p-4">
         {loading ? (
-          <Box className="flex justify-center items-center h-64">
+          <div className="flex justify-center items-center h-64">
             <CircularProgress />
-          </Box>
+          </div>
         ) : (
-          <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+          <div className="max-h-96 overflow-auto">
             <DataTable
               columns={columns}
               data={tableData}
+              sortField={sortField}
+              sortOrder={sortOrder}
               onSort={handleSort}
               onPageChange={handlePageChange}
               totalCount={totalCount}
@@ -208,9 +206,9 @@ const WorkoutList = () => {
               }}
               handleDelete={handleDeleteWorkout}
             />
-          </Box>
+          </div>
         )}
-      </Grid>
+      </div>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
@@ -222,10 +220,10 @@ const WorkoutList = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={handleCloseDialog} className="text-primary">
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="secondary">
+          <Button onClick={handleConfirmDelete} className="text-highlight">
             Delete
           </Button>
         </DialogActions>
@@ -242,10 +240,10 @@ const WorkoutList = () => {
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}
-        type={`success`}
-        message={`Record deleted successfully`}
+        type="success"
+        message="Record deleted successfully"
       />
-    </Box>
+    </div>
   );
 };
 
