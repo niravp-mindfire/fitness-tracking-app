@@ -10,6 +10,7 @@ import {
   DialogActions,
   Grid,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
@@ -53,18 +54,15 @@ const ChallengeList: React.FC = () => {
   }, [dispatch, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
 
   const getAllData = () => {
-    // Only fetch data if the search term has at least 3 characters
-    if (debouncedSearchTerm.length >= 3) {
-      dispatch(
-        fetchChallenges({
-          search: debouncedSearchTerm,
-          page: page + 1,
-          limit: rowsPerPage,
-          sort: orderBy,
-          order,
-        }),
-      );
-    }
+    dispatch(
+      fetchChallenges({
+        search: debouncedSearchTerm,
+        page: page + 1,
+        limit: rowsPerPage,
+        sort: orderBy,
+        order,
+      }),
+    );
   };
 
   const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
@@ -129,52 +127,60 @@ const ChallengeList: React.FC = () => {
   };
 
   return (
-    <Box padding={2}>
-      <Typography variant="h4" gutterBottom>
-        Challenge List
-      </Typography>
-      <Grid container spacing={2} mb={2} alignItems="center">
-        <Grid item xs={12} sm={8}>
+    <div className="container mx-auto mt-8 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 col-span-full">
+          Challenge List
+        </h1>
+        <div className="col-span-1 sm:col-span-1">
           <TextField
-            fullWidth
+            variant="outlined"
+            label="Search"
             value={searchTerm}
             onChange={handleSearchChange}
-            label="Search Challenge"
-            variant="outlined"
+            fullWidth // Make TextField full width
+            sx={{ backgroundColor: '#EBF2FA' }}
           />
-        </Grid>
-        <Grid item xs={12} sm={4}>
+        </div>
+        <div className="col-span-1 sm:col-span-1 flex justify-end">
           <Button
-            fullWidth
             variant="contained"
             color="primary"
-            onClick={handleAddChallenge}
+            className="bg-primary hover:bg-secondary text-white shadow-md"
+            sx={{ width: 'auto' }}
+            onClick={() => setFormModel({ isOpen: true, editId: '' })}
           >
             Add Challenge
           </Button>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
-      {loading ? (
-        <Typography variant="h6">Loading...</Typography>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={challenges.map((challenge: any) => ({
-            id: challenge._id,
-            title: challenge.title,
-            description: challenge.description,
-            startDate: challenge?.startDate?.split('T')[0],
-            endDate: challenge?.endDate?.split('T')[0],
-          }))}
-          onSort={handleSort}
-          totalCount={totalCount}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          handleEdit={handleEditChallenge}
-          handleDelete={handleDeleteClick}
-        />
-      )}
+      <div className="bg-white shadow-lg rounded-lg p-4">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <CircularProgress />
+          </div>
+        ) : (
+          <div className="max-h-96 overflow-auto">
+            <DataTable
+              columns={columns}
+              data={challenges.map((challenge: any) => ({
+                id: challenge._id,
+                title: challenge.title,
+                description: challenge.description,
+                startDate: challenge?.startDate?.split('T')[0],
+                endDate: challenge?.endDate?.split('T')[0],
+              }))}
+              onSort={handleSort}
+              totalCount={totalCount}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              handleEdit={handleEditChallenge}
+              handleDelete={handleDeleteClick}
+            />
+          </div>
+        )}
+      </div>
 
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Delete</DialogTitle>
@@ -201,7 +207,7 @@ const ChallengeList: React.FC = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </Box>
+    </div>
   );
 };
 

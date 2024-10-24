@@ -7,60 +7,14 @@ import {
   selectAuthLoading,
   selectAuthError,
 } from '../features/auth/auth';
-import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  TextField,
-  Typography,
-  Container,
-  Grid,
-} from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppDispatch } from '../app/store'; // Import the AppDispatch type
 import { LoginFormValues } from '../utils/types';
-import { loginSchema } from '../utils/validationSchema';
 import { loginInitialValue } from '../utils/initialValues';
-import { styled } from '@mui/material/styles';
-
-// Define a styled version of Typography that allows for the `component` prop
-const StyledTypography = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-})) as typeof Typography;
-
-const StyledContainer = styled(Container)(({ theme }) => ({
-  minHeight: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: 'linear-gradient(to bottom, #4caf50, #2196f3)', // Match your landing page
-  color: '#fff',
-  padding: theme.spacing(4),
-}));
-
-const StyledBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: theme.spacing(4),
-  backgroundColor: '#ffffff',
-  borderRadius: '12px',
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-  width: '100%', // Make it full-width on smaller screens
-  maxWidth: '400px', // Limit width on larger screens
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  backgroundColor: '#4caf50',
-  color: '#ffffff',
-  '&:hover': {
-    backgroundColor: '#388e3c',
-  },
-  marginTop: theme.spacing(3),
-  marginBottom: theme.spacing(2),
-  height: 48,
-}));
+import { loginSchema } from '../utils/validationSchema'; // Import your validation schema
+import Navbar from '../component/Navbar';
+import Footer from '../component/Footer';
+import { path } from '../utils/path';
 
 const Login = () => {
   const dispatch: AppDispatch = useDispatch(); // Use AppDispatch type here
@@ -84,115 +38,92 @@ const Login = () => {
   );
 
   return (
-    <StyledContainer maxWidth={false}>
-      <StyledBox>
-        <StyledTypography component="h1" variant="h5" color="textSecondary">
-          Welcome Back
-        </StyledTypography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 4 }}>
-          Please log in to your account
-        </Typography>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={loginSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting, errors }) => (
-            <Form>
-              <Box sx={{ mt: 1 }}>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  disabled={isSubmitting}
-                  error={!!error || !!errors.email}
-                  helperText={<ErrorMessage name="email" />}
-                  InputProps={{
-                    style: { height: '56px' }, // Consistent height for fields
-                  }}
-                  data-testid="email-field" // Added test ID
-                />
+    <div className="bg-gray-50 min-h-screen flex flex-col justify-between">
+      <Navbar />
+      <div className="flex-grow flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-[#EBF2FA]">
+        <div className="bg-white text-black w-full max-w-md p-8 space-y-8 rounded-lg shadow-xl">
+          <h2 className="text-center text-3xl font-bold text-blue-800">
+            Sign in to your account
+          </h2>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={loginSchema} // Set validation schema here
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting }) => (
+              <Form className="mt-8 space-y-6">
+                <div className="space-y-4">
+                  {/* Email Input */}
+                  <div className="relative">
+                    <label htmlFor="email" className="sr-only">
+                      Email address
+                    </label>
+                    <Field
+                      id="email"
+                      name="email"
+                      type="email"
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent sm:text-sm"
+                      placeholder="Email address"
+                    />
+                    <ErrorMessage name="email">
+                      {(msg) => (
+                        <div className="text-red-600 text-sm ml-2">{msg}</div>
+                      )}
+                    </ErrorMessage>
+                  </div>
 
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  disabled={isSubmitting}
-                  id="password"
-                  autoComplete="current-password"
-                  error={!!error || !!errors.password}
-                  helperText={<ErrorMessage name="password" />}
-                  InputProps={{
-                    style: { height: '56px' }, // Consistent height
-                  }}
-                  data-testid="password-field" // Added test ID
-                />
+                  {/* Password Input */}
+                  <div className="relative">
+                    <label htmlFor="password" className="sr-only">
+                      Password
+                    </label>
+                    <Field
+                      id="password"
+                      name="password"
+                      type="password"
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent sm:text-sm"
+                      placeholder="Password"
+                    />
+                    <ErrorMessage name="password">
+                      {(msg) => (
+                        <div className="text-red-600 text-sm  ml-2">{msg}</div>
+                      )}
+                    </ErrorMessage>
+                  </div>
+                </div>
 
-                <StyledButton
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  disabled={isSubmitting || loading}
-                  data-testid="login-button" // Added test ID
-                >
-                  Sign In{' '}
-                  {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
-                </StyledButton>
-
-                {error && (
-                  <Typography
-                    color="error"
-                    sx={{ mb: 2 }}
-                    data-testid="error-message"
+                <div className="flex items-center justify-between">
+                  <Link
+                    to={path.FORGET_PASSWORD}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
                   >
-                    {error}
-                  </Typography>
-                )}
+                    Forgot your password?
+                  </Link>
+                  <Link
+                    to={path.REGISTER}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Sign up
+                  </Link>
+                </div>
 
-                <Grid
-                  container
-                  justifyContent="space-between"
-                  sx={{ flexWrap: 'nowrap' }}
-                >
-                  <Grid item>
-                    <Button
-                      onClick={() => navigate('/forgot-password')}
-                      variant="text"
-                      color="primary"
-                      sx={{ textDecoration: 'underline' }}
-                      data-testid="forgot-password-button" // Added test ID
-                    >
-                      Forgot Password?
-                    </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button
-                      onClick={() => navigate('/register')}
-                      variant="text"
-                      color="primary"
-                      sx={{ textDecoration: 'underline' }}
-                      data-testid="register-button" // Added test ID
-                    >
-                      Create Account
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Form>
-          )}
-        </Formik>
-      </StyledBox>
-    </StyledContainer>
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || loading}
+                    className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-md text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {loading ? 'Signing in...' : 'Sign in'}
+                  </button>
+                  {error && <div className="text-red-600 mt-2">{error}</div>}
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </div>
+      <Footer />
+    </div>
   );
 };
 

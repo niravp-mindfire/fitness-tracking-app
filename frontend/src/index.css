@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.MuiTypography-root{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+@media (max-width: 768px) {
+    .main-content,
+    .main-section{
+      padding: 5px;
+    }
+    .main-section{
+      height: 98vh;
+    }
+    .sidebar {
+      position: absolute; /* Allow it to overlay */
+      transition: transform 0.3s ease;
+      transform: translateX(-100%); /* Hidden by default */
+    }
+    
+    .sidebar.open {
+      transform: translateX(0); /* Slide in */
+    }
+    .custom-modal {
+      padding: 0;
+    }
+    .MuiDialogContent-root,
+    .MuiTypography-root{
+      padding: 10px!important;
+    }
+    
+  }
+  

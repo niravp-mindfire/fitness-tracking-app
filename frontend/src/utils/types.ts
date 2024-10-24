@@ -91,6 +91,8 @@ export interface DataTableProps {
   expandedRows?: string[]; // Add this line to define expanded rows
   toggleRow?: (id: string) => void; // Add this line to define the toggle function
   renderExpandableRow?: (row: any) => JSX.Element; // Specify that this function returns a JSX element
+  sortField?: string;
+  sortOrder?: string;
 }
 
 export interface Exercise {
