@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   Box,
   TextField,
@@ -10,40 +10,36 @@ import {
   DialogActions,
   Grid,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
-import {
-  fetchChallenges,
-  deleteChallenge,
-} from '../../features/challenges/challenge';
 import DataTable from '../../component/Datatable';
 import { TableColumn } from '../../utils/types';
-import { useNavigate } from 'react-router-dom';
 import SnackAlert from '../../component/SnackAlert';
-import ChallengeForm from './ExerciseForm';
+import ExercisesForm from './ExerciseForm';
+import {
+  deleteExercise,
+  fetchExercises,
+} from '../../features/exercise/exerciseSlice';
 
-const ChallengeList: React.FC = () => {
+const ExercisesList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
-  const { challenges, totalCount, loading } = useAppSelector(
-    (state) => state.challenge,
+  const { exercises, totalCount, loading } = useAppSelector(
+    (state) => state.exercise,
   );
 
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<string>('title');
+  const [orderBy, setOrderBy] = useState<string>('name');
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
+  const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(
     null,
   );
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [formModel, setFormModel] = useState({
-    isOpen: false,
-    editId: '',
-  });
+  const [formModel, setFormModel] = useState({ isOpen: false, editId: '' });
 
   // Debounce search term with a delay of 500ms
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -53,18 +49,15 @@ const ChallengeList: React.FC = () => {
   }, [dispatch, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
 
   const getAllData = () => {
-    // Only fetch data if the search term has at least 3 characters
-    if (debouncedSearchTerm.length >= 3) {
-      dispatch(
-        fetchChallenges({
-          search: debouncedSearchTerm,
-          page: page + 1,
-          limit: rowsPerPage,
-          sort: orderBy,
-          order,
-        }),
-      );
-    }
+    dispatch(
+      fetchExercises({
+        search: debouncedSearchTerm,
+        page: page + 1,
+        limit: rowsPerPage,
+        sort: orderBy,
+        order,
+      }),
+    );
   };
 
   const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
@@ -81,128 +74,141 @@ const ChallengeList: React.FC = () => {
   };
 
   const handleDeleteClick = (id: string) => {
-    setSelectedChallengeId(id);
+    setSelectedExerciseId(id);
     setDialogOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (selectedChallengeId) {
-      dispatch(deleteChallenge(selectedChallengeId));
+  const handleConfirmDelete = async () => {
+    if (selectedExerciseId) {
+      await dispatch(deleteExercise(selectedExerciseId));
+      setSnackbarOpen(true);
     }
     setDialogOpen(false);
-    setSnackbarOpen(true);
   };
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
 
-  const handleAddChallenge = () => {
-    setFormModel({
-      isOpen: true,
-      editId: '',
-    });
+  const handleAddExercise = () => {
+    setFormModel({ isOpen: true, editId: '' });
   };
 
-  const handleEditChallenge = (id: string) => {
-    setFormModel({
-      isOpen: true,
-      editId: id,
-    });
+  const handleEditExercise = (id: string) => {
+    setFormModel({ isOpen: true, editId: id });
   };
 
   const columns: TableColumn[] = [
-    { field: 'title', headerName: 'Title', sorting: true },
-    { field: 'description', headerName: 'Description', sorting: false },
-    { field: 'startDate', headerName: 'Start Date', sorting: true },
-    { field: 'endDate', headerName: 'End Date', sorting: true },
+    { field: 'name', headerName: 'Name', sorting: true },
+    { field: 'type', headerName: 'Type', sorting: false },
+    { field: 'category', headerName: 'Category', sorting: true },
+    { field: 'description', headerName: 'Description', sorting: true },
   ];
 
+  const tableData = useMemo(
+    () =>
+      exercises.map((exercise: any) => ({
+        id: exercise._id,
+        name: exercise.name,
+        type: exercise.type,
+        category: exercise?.category,
+        description: exercise?.description,
+      })),
+    [exercises],
+  );
+
   const handleClose = (fetch: boolean) => {
-    setFormModel({
-      isOpen: false,
-      editId: '',
-    });
+    setFormModel({ isOpen: false, editId: '' });
     if (fetch) {
       getAllData();
     }
   };
 
   return (
-    <Box padding={2}>
-      <Typography variant="h4" gutterBottom>
-        Challenge List
-      </Typography>
-      <Grid container spacing={2} mb={2} alignItems="center">
-        <Grid item xs={12} sm={8}>
+    <div className="container mx-auto mt-8 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 col-span-full">
+          Exercise List
+        </h1>
+        <div className="col-span-1 sm:col-span-1">
           <TextField
             fullWidth
             value={searchTerm}
             onChange={handleSearchChange}
-            label="Search Challenge"
+            label="Search Exercise"
             variant="outlined"
+            sx={{ backgroundColor: '#EBF2FA' }}
           />
-        </Grid>
-        <Grid item xs={12} sm={4}>
+        </div>
+        <div className="col-span-1 sm:col-span-1 flex justify-end">
           <Button
             fullWidth
             variant="contained"
             color="primary"
-            onClick={handleAddChallenge}
+            onClick={handleAddExercise}
+            className="bg-primary hover:bg-secondary text-white shadow-md"
+            sx={{ width: 'auto' }}
           >
-            Add Challenge
+            Add Exercise
           </Button>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
-      {loading ? (
-        <Typography variant="h6">Loading...</Typography>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={challenges.map((challenge: any) => ({
-            id: challenge._id,
-            title: challenge.title,
-            description: challenge.description,
-            startDate: challenge?.startDate?.split('T')[0],
-            endDate: challenge?.endDate?.split('T')[0],
-          }))}
-          onSort={handleSort}
-          totalCount={totalCount}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          handleEdit={handleEditChallenge}
-          handleDelete={handleDeleteClick}
-        />
-      )}
+      <div className="bg-white shadow-lg rounded-lg p-4">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <CircularProgress />
+          </div>
+        ) : (
+          <div className="max-h-96 overflow-auto">
+            <DataTable
+              columns={columns}
+              data={tableData}
+              onSort={handleSort}
+              totalCount={totalCount}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              handleEdit={handleEditExercise}
+              handleDelete={handleDeleteClick}
+            />
+          </div>
+        )}
+      </div>
 
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this challenge?
+            Are you sure you want to delete this exercise? This action cannot be
+            undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleConfirmDelete} color="primary">
+          <Button onClick={handleCloseDialog} className="text-primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} className="text-highlight">
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-      <ChallengeForm
-        open={formModel?.isOpen}
+
+      {/* Exercise Form Dialog */}
+      <ExercisesForm
+        open={formModel.isOpen}
         onClose={handleClose}
-        id={formModel?.editId}
+        id={formModel.editId}
       />
+
+      {/* Snackbar for delete success */}
       <SnackAlert
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}
-        type={`success`}
-        message={`Record deleted successfully`}
+        type="success"
+        message="Record deleted successfully"
       />
-    </Box>
+    </div>
   );
 };
 
-export default ChallengeList;
+export default React.memo(ExercisesList);

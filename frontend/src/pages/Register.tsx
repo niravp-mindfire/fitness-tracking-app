@@ -7,71 +7,18 @@ import {
   selectAuthLoading,
 } from '../features/auth/auth';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  TextField,
-  Typography,
-  Container,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  useMediaQuery,
-  useTheme,
-  styled,
-} from '@mui/material';
 import { RegisterFormValues } from '../utils/types';
 import { calculateAge } from '../utils/common';
 import { registerSchema } from '../utils/validationSchema';
 import { registerInitialValue } from '../utils/initialValues';
-
-const StyledTypography = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-})) as typeof Typography;
-
-const StyledContainer = styled(Container)(({ theme }) => ({
-  minHeight: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: 'linear-gradient(to bottom, #4caf50, #2196f3)', // Match your landing page
-  color: '#fff',
-  padding: theme.spacing(4),
-}));
-
-const StyledBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: theme.spacing(4),
-  backgroundColor: '#ffffff',
-  borderRadius: '12px',
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-  width: '100%', // Make it full-width on smaller screens
-  maxWidth: '500px', // Limit width on larger screens
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  backgroundColor: '#4caf50',
-  color: '#ffffff',
-  '&:hover': {
-    backgroundColor: '#388e3c',
-  },
-  marginTop: theme.spacing(3),
-  marginBottom: theme.spacing(2),
-  height: 48,
-}));
+import Navbar from '../component/Navbar';
+import Footer from '../component/Footer';
 
 const Register = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loading = useAppSelector(selectAuthLoading);
   const error = useAppSelector(selectAuthError);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const initialValues = useMemo(() => registerInitialValue, []);
 
   const handleSubmit = useCallback(
@@ -96,207 +43,246 @@ const Register = () => {
   );
 
   return (
-    <StyledContainer maxWidth={false}>
-      <StyledBox
-        data-testid="register-form"
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <StyledTypography
-          component="h1"
-          variant={isMobile ? 'h6' : 'h5'}
-          color="textSecondary"
-          data-testid="register-title"
-        >
-          Register
-        </StyledTypography>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={registerSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting, errors }) => (
-            <Form>
-              <Box sx={{ mt: 1 }}>
-                {/* Profile Fields */}
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="profile.firstName"
-                  disabled={isSubmitting}
-                  label="First Name"
-                  name="profile.firstName"
-                  helperText={<ErrorMessage name="profile.firstName" />}
-                  error={!!error || !!errors?.profile?.firstName}
-                  data-testid="firstName-input"
-                />
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="profile.lastName"
-                  disabled={isSubmitting}
-                  label="Last Name"
-                  name="profile.lastName"
-                  helperText={<ErrorMessage name="profile.lastName" />}
-                  error={!!error || !!errors?.profile?.lastName}
-                  data-testid="lastName-input"
-                />
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="username"
-                  disabled={isSubmitting}
-                  label="Username"
-                  name="username"
-                  helperText={<ErrorMessage name="username" />}
-                  error={!!error || !!errors?.username}
-                  data-testid="username-input"
-                />
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="email"
-                  disabled={isSubmitting}
-                  label="Email Address"
-                  name="email"
-                  helperText={<ErrorMessage name="email" />}
-                  error={!!error || !!errors?.email}
-                  data-testid="email-input"
-                />
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  disabled={isSubmitting}
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  helperText={<ErrorMessage name="password" />}
-                  error={!!error || !!errors?.password}
-                  data-testid="password-input"
-                />
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="profile.dob"
-                  label="Date of Birth"
-                  disabled={isSubmitting}
-                  name="profile.dob"
-                  type="date"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  helperText={<ErrorMessage name="profile.dob" />}
-                  error={!!error || !!errors?.profile?.dob}
-                  data-testid="dob-input"
-                />
-                {/* Gender Dropdown */}
-                <FormControl variant="outlined" fullWidth margin="normal">
-                  <InputLabel id="profile.gender-label">Gender</InputLabel>
-                  <Field
-                    as={Select}
-                    labelId="profile.gender-label"
-                    id="profile.gender"
-                    name="profile.gender"
-                    disabled={isSubmitting}
-                    label="Gender"
-                    error={!!error || !!errors?.profile?.gender}
-                    data-testid="gender-select"
-                  >
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                  </Field>
-                </FormControl>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="profile.height"
-                  disabled={isSubmitting}
-                  label="Height (cm)"
-                  name="profile.height"
-                  type="number"
-                  helperText={<ErrorMessage name="profile.height" />}
-                  error={!!error || !!errors?.profile?.height}
-                  data-testid="height-input"
-                  inputProps={{ min: 0, max: 300 }}
-                />
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="profile.weight"
-                  disabled={isSubmitting}
-                  label="Weight (kg)"
-                  name="profile.weight"
-                  type="number"
-                  helperText={<ErrorMessage name="profile.weight" />}
-                  error={!!error || !!errors?.profile?.weight}
-                  data-testid="weight-input"
-                  inputProps={{ min: 0, max: 500 }}
-                />
-                <StyledButton
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                  sx={{ mt: 3, mb: 2 }}
-                  data-testid="register-button"
-                >
-                  Register{' '}
-                  {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
-                </StyledButton>
-                {error && (
-                  <StyledTypography
-                    color="error"
-                    sx={{ mb: 2 }}
-                    data-testid="error-message"
-                  >
-                    {error}
-                  </StyledTypography>
-                )}
-                {/* Already have an account? */}
-                <StyledTypography
-                  color="textSecondary"
-                  variant="body2"
-                  align="center"
-                  sx={{ mt: 2 }}
-                >
-                  Already have an account?
-                  <StyledButton
-                    onClick={() => navigate('/login')}
-                    color="primary"
-                    sx={{ textDecoration: 'underline', ml: 1 }}
-                  >
-                    Login
-                  </StyledButton>
-                </StyledTypography>
-              </Box>
-            </Form>
-          )}
-        </Formik>
-      </StyledBox>
-    </StyledContainer>
+    <div className="bg-gray-50 min-h-screen flex flex-col justify-between">
+      <Navbar />
+      <div className="flex-grow flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-[#EBF2FA]">
+        <div className="bg-white text-black w-full max-w-md p-8 space-y-8 rounded-lg shadow-xl">
+          <h2 className="text-center text-3xl font-bold text-blue-800">
+            Create a new account
+          </h2>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={registerSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting, errors }) => (
+              <Form className="mt-8 space-y-6">
+                <div className="space-y-4">
+                  {/* First Name Input */}
+                  <div className="relative">
+                    <label htmlFor="firstName" className="sr-only">
+                      First Name
+                    </label>
+                    <Field
+                      as="input"
+                      id="firstName"
+                      name="profile.firstName"
+                      type="text"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                      placeholder="First Name"
+                    />
+                    <ErrorMessage
+                      name="profile.firstName"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+
+                  {/* Last Name Input */}
+                  <div className="relative">
+                    <label htmlFor="lastName" className="sr-only">
+                      Last Name
+                    </label>
+                    <Field
+                      as="input"
+                      id="lastName"
+                      name="profile.lastName"
+                      type="text"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                      placeholder="Last Name"
+                    />
+                    <ErrorMessage
+                      name="profile.lastName"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+
+                  {/* Username Input */}
+                  <div className="relative">
+                    <label htmlFor="username" className="sr-only">
+                      Username
+                    </label>
+                    <Field
+                      as="input"
+                      id="username"
+                      name="username"
+                      type="text"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                      placeholder="Username"
+                    />
+                    <ErrorMessage
+                      name="username"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+
+                  {/* Email Input */}
+                  <div className="relative">
+                    <label htmlFor="email" className="sr-only">
+                      Email Address
+                    </label>
+                    <Field
+                      as="input"
+                      id="email"
+                      name="email"
+                      type="email"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                      placeholder="Email Address"
+                    />
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+
+                  {/* Password Input */}
+                  <div className="relative">
+                    <label htmlFor="password" className="sr-only">
+                      Password
+                    </label>
+                    <Field
+                      as="input"
+                      id="password"
+                      name="password"
+                      type="password"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                      placeholder="Password"
+                    />
+                    <ErrorMessage
+                      name="password"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+
+                  {/* Date of Birth Input */}
+                  <div className="relative">
+                    <label htmlFor="dob" className="sr-only">
+                      Date of Birth
+                    </label>
+                    <Field
+                      as="input"
+                      id="dob"
+                      name="profile.dob"
+                      type="date"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                    />
+                    <ErrorMessage
+                      name="profile.dob"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+
+                  {/* Gender Dropdown */}
+                  <div className="relative">
+                    <label htmlFor="gender" className="sr-only">
+                      Gender
+                    </label>
+                    <Field
+                      as="select"
+                      name="profile.gender"
+                      id="gender"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                    >
+                      <option value="">Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </Field>
+                    <ErrorMessage
+                      name="profile.gender"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+
+                  {/* Height Input */}
+                  <div className="relative">
+                    <label htmlFor="height" className="sr-only">
+                      Height (cm)
+                    </label>
+                    <Field
+                      as="input"
+                      id="height"
+                      name="profile.height"
+                      type="number"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                      placeholder="Height (cm)"
+                    />
+                    <ErrorMessage
+                      name="profile.height"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+
+                  {/* Weight Input */}
+                  <div className="relative">
+                    <label htmlFor="weight" className="sr-only">
+                      Weight (kg)
+                    </label>
+                    <Field
+                      as="input"
+                      id="weight"
+                      name="profile.weight"
+                      type="number"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                      placeholder="Weight (kg)"
+                    />
+                    <ErrorMessage
+                      name="profile.weight"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+
+                  {/* Submit Button */}
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-md text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      Register{' '}
+                      {loading && <span className="animate-spin">⏳</span>}
+                    </button>
+                  </div>
+
+                  {/* Error Message */}
+                  {error && (
+                    <div className="text-red-600 text-sm ml-2">{error}</div>
+                  )}
+
+                  {/* Login Link */}
+                  <p className="text-center text-gray-600">
+                    Already have an account?{' '}
+                    <button
+                      onClick={() => navigate('/login')}
+                      className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      Login
+                    </button>
+                  </p>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </div>
+      <Footer />
+    </div>
   );
 };
 

@@ -11,6 +11,7 @@ import {
   Grid,
   Stack,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
@@ -55,17 +56,16 @@ const FoodItemList: React.FC = () => {
 
   const getAllData = () => {
     // Only fetch data if the search term has at least 3 characters
-    if (debouncedSearchTerm.length >= 3) {
-      dispatch(
-        fetchFoodItems({
-          search: debouncedSearchTerm,
-          page: page + 1,
-          limit: rowsPerPage,
-          sort: orderBy,
-          order,
-        }),
-      );
-    }
+
+    dispatch(
+      fetchFoodItems({
+        search: debouncedSearchTerm,
+        page: page + 1,
+        limit: rowsPerPage,
+        sort: orderBy,
+        order,
+      }),
+    );
   };
 
   const handleSort = (field: string, newOrder: 'asc' | 'desc') => {
@@ -133,56 +133,61 @@ const FoodItemList: React.FC = () => {
   };
 
   return (
-    <Box padding={2}>
-      <Typography variant="h4" gutterBottom>
-        Food Item List
-      </Typography>
-      <Stack spacing={2} mb={2}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={8} md={6}>
-            <TextField
-              value={searchTerm}
-              onChange={handleSearchChange}
-              label="Search Food Item"
-              variant="outlined"
-              fullWidth
+    <div className="container mx-auto mt-8 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 col-span-full">
+          Food Item List
+        </h1>
+        <div className="col-span-1 sm:col-span-1">
+          <TextField
+            variant="outlined"
+            label="Search"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            fullWidth // Make TextField full width
+            sx={{ backgroundColor: '#EBF2FA' }}
+          />
+        </div>
+        <div className="col-span-1 sm:col-span-1 flex justify-end">
+          <Button
+            variant="contained"
+            color="primary"
+            className="bg-primary hover:bg-secondary text-white shadow-md"
+            sx={{ width: 'auto' }}
+            onClick={() => setFormModel({ isOpen: true, editId: '' })}
+          >
+            Add Food Item
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white shadow-lg rounded-lg p-4">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <CircularProgress />
+          </div>
+        ) : (
+          <div className="max-h-96 overflow-auto">
+            <DataTable
+              columns={columns}
+              data={foodItems.map((item: any) => ({
+                id: item._id,
+                name: item.name,
+                calories: item.calories,
+                protein: item?.macronutrients?.proteins,
+                carbs: item?.macronutrients?.carbohydrates,
+                fat: item?.macronutrients?.fats,
+              }))}
+              onSort={handleSort}
+              totalCount={totalCount}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              handleEdit={handleEditFoodItem}
+              handleDelete={handleDeleteClick}
             />
-          </Grid>
-          <Grid item xs={12} sm={4} md={6}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddFoodItem}
-              fullWidth
-            >
-              Add Food Item
-            </Button>
-          </Grid>
-        </Grid>
-      </Stack>
-
-      {loading ? (
-        <Typography variant="h6">Loading...</Typography>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={foodItems.map((item: any) => ({
-            id: item._id,
-            name: item.name,
-            calories: item.calories,
-            protein: item?.macronutrients?.proteins,
-            carbs: item?.macronutrients?.carbohydrates,
-            fat: item?.macronutrients?.fats,
-          }))}
-          onSort={handleSort}
-          totalCount={totalCount}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          handleEdit={handleEditFoodItem}
-          handleDelete={handleDeleteClick}
-        />
-      )}
-
+          </div>
+        )}
+      </div>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
@@ -208,7 +213,7 @@ const FoodItemList: React.FC = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </Box>
+    </div>
   );
 };
 
