@@ -21,6 +21,8 @@ import { ForgetPasswordFormValues } from '../utils/types';
 import { forgetPasswordSchema } from '../utils/validationSchema';
 import { forgetPasswordInitialValue } from '../utils/initialValues';
 import { toast } from 'react-toastify';
+import Navbar from '../component/Navbar';
+import Footer from '../component/Footer';
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -84,84 +86,67 @@ const ForgetPassword: React.FC = () => {
   );
 
   return (
-    <StyledContainer maxWidth={false}>
-      <StyledBox
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-        data-testid="forget-password-form"
-      >
-        <StyledTypography component="h1" variant="h5" color="textSecondary">
-          Forgot Password
-        </StyledTypography>
-        <StyledTypography
-          variant="body2"
-          color="textSecondary"
-          sx={{ mb: 4, textAlign: 'center' }}
-        >
-          Enter your email address and we'll send you a link to reset your
-          password.
-        </StyledTypography>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={forgetPasswordSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting, errors }) => (
-            <Form>
-              <Box sx={{ mt: 1 }}>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  disabled={isSubmitting || loading}
-                  error={!!error || errors.email}
-                  helperText={<ErrorMessage name="email" />}
-                  InputProps={{
-                    style: { height: '56px' }, // Consistent height
-                  }}
-                  inputProps={{ 'data-testid': 'email-input' }} // Added here
-                />
-                <StyledButton
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting || loading}
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                    height: '48px', // Consistent button height
-                  }}
-                  data-testid="submit-button" // Added here
-                >
-                  Send Reset Link{' '}
-                  {loading && <CircularProgress size={15} sx={{ ml: 1 }} />}
-                </StyledButton>
-                {error && (
-                  <StyledTypography
-                    color="error"
-                    sx={{ mb: 2, textAlign: 'center' }}
-                    data-testid="error-message"
-                  >
-                    {error}
-                  </StyledTypography>
-                )}
-              </Box>
-            </Form>
-          )}
-        </Formik>
-      </StyledBox>
-    </StyledContainer>
+    <div className="bg-gray-50 min-h-screen flex flex-col justify-between">
+      <Navbar />
+      <div className="flex-grow flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-[#EBF2FA]">
+        <div className="bg-white text-black w-full max-w-md p-8 space-y-8 rounded-lg shadow-xl">
+          <h2 className="text-center text-3xl font-bold text-blue-800">
+            Forgot Password
+          </h2>
+          <h4 className="text-center font-bold text-blue-800">
+            Enter your email address and we'll send you a link to reset your
+            password.
+          </h4>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={forgetPasswordSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting, errors }) => (
+              <Form className="mt-8 space-y-6">
+                <div className="space-y-4">
+                  <div className="relative">
+                    <label htmlFor="email" className="sr-only">
+                      Email Address
+                    </label>
+                    <Field
+                      as="input"
+                      id="email"
+                      name="email"
+                      type="email"
+                      disabled={isSubmitting}
+                      className="appearance-none rounded-md block w-full px-4 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"
+                      placeholder="Email Address"
+                    />
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="text-red-600 text-sm ml-2"
+                    />
+                  </div>
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-md text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      Send Reset Link
+                      {loading && <span className="animate-spin">⏳</span>}
+                    </button>
+                  </div>
+
+                  {/* Error Message */}
+                  {error && (
+                    <div className="text-red-600 text-sm ml-2">{error}</div>
+                  )}
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </div>
+      <Footer />
+    </div>
   );
 };
 

@@ -93,11 +93,11 @@ const WorkoutForm: React.FC<DialogProps> = ({
         onClose(false);
         formik.resetForm();
       }}
-      maxWidth="sm"
+      maxWidth="sm" // Set maxWidth as 'sm' for small screens
       fullWidth
-      className="tailwind-dialog p-6"
+      className="custom-modal p-6"
     >
-      <DialogTitle>
+      <DialogTitle className="relative">
         <Typography variant="h5" className="font-bold text-primary">
           {id ? 'Edit Workout' : 'Add Workout'}
         </Typography>
@@ -106,7 +106,8 @@ const WorkoutForm: React.FC<DialogProps> = ({
             onClose(false);
             formik.resetForm();
           }}
-          sx={{ position: 'absolute', top: 8, right: 8 }}
+          style={{ marginTop: '-10px' }}
+          className="absolute top-2 right-2"
         >
           <CloseIcon />
         </IconButton>
@@ -122,7 +123,7 @@ const WorkoutForm: React.FC<DialogProps> = ({
                 type="date"
                 InputLabelProps={{
                   shrink: true,
-                  sx: { marginTop: '6px' },
+                  sx: { marginTop: '5px' },
                 }}
                 disabled={formik.isSubmitting}
                 {...formik.getFieldProps('date')}
@@ -135,7 +136,7 @@ const WorkoutForm: React.FC<DialogProps> = ({
                 inputProps={{
                   min: new Date().toISOString().split('T')[0],
                 }}
-                className="tailwind-input"
+                className="w-full"
               />
             </Grid>
 
@@ -155,7 +156,7 @@ const WorkoutForm: React.FC<DialogProps> = ({
                     : ''
                 }
                 inputProps={{ min: 0, max: 300 }}
-                className="tailwind-input"
+                className="w-full"
               />
             </Grid>
 
@@ -173,7 +174,7 @@ const WorkoutForm: React.FC<DialogProps> = ({
                     ? String(formik.errors.notes)
                     : ''
                 }
-                className="tailwind-input"
+                className="w-full"
               />
             </Grid>
           </Grid>
@@ -183,9 +184,9 @@ const WorkoutForm: React.FC<DialogProps> = ({
             variant="contained"
             fullWidth
             type="submit"
-            sx={{ mt: 3 }}
             className="mt-4 bg-primary hover:bg-primary-dark text-white py-2"
             disabled={loading}
+            style={{ marginTop: '10px' }}
           >
             {loading ? (
               <CircularProgress size={24} color="inherit" />

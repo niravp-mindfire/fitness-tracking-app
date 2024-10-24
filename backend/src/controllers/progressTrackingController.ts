@@ -160,7 +160,9 @@ export const getUserProgressTracking = async (req: Request, res: Response) => {
 
 export const getAllProgressTracking = async (req: any, res: Response) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.userId;
+    console.log(userId);
+
     const { search, startDate, endDate, page = 1, limit = 10 } = req.query;
 
     const query: any = { userId };
@@ -197,7 +199,7 @@ export const getAllProgressTracking = async (req: any, res: Response) => {
 };
 
 export const trackProgress = async (req: any, res: Response) => {
-  const userId = req.user._id;
+  const userId = req.user.userId;
 
   // Validate ObjectId
   if (!mongoose.isValidObjectId(userId)) {

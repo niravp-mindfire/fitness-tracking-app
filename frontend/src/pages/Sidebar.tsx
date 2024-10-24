@@ -1,16 +1,6 @@
+// src/components/Sidebar.tsx
 import React, { useEffect, useState } from 'react';
-import { useMediaQuery, Theme } from '@mui/material';
-import {
-  Box,
-  Drawer,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Home,
   Settings,
@@ -25,32 +15,14 @@ import {
   ChevronLeft,
   MenuBook,
 } from '@mui/icons-material';
-import { Link, useLocation } from 'react-router-dom';
 import { path } from '../utils/path';
 
-const expandedWidth = 240; // Width when sidebar is expanded
-const collapsedWidth = 60; // Width when sidebar is collapsed
-
-interface SidebarProps {
-  handleLogout: () => void;
-  isCollapsed: boolean;
-}
-
-const Sidebar: React.FC<SidebarProps> = ({ handleLogout, isCollapsed }) => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed);
-
+const Sidebar: React.FC<any> = ({
+  handleLogout,
+  isCollapsed,
+  toggleSidebar,
+}) => {
   const location = useLocation();
-  const isMobile = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down('sm'),
-  );
-
-  useEffect(() => {
-    setIsSidebarCollapsed(isMobile);
-  }, [isMobile]);
-
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
-  };
 
   const menuItems = [
     { text: 'Dashboard', icon: <Home />, path: path.DASHBOARD },
@@ -75,85 +47,43 @@ const Sidebar: React.FC<SidebarProps> = ({ handleLogout, isCollapsed }) => {
     { text: 'My Profile', icon: <Settings />, path: path.MY_PROFILE },
     { text: 'Logout', icon: <ExitToApp />, action: handleLogout },
   ];
-
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: isSidebarCollapsed ? collapsedWidth : expandedWidth,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: isSidebarCollapsed ? collapsedWidth : expandedWidth,
-          boxSizing: 'border-box',
-          transition: 'width 0.3s ease', // Smooth transition for width
-          backgroundColor: '#fff', // Light theme background
-          borderRight: '1px solid #ddd',
-        },
-      }}
+    <div
+      className={`fixed top-0 left-0 h-full bg-[#EBF2FA] border-r border-gray-300 transition-all duration-300 ease-in-out shadow-lg ${
+        isCollapsed ? 'w-[60px]' : 'w-[240px]'
+      } z-50`}
     >
-      <Box
-        sx={{
-          padding: 2,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: isSidebarCollapsed ? 'center' : 'space-between',
-        }}
-      >
-        {!isSidebarCollapsed && (
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: { xs: '1rem', sm: '1.25rem' },
-              padding: { xs: 1, sm: 2 },
-            }}
-          >
-            Admin Panel
-          </Typography>
-        )}
-        <IconButton onClick={toggleSidebar} data-testid="sidebar-toggle-btn">
-          {isSidebarCollapsed ? <Menu /> : <ChevronLeft />}
-        </IconButton>
-      </Box>
-      <List>
+      <div className="flex items-center justify-between p-4 bg-[#064789] text-white">
+        {!isCollapsed && <span className="text-lg font-bold">Admin Panel</span>}
+        <button
+          onClick={toggleSidebar}
+          className="text-white focus:outline-none"
+        >
+          {isCollapsed ? <Menu /> : <ChevronLeft />}
+        </button>
+      </div>
+      <nav className="mt-2">
         {menuItems.map((item) => (
-          <Tooltip
-            title={isSidebarCollapsed ? item.text : ''}
-            placement="right"
-            key={item.text}
-          >
-            <ListItemButton
-              component={item.action ? 'button' : Link}
-              to={item.path}
+          <div key={item.text} className="relative">
+            <Link
+              to={item.path!}
               onClick={item.action}
-              selected={location.pathname === item.path}
-              sx={{
-                justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
-                backgroundColor:
-                  location.pathname === item.path ? '#f0f0f0' : 'transparent',
-                '&:hover': {
-                  backgroundColor: '#e0e0e0',
-                },
-                transition: 'all 0.2s ease-in-out',
-                width: '100%', // Ensure Logout button is full width
-              }}
+              className={`flex items-center p-2 transition-colors duration-200 rounded-lg text-gray-700 hover:bg-[#427AA1] hover:text-white ${
+                location.pathname === item.path ? 'bg-[#064789] text-white' : ''
+              }`}
             >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: isSidebarCollapsed ? 'auto' : 2,
-                  justifyContent: 'center',
-                  color:
-                    location.pathname === item.path ? '#1976d2' : 'inherit', // Same color as other icons
-                }}
+              <span
+                className="flex items-center justify-center"
+                style={{ minWidth: '40px' }}
               >
                 {item.icon}
-              </ListItemIcon>
-              {!isSidebarCollapsed && <ListItemText primary={item.text} />}
-            </ListItemButton>
-          </Tooltip>
+              </span>
+              {!isCollapsed && <span className="ml-2">{item.text}</span>}
+            </Link>
+          </div>
         ))}
-      </List>
-    </Drawer>
+      </nav>
+    </div>
   );
 };
 

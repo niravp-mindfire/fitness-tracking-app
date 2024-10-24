@@ -9,6 +9,7 @@ import {
   DialogContentText,
   DialogActions,
   Grid,
+  CircularProgress,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -125,33 +126,41 @@ const WorkoutExerciseList: React.FC = () => {
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <h1>Workout Exercise List</h1>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          variant="outlined"
-          label="Search"
-          value={search}
-          onChange={handleSearchChange}
-          fullWidth // Make TextField full width
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} container justifyContent="flex-end">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setFormModel({ isOpen: true, editId: '' })}
-        >
-          Add Workout
-        </Button>
-      </Grid>
-      <Grid item xs={12}>
+    <div className="container mx-auto mt-8 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 col-span-full">
+          Workout Exercise List
+        </h1>
+        <div className="col-span-1 sm:col-span-1">
+          <TextField
+            variant="outlined"
+            label="Search"
+            value={search}
+            onChange={handleSearchChange}
+            fullWidth // Make TextField full width
+            sx={{ backgroundColor: '#EBF2FA' }}
+          />
+        </div>
+        <div className="col-span-1 sm:col-span-1 flex justify-end">
+          <Button
+            variant="contained"
+            color="primary"
+            className="bg-primary hover:bg-secondary text-white shadow-md"
+            sx={{ width: 'auto' }}
+            onClick={() => setFormModel({ isOpen: true, editId: '' })}
+          >
+            Add Workout
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white shadow-lg rounded-lg p-4">
         {loading ? (
-          <p>Loading...</p>
+          <div className="flex justify-center items-center h-64">
+            <CircularProgress />
+          </div>
         ) : (
-          <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+          <div className="max-h-96 overflow-auto">
             <DataTable
               columns={columns}
               data={tableData}
@@ -162,9 +171,9 @@ const WorkoutExerciseList: React.FC = () => {
               handleDelete={handleDeleteWorkoutExercise}
               handleEdit={handleEditWorkout}
             />
-          </Box>
+          </div>
         )}
-      </Grid>
+      </div>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Workout Exercise</DialogTitle>
         <DialogContent>
@@ -193,7 +202,7 @@ const WorkoutExerciseList: React.FC = () => {
         type={`success`}
         message={`Record deleted successfully`}
       />
-    </Grid>
+    </div>
   );
 };
 
