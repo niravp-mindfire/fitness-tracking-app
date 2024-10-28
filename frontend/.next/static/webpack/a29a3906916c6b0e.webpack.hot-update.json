@@ -1,9 +1,0 @@
-{
-  "c": ["webpack"],
-  "r": ["pages/exercises"],
-  "m": [
-    "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=D%3A%5Cfitness-tracking-app%5Cfrontend%5Csrc%5Cpages%5Cexercises.tsx&page=%2Fexercises!",
-    "./src/components/exercises/ExerciseForm.tsx",
-    "./src/pages/exercises.tsx"
-  ]
-}

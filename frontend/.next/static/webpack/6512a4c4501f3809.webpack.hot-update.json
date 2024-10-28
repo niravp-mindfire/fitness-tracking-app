@@ -1,5 +1,0 @@
-{
-  "c": ["pages/nutrition-meals", "webpack"],
-  "r": [],
-  "m": ["./src/pages/nutritionMeal/NutritionMealForm.tsx"]
-}

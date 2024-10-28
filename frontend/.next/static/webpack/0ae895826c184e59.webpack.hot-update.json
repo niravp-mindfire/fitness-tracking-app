@@ -1,5 +1,0 @@
-{
-  "c": ["pages/workouts", "webpack"],
-  "r": [],
-  "m": ["./src/pages/workout/WorkoutForm.tsx"]
-}

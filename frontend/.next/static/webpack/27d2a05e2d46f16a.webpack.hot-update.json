@@ -1,9 +1,0 @@
-{
-  "c": ["webpack"],
-  "r": ["pages/nutritions"],
-  "m": [
-    "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=D%3A%5Cfitness-tracking-app%5Cfrontend%5Csrc%5Cpages%5Cnutritions.tsx&page=%2Fnutritions!",
-    "./src/components/nutritions/NutritionForm.tsx",
-    "./src/pages/nutritions.tsx"
-  ]
-}

@@ -1,5 +1,0 @@
-{
-  "c": ["pages/challenges", "webpack"],
-  "r": [],
-  "m": ["./src/pages/challenges/ChallengeForm.tsx"]
-}
