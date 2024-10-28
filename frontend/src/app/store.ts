@@ -42,7 +42,8 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // Initialize auth state if the token exists
-const token = localStorage.getItem('token');
+const token =
+  typeof window !== 'undefined' ? localStorage.getItem('token') : '';
 if (token) {
   store.dispatch(initializeAuth({ token }));
 }

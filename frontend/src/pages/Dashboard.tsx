@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import ProgressTrackingChart from '../component/ProgressTrackingChart';
+import ProgressTrackingChart from '../components/ProgressTrackingChart';
 import axiosInstance from '../utils/axiosInstance';
 import { apiUrl } from '../utils/apiUrl';
+import Admin from './Admin';
+import SEO from '../components/SEO';
+import { seo } from '../utils/seo';
 
 // Define the shape of chart data
 interface ChartData {
@@ -13,7 +16,7 @@ interface ChartData {
 
 const Dashboard = () => {
   const [chartData, setChartData] = useState<ChartData[]>([]);
-
+  const [loading, setLoading] = useState<Boolean>(false);
   useEffect(() => {
     getChartData();
   }, []);
@@ -24,6 +27,7 @@ const Dashboard = () => {
         `${apiUrl.PROGRESS_TRACKINGS}/track/progress`,
       );
       if (response.status === 200) {
+        setLoading(true);
         setChartData(response.data.data); // Typescript should now understand the type
       }
     } catch (err) {
@@ -32,26 +36,28 @@ const Dashboard = () => {
   };
 
   return (
-    <Box sx={{ padding: 4 }} data-testid="dashboard">
-      {/* <Typography
-        variant="h4"
-        sx={{ marginBottom: 4 }}
-        data-testid="dashboard-title"
-      >
-        Welcome to the Dashboard
-      </Typography> */}
-      <Box
-        sx={{
-          padding: 2,
-          backgroundColor: '#f5f5f5',
-          borderRadius: 2,
-          boxShadow: 2,
-        }}
-        data-testid="chart-container"
-      >
-        <ProgressTrackingChart data={chartData} />
-      </Box>
-    </Box>
+    <>
+      <SEO
+        title={seo?.dashboard?.title}
+        description={seo?.dashboard?.description}
+        keywords={seo?.dashboard?.keywords?.join(',')}
+      />
+      <Admin>
+        <Box sx={{ padding: 4 }} data-testid="dashboard">
+          <Box
+            sx={{
+              padding: 2,
+              backgroundColor: '#f5f5f5',
+              borderRadius: 2,
+              boxShadow: 2,
+            }}
+            data-testid="chart-container"
+          >
+            {loading && <ProgressTrackingChart data={chartData} />}
+          </Box>
+        </Box>
+      </Admin>
+    </>
   );
 };
 

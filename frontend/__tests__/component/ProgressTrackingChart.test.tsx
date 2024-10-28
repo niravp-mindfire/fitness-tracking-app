@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import ProgressTrackingChart from '../../src/component/ProgressTrackingChart';
+import ProgressTrackingChart from '../../src/components/ProgressTrackingChart';
 
 // Mock ResizeObserver
 class ResizeObserver {

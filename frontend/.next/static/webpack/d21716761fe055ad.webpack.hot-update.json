@@ -1,0 +1,18 @@
+{
+  "c": ["pages/workouts", "webpack"],
+  "r": ["pages/login"],
+  "m": [
+    "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=D%3A%5Cfitness-tracking-app%5Cfrontend%5Csrc%5Cpages%5Clogin.tsx&page=%2Flogin!",
+    "./node_modules/next/dist/client/components/router-reducer/router-reducer-types.js",
+    "./node_modules/next/dist/client/get-domain-locale.js",
+    "./node_modules/next/dist/client/link.js",
+    "./node_modules/next/dist/client/use-intersection.js",
+    "./node_modules/next/dist/client/use-merged-ref.js",
+    "./node_modules/next/link.js",
+    "./src/components/Footer.tsx",
+    "./src/components/Navbar.tsx",
+    "./src/pages/login.tsx",
+    "./src/utils/initialValues.ts",
+    "./src/utils/validationSchema.ts"
+  ]
+}

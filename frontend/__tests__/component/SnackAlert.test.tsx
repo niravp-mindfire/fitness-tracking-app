@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Import for the matchers
-import SnackAlert from '../../src/component/SnackAlert'; // Adjust import path as necessary
+import SnackAlert from '../../src/components/SnackAlert'; // Adjust import path as necessary
 
 describe('SnackAlert', () => {
   const mockSetSnackbarOpen = jest.fn();

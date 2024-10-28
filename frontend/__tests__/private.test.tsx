@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import Private from '../src/private';
+import Private from '../src/components/Private';
 
 // Mock dependencies
 jest.mock('react-redux', () => ({

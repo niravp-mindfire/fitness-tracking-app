@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import ForgetPassword from '../src/pages/ForgetPassword';
+import ForgetPassword from '../src/pages/forgot-password';
 import { forgetPassword } from '../src/features/auth/auth'; // Import the forgetPassword action
 import '@testing-library/jest-dom'; // Ensure you import this
 import { Store, AnyAction } from '@reduxjs/toolkit';

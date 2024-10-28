@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import Login from '../src/pages/Login';
+import Login from '../src/pages/login';
 import '@testing-library/jest-dom'; // Import this to use the custom matchers
 
 const middlewares = [thunk];

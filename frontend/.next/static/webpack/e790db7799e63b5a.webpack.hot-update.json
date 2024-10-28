@@ -1,0 +1,12 @@
+{
+  "c": ["pages/dashboard", "webpack"],
+  "r": ["pages/register", "app/_not-found/page"],
+  "m": [
+    "./src/components/Private.tsx",
+    "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=D%3A%5Cfitness-tracking-app%5Cfrontend%5Csrc%5Cpages%5Cregister.tsx&page=%2Fregister!",
+    "./src/pages/register.tsx",
+    "./src/utils/common.ts",
+    "(app-pages-browser)/./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=D%3A%5Cfitness-tracking-app%5Cfrontend%5Cnode_modules%5Cnext%5Cdist%5Cclient%5Ccomponents%5Cnot-found-error.js&page=%2F_not-found%2Fpage!",
+    "(app-pages-browser)/./node_modules/next/dist/client/components/not-found-error.js"
+  ]
+}

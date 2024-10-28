@@ -1,0 +1,9 @@
+{
+  "c": ["pages/dashboard", "webpack"],
+  "r": ["pages/forgot-password"],
+  "m": [
+    "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=D%3A%5Cfitness-tracking-app%5Cfrontend%5Csrc%5Cpages%5Cforgot-password.tsx&page=%2Fforgot-password!",
+    "./src/app/hooks.ts",
+    "./src/pages/forgot-password.tsx"
+  ]
+}

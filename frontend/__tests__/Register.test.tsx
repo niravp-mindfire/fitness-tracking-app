@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import Register from '../src/pages/Register'; // Adjust the import path as needed
+import Register from '../src/pages/register'; // Adjust the import path as needed
 import '@testing-library/jest-dom';
 
 const middlewares = [thunk];

@@ -1,0 +1,10 @@
+{
+  "c": ["pages/nutritions", "webpack"],
+  "r": ["pages/food-items"],
+  "m": [
+    "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=D%3A%5Cfitness-tracking-app%5Cfrontend%5Csrc%5Cpages%5Cfood-items.tsx&page=%2Ffood-items!",
+    "./src/components/foodItem/FoodItemForm.tsx",
+    "./src/pages/food-items.tsx",
+    "./src/utils/validationSchema.ts"
+  ]
+}

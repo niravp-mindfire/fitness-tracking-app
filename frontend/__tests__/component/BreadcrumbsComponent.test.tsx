@@ -2,7 +2,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import BreadcrumbsComponent from '../../src/component/BreadcrumbsComponent';
+import BreadcrumbsComponent from '../../src/components/BreadcrumbsComponent';
 
 describe('BreadcrumbsComponent', () => {
   const mockItems = [

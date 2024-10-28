@@ -1,0 +1,16 @@
+{
+  "c": ["pages/food-items", "webpack"],
+  "r": ["pages/workout-plan"],
+  "m": [
+    "./node_modules/@mui/icons-material/esm/AddCircleOutline.js",
+    "./node_modules/@mui/material/Grid/Grid.js",
+    "./node_modules/@mui/material/Grid/GridContext.js",
+    "./node_modules/@mui/material/Grid/gridClasses.js",
+    "./node_modules/@mui/material/utils/requirePropFactory.js",
+    "./node_modules/@mui/utils/esm/requirePropFactory/requirePropFactory.js",
+    "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=D%3A%5Cfitness-tracking-app%5Cfrontend%5Csrc%5Cpages%5Cworkout-plan.tsx&page=%2Fworkout-plan!",
+    "./src/components/workoutPlan/WorkoutPlanForm.tsx",
+    "./src/pages/workout-plan.tsx",
+    "./src/utils/common.ts"
+  ]
+}

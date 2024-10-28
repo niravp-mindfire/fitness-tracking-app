@@ -3,20 +3,21 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_ENDPOINT,
+  baseURL: process.env.NEXT_PUBLIC_ENDPOINT,
 });
 
 // Function to refresh the access token
 const refreshAccessToken = async () => {
   try {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken =
+      typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : '';
     if (!refreshToken) {
       throw new Error('No refresh token available');
     }
 
     // Send a request to the refresh token endpoint
     const response = await axios.post(
-      `${process.env.REACT_APP_API_ENDPOINT}/auth/refresh`,
+      `${process.env.NEXT_PUBLIC_ENDPOINT}/auth/refresh`,
       { refreshToken },
     );
     const { token } = response.data; // Assuming the new access token is returned as 'token'
@@ -32,7 +33,8 @@ const refreshAccessToken = async () => {
 // Request interceptor to include the token in requests
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // Retrieve token from local storage
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : ''; // Retrieve token from local storage
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`; // Set Authorization header
     }
@@ -61,11 +63,12 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest); // Retry the original request with new token
       } catch (refreshError) {
+        alert('here');
         // If refreshing the token fails (e.g., refresh token expired), log the user out
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
         toast.error('Session expired. Please log in again.');
-        window.location.href = '/login'; // Redirect to login page
+        window.location.href = '/'; // Redirect to login page
         return Promise.reject(refreshError);
       }
     }

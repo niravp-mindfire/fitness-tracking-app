@@ -1,6 +1,6 @@
 // src/components/Sidebar.tsx
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useRouter } from 'next/router';
 import {
   Home,
   Settings,
@@ -22,7 +22,7 @@ const Sidebar: React.FC<any> = ({
   isCollapsed,
   toggleSidebar,
 }) => {
-  const location = useLocation();
+  const router = useRouter();
 
   const menuItems = [
     { text: 'Dashboard', icon: <Home />, path: path.DASHBOARD },
@@ -47,6 +47,7 @@ const Sidebar: React.FC<any> = ({
     { text: 'My Profile', icon: <Settings />, path: path.MY_PROFILE },
     { text: 'Logout', icon: <ExitToApp />, action: handleLogout },
   ];
+
   return (
     <div
       className={`fixed top-0 left-0 h-full bg-[#EBF2FA] border-r border-gray-300 transition-all duration-300 ease-in-out shadow-lg ${
@@ -65,11 +66,19 @@ const Sidebar: React.FC<any> = ({
       <nav className="mt-2">
         {menuItems.map((item) => (
           <div key={item.text} className="relative">
-            <Link
-              to={item.path!}
-              onClick={item.action}
-              className={`flex items-center p-2 transition-colors duration-200 rounded-lg text-gray-700 hover:bg-[#427AA1] hover:text-white ${
-                location.pathname === item.path ? 'bg-[#064789] text-white' : ''
+            <a
+              onClick={() => {
+                if (item.action) {
+                  item.action();
+                }
+                if (item.path) {
+                  router.push(item.path); // Ensure path is defined before pushing
+                } else {
+                  console.error('Path is undefined for:', item.text);
+                }
+              }}
+              className={`flex items-center p-2 cursor-pointer transition-colors duration-200 rounded-lg text-gray-700 hover:bg-[#427AA1] hover:text-white ${
+                router.pathname === item.path ? 'bg-[#064789] text-white' : ''
               }`}
             >
               <span
@@ -79,7 +88,7 @@ const Sidebar: React.FC<any> = ({
                 {item.icon}
               </span>
               {!isCollapsed && <span className="ml-2">{item.text}</span>}
-            </Link>
+            </a>
           </div>
         ))}
       </nav>

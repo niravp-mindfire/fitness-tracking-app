@@ -10,8 +10,14 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loading: false,
   error: null,
-  token: localStorage.getItem('token') ? localStorage.getItem('token') : null,
-  role: localStorage.getItem('role') ? localStorage.getItem('role') : null,
+  token:
+    typeof window !== 'undefined' && localStorage.getItem('token')
+      ? localStorage.getItem('token')
+      : null,
+  role:
+    typeof window !== 'undefined' && localStorage.getItem('role')
+      ? localStorage.getItem('role')
+      : null,
 };
 
 // Async thunk for user registration

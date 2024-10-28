@@ -1,7 +1,7 @@
 // DataTable.test.tsx
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import DataTable from '../../src/component/Datatable'; // Adjust the import path as necessary
+import DataTable from '../../src/components/Datatable'; // Adjust the import path as necessary
 import { TableColumn } from '../../src/utils/types'; // Adjust the import path as necessary
 
 const columns: TableColumn[] = [

@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import Dashboard from '../src/pages/Dashboard';
+import Dashboard from '../src/pages/dashboard';
 import axiosInstance from '../src/utils/axiosInstance';
 import { apiUrl } from '../src/utils/apiUrl';
 
