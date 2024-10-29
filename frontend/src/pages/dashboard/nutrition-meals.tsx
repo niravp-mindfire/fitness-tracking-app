@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
-  fetchWorkoutPlans,
-  deleteWorkoutPlan,
-} from '../features/workoutPlan/workoutPlanSlice';
-import DataTable from '../components/Datatable';
-import { RootState, useAppDispatch } from '../app/store';
+  fetchNutritionMeals,
+  deleteNutritionMeal,
+} from '../../features/nutritionMeal/nutritionMealSlice';
+import DataTable from '../../components/Datatable';
+import { RootState, useAppDispatch, useAppSelector } from '../../app/store';
 import {
   Box,
   TextField,
@@ -18,18 +17,18 @@ import {
   Grid,
   CircularProgress,
 } from '@mui/material';
-import SnackAlert from '../components/SnackAlert';
-import WorkoutPlanForm from '../components/workoutPlan/WorkoutPlanForm';
-import Admin from './Admin';
-import SEO from '../components/SEO';
-import { seo } from '../utils/seo';
+import NutritionMealModal from '../../components/nutritionMeal/NutritionMealForm';
+import SnackAlert from '../../components/SnackAlert';
+import { useDebounce } from '../../app/hooks';
+import Admin from '../Admin';
+import SEO from '../../components/SEO';
+import { seo } from '../../utils/seo';
 
-const WorkoutPlanList = () => {
+const NutritionMealList = () => {
   const dispatch = useAppDispatch();
-  const { workoutPlans, totalCount, loading } = useSelector(
-    (state: RootState) => state.workoutPlan,
+  const { nutritionMeals, totalCount, loading } = useAppSelector(
+    (state: RootState) => state.nutritionMeal,
   );
-
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortBy, setSortBy] = useState('createdAt');
@@ -37,22 +36,23 @@ const WorkoutPlanList = () => {
   const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [editId, setEditId] = useState();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [formModel, setFormModel] = useState({
-    isOpen: false,
-    editId: '',
-  });
+
+  // Create a debounced search value
+  const debouncedSearch = useDebounce(search, 300); // Adjust delay as needed
 
   useEffect(() => {
     getAllData();
-  }, [dispatch, page, rowsPerPage, sortBy, sortOrder, search]);
+  }, [dispatch, page, rowsPerPage, sortBy, sortOrder, debouncedSearch]); // Use debouncedSearch here
 
   const getAllData = () => {
     dispatch(
-      fetchWorkoutPlans({
+      fetchNutritionMeals({
         page: page + 1,
         limit: rowsPerPage,
-        search,
+        search: debouncedSearch, // Use debounced search value
         sort: sortBy,
         order: sortOrder as 'asc' | 'desc',
       }),
@@ -61,10 +61,6 @@ const WorkoutPlanList = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-  };
-
-  const handleSearch = () => {
-    getAllData();
   };
 
   const handlePageChange = (newPage: number) => {
@@ -77,14 +73,14 @@ const WorkoutPlanList = () => {
     getAllData();
   };
 
-  const handleDeleteWorkoutPlan = (id: string) => {
+  const handleDeleteNutritionMeal = (id: string) => {
     setDeleteId(id);
     setDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
     if (deleteId) {
-      await dispatch(deleteWorkoutPlan(deleteId));
+      await dispatch(deleteNutritionMeal(deleteId));
       setDialogOpen(false);
       setDeleteId(null);
       getAllData();
@@ -98,33 +94,29 @@ const WorkoutPlanList = () => {
   };
 
   const columns = [
-    { field: 'name', headerName: 'Title', sorting: true },
-    { field: 'description', headerName: 'Description', sorting: true },
-    { field: 'duration', headerName: 'Duration (Weeks)', sorting: true },
+    { field: 'mealType', headerName: 'Meal Type', sorting: true },
+    { field: 'totalCalories', headerName: 'Calories', sorting: true },
     { field: 'createdAt', headerName: 'Created At', sorting: true },
   ];
 
-  const tableData = workoutPlans?.map((plan: any) => ({
-    id: plan._id,
-    name: plan.title,
-    description: plan.description,
-    duration: plan.duration,
-    createdAt: new Date(plan.createdAt).toDateString(),
+  const tableData = nutritionMeals?.map((meal: any) => ({
+    id: meal._id,
+    mealType: meal.mealType,
+    totalCalories: meal.totalCalories,
+    createdAt: meal?.createdAt
+      ? new Date(meal?.createdAt).toLocaleDateString()
+      : '-',
   }));
 
-  const handleEditWorkoutPlan = (id: any) => {
-    setFormModel({
-      isOpen: true,
-      editId: id,
-    });
+  const handleEditNutritionMeal = (id: any) => {
+    setEditId(id);
+    setOpen(true);
   };
 
-  const handleClose = (fetch: boolean) => {
-    setFormModel({
-      isOpen: false,
-      editId: '',
-    });
-    if (fetch) {
+  const handleCloseModal = (type = false) => {
+    setOpen(false);
+    setEditId(undefined);
+    if (type) {
       getAllData();
     }
   };
@@ -132,15 +124,15 @@ const WorkoutPlanList = () => {
   return (
     <>
       <SEO
-        title={seo?.workoutPlan?.title}
-        description={seo?.workoutPlan?.description}
-        keywords={seo?.workoutPlan?.keywords?.join(',')}
+        title={seo?.nutritionMeal?.title}
+        description={seo?.nutritionMeal?.description}
+        keywords={seo?.nutritionMeal?.keywords?.join(',')}
       />
       <Admin>
         <div className="container mx-auto mt-8 px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 col-span-full">
-              Workout Plan List
+              Nutrition Meal List
             </h1>
             <div className="col-span-1 sm:col-span-1">
               <TextField
@@ -158,9 +150,9 @@ const WorkoutPlanList = () => {
                 color="primary"
                 className="bg-primary hover:bg-secondary text-white shadow-md"
                 sx={{ width: 'auto' }}
-                onClick={() => setFormModel({ isOpen: true, editId: '' })}
+                onClick={() => setOpen(true)}
               >
-                Add Workout Plan
+                Add Nutrition
               </Button>
             </div>
           </div>
@@ -175,42 +167,44 @@ const WorkoutPlanList = () => {
                 <DataTable
                   columns={columns}
                   data={tableData}
-                  onSort={handleSort}
-                  onPageChange={handlePageChange}
                   totalCount={totalCount}
                   rowsPerPage={rowsPerPage}
-                  handleEdit={handleEditWorkoutPlan}
-                  handleDelete={handleDeleteWorkoutPlan}
+                  onPageChange={handlePageChange}
+                  onSort={handleSort}
+                  handleDelete={handleDeleteNutritionMeal}
+                  handleEdit={handleEditNutritionMeal}
                 />
               </div>
             )}
           </div>
 
-          {/* Confirmation Dialog */}
           <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogTitle>Delete Nutrition Meal</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Are you sure you want to delete this workout plan?
+                Are you sure you want to delete this nutrition meal? This action
+                cannot be undone.
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDialog}>Cancel</Button>
-              <Button onClick={handleConfirmDelete} color="primary">
+              <Button onClick={handleCloseDialog} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleConfirmDelete} color="secondary">
                 Delete
               </Button>
             </DialogActions>
           </Dialog>
-          <WorkoutPlanForm
-            open={formModel?.isOpen}
-            onClose={handleClose}
-            id={formModel?.editId}
+          <NutritionMealModal
+            open={open}
+            onClose={handleCloseModal}
+            id={editId}
           />
           <SnackAlert
             snackbarOpen={snackbarOpen}
             setSnackbarOpen={setSnackbarOpen}
             type={`success`}
-            message={`Record Deleted Successfully`}
+            message={`Record deleted successfully`}
           />
         </div>
       </Admin>
@@ -218,4 +212,4 @@ const WorkoutPlanList = () => {
   );
 };
 
-export default WorkoutPlanList;
+export default NutritionMealList;

@@ -24,6 +24,7 @@ const refreshAccessToken = async () => {
 
     // Save the new token to localStorage
     localStorage.setItem('token', token);
+    document.cookie = `token=${token}; path=/; secure; SameSite=Strict`;
     return token;
   } catch (error) {
     throw new Error('Failed to refresh token');
@@ -67,6 +68,9 @@ axiosInstance.interceptors.response.use(
         // If refreshing the token fails (e.g., refresh token expired), log the user out
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
+        // Destroy the cookie by setting an expired date
+        document.cookie =
+          'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; httpOnly';
         toast.error('Session expired. Please log in again.');
         window.location.href = '/'; // Redirect to login page
         return Promise.reject(refreshError);

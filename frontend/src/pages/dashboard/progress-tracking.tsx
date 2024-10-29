@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {
   fetchProgressTrackings,
   deleteProgressTracking,
-} from '../features/progressTracking/progressTrackingSlice';
-import DataTable from '../components/Datatable';
-import { RootState, useAppDispatch, useAppSelector } from '../app/store';
+} from '../../features/progressTracking/progressTrackingSlice';
+import DataTable from '../../components/Datatable';
+import { RootState, useAppDispatch, useAppSelector } from '../../app/store';
 import {
   Box,
   TextField,
@@ -16,11 +16,11 @@ import {
   DialogActions,
   CircularProgress,
 } from '@mui/material';
-import ProgressTrackingModal from '../components/progressTracking/ProgressTrackingDialog';
-import SnackAlert from '../components/SnackAlert';
-import Admin from './Admin';
-import SEO from '../components/SEO';
-import { seo } from '../utils/seo';
+import ProgressTrackingModal from '../../components/progressTracking/ProgressTrackingDialog';
+import SnackAlert from '../../components/SnackAlert';
+import Admin from '../Admin';
+import SEO from '../../components/SEO';
+import { seo } from '../../utils/seo';
 
 const ProgressTrackingList = () => {
   const dispatch = useAppDispatch();

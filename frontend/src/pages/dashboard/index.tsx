@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import ProgressTrackingChart from '../components/ProgressTrackingChart';
-import axiosInstance from '../utils/axiosInstance';
-import { apiUrl } from '../utils/apiUrl';
-import Admin from './Admin';
-import SEO from '../components/SEO';
-import { seo } from '../utils/seo';
+import ProgressTrackingChart from '../../components/ProgressTrackingChart';
+import axiosInstance from '../../utils/axiosInstance';
+import { apiUrl } from '../../utils/apiUrl';
+import Admin from '../Admin';
+import SEO from '../../components/SEO';
+import { seo } from '../../utils/seo';
 
 // Define the shape of chart data
 interface ChartData {

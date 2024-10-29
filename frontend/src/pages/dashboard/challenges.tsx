@@ -11,18 +11,18 @@ import {
   DialogActions,
   CircularProgress,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector, useDebounce } from '../app/hooks';
+import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
   fetchChallenges,
   deleteChallenge,
-} from '../features/challenges/challenge';
-import DataTable from '../components/Datatable';
-import { TableColumn } from '../utils/types';
-import SnackAlert from '../components/SnackAlert';
-import ChallengeForm from '../components/challenges/ChallengeForm';
-import Admin from './Admin';
-import SEO from '../components/SEO';
-import { seo } from '../utils/seo';
+} from '../../features/challenges/challenge';
+import DataTable from '../../components/Datatable';
+import { TableColumn } from '../../utils/types';
+import SnackAlert from '../../components/SnackAlert';
+import ChallengeForm from '../../components/challenges/ChallengeForm';
+import Admin from '../Admin';
+import SEO from '../../components/SEO';
+import { seo } from '../../utils/seo';
 
 const ChallengeList: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 const Features = () => {
   return (
     <section id="features" className="px-10 py-16 bg-[#EBF2FA]">
@@ -13,11 +14,14 @@ const Features = () => {
             >
               {' '}
               {/* Hover effect */}
-              <img
+              <Image
                 src={feature.image}
                 alt={feature.title}
                 className="mx-auto mb-4"
-                style={{ width: '250px', height: '250px' }}
+                width={250}
+                height={250}
+                placeholder="blur" // Shows a blurred image preview
+                blurDataURL={feature.image}
               />
               <h3 className="text-xl font-semibold">{feature.title}</h3>
               <p className="mt-2 text-gray-600">{feature.description}</p>

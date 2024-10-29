@@ -11,18 +11,18 @@ import {
   Grid,
   CircularProgress,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   fetchWorkoutExercises,
   deleteWorkoutExercise,
-} from '../features/workoutExercise/workoutExerciseSlice';
-import DataTable from '../components/Datatable';
-import { TableColumn } from '../utils/types';
-import SnackAlert from '../components/SnackAlert';
-import WorkoutExerciseForm from '../components/workoutExercise/WorkoutExerciseForm';
-import Admin from './Admin';
-import SEO from '../components/SEO';
-import { seo } from '../utils/seo';
+} from '../../features/workoutExercise/workoutExerciseSlice';
+import DataTable from '../../components/Datatable';
+import { TableColumn } from '../../utils/types';
+import SnackAlert from '../../components/SnackAlert';
+import WorkoutExerciseForm from '../../components/workoutExercise/WorkoutExerciseForm';
+import Admin from '../Admin';
+import SEO from '../../components/SEO';
+import { seo } from '../../utils/seo';
 
 const WorkoutExerciseList: React.FC = () => {
   const dispatch = useAppDispatch();

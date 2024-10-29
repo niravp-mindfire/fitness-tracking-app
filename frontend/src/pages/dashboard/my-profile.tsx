@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik';
 import {
   Box,
@@ -16,18 +16,18 @@ import {
   CardContent,
   Grid,
 } from '@mui/material';
-import { updateProfileSchema } from '../utils/validationSchema';
-import { updateProfileInitialValues } from '../utils/initialValues';
+import { updateProfileSchema } from '../../utils/validationSchema';
+import { updateProfileInitialValues } from '../../utils/initialValues';
 import {
   updateUserProfile,
   getProfile,
-} from '../features/profile/profileSlice';
+} from '../../features/profile/profileSlice';
 import { toast } from 'react-toastify';
-import { ProfileFormValues } from '../utils/types';
-import { calculateAge, formatDateForInput } from '../utils/common';
-import Admin from './Admin';
-import SEO from '../components/SEO';
-import { seo } from '../utils/seo';
+import { ProfileFormValues } from '../../utils/types';
+import { calculateAge, formatDateForInput } from '../../utils/common';
+import Admin from '../Admin';
+import SEO from '../../components/SEO';
+import { seo } from '../../utils/seo';
 
 const MyProfile = () => {
   const dispatch = useAppDispatch();

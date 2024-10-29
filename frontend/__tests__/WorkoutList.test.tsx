@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import WorkoutList from '../src/pages/workouts';
+import WorkoutList from '../src/pages/dashboard/workouts';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 

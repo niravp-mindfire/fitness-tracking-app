@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   fetchMealPlans,
   selectAllMealPlans,
@@ -7,9 +7,9 @@ import {
   selectTotalMealPlans,
   updateSort,
   deleteMealPlan,
-} from '../features/mealPlan/mealPlanSlice';
-import DataTable from '../components/Datatable';
-import { MealPlan } from '../utils/types';
+} from '../../features/mealPlan/mealPlanSlice';
+import DataTable from '../../components/Datatable';
+import { MealPlan } from '../../utils/types';
 import {
   Box,
   TextField,
@@ -27,12 +27,12 @@ import {
   TableBody,
   CircularProgress,
 } from '@mui/material';
-import SnackAlert from '../components/SnackAlert';
-import MealPlanForm from '../components/mealPlan/MealPlanForm';
+import SnackAlert from '../../components/SnackAlert';
+import MealPlanForm from '../../components/mealPlan/MealPlanForm';
 import { useRouter } from 'next/router';
-import Admin from './Admin';
-import SEO from '../components/SEO';
-import { seo } from '../utils/seo';
+import Admin from '../Admin';
+import SEO from '../../components/SEO';
+import { seo } from '../../utils/seo';
 
 const MealPlanList = () => {
   const dispatch = useAppDispatch();

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   fetchWorkouts,
   selectAllWorkouts,
@@ -7,9 +7,9 @@ import {
   selectTotalWorkouts,
   updateSort,
   deleteWorkout,
-} from '../features/workout/workoutSlice';
-import DataTable from '../components/Datatable';
-import { Workout } from '../utils/types';
+} from '../../features/workout/workoutSlice';
+import DataTable from '../../components/Datatable';
+import { Workout } from '../../utils/types';
 import {
   TextField,
   Button,
@@ -20,11 +20,11 @@ import {
   DialogActions,
   CircularProgress,
 } from '@mui/material';
-import SnackAlert from '../components/SnackAlert';
-import WorkoutForm from '../components/workout/WorkoutForm';
-import Admin from './Admin';
-import SEO from '../components/SEO';
-import { seo } from '../utils/seo';
+import SnackAlert from '../../components/SnackAlert';
+import WorkoutForm from '../../components/workout/WorkoutForm';
+import Admin from '../Admin';
+import SEO from '../../components/SEO';
+import { seo } from '../../utils/seo';
 
 const WorkoutList = () => {
   const dispatch = useAppDispatch();

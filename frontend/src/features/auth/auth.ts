@@ -72,6 +72,9 @@ const authSlice = createSlice({
       state.token = null;
       localStorage.removeItem('token');
       localStorage.removeItem('role');
+      // Destroy the cookie by setting an expired date
+      document.cookie =
+        'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; httpOnly';
     },
     // Action to set authenticated state based on token
     initializeAuth: (state, action: PayloadAction<{ token: string }>) => {
@@ -105,6 +108,7 @@ const authSlice = createSlice({
         localStorage.setItem('token', action?.payload?.token);
         localStorage.setItem('refreshToken', action?.payload?.refreshToken);
         localStorage.setItem('role', action?.payload?.role);
+        document.cookie = `token=${action?.payload?.token}; path=/; secure; SameSite=Strict`;
         state.error = null;
       })
       .addCase(

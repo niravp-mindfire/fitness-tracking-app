@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { useAppDispatch, useAppSelector, useDebounce } from '../app/hooks';
+import { useAppDispatch, useAppSelector, useDebounce } from '../../app/hooks';
 import {
   fetchNutritionEntries,
   selectAllNutritionEntries,
@@ -7,9 +7,9 @@ import {
   selectTotalNutritionEntries,
   updateSort,
   deleteNutrition,
-} from '../features/nutrition/nutritionSlice';
-import DataTable from '../components/Datatable';
-import { Nutrition } from '../utils/types';
+} from '../../features/nutrition/nutritionSlice';
+import DataTable from '../../components/Datatable';
+import { Nutrition } from '../../utils/types';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -22,11 +22,11 @@ import {
   DialogActions,
   CircularProgress,
 } from '@mui/material';
-import NutritionForm from '../components/nutritions/NutritionForm';
-import SnackAlert from '../components/SnackAlert';
-import Admin from './Admin';
-import SEO from '../components/SEO';
-import { seo } from '../utils/seo';
+import NutritionForm from '../../components/nutritions/NutritionForm';
+import SnackAlert from '../../components/SnackAlert';
+import Admin from '../Admin';
+import SEO from '../../components/SEO';
+import { seo } from '../../utils/seo';
 
 const NutritionList: React.FC = () => {
   const dispatch = useAppDispatch();
