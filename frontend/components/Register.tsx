@@ -1,8 +1,7 @@
 'use client';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { RegisterFormValues } from '../utils/types';
-import { calculateAge } from '../utils/common';
+import { RegisterFormValues } from '../interfaces/interfaces';
 import { registerSchema } from '../utils/validationSchema';
 import { registerInitialValue } from '../utils/initialValues';
 import Navbar from './LandingPage/Navbar';
@@ -19,7 +18,7 @@ const Register = () => {
 
   const handleSubmit = useCallback(
     async (values: RegisterFormValues) => {
-      const age = calculateAge(values.profile.dob);
+      const age = 0;
       const userData = {
         ...values,
         profile: {

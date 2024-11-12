@@ -8,7 +8,7 @@ const Contact = () => {
         </p>
         <a
           href="mailto:support@fitzo.com"
-          className="mt-8 inline-block bg-[#427AA1] text-white py-3 px-8 rounded-full hover:bg-[#679436]"
+          className="mt-8 inline-block bg-[#42A5F5] text-white py-3 px-8 rounded-full hover:bg-[#0D47A1]"
         >
           Contact Us
         </a>

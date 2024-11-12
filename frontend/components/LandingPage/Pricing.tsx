@@ -16,7 +16,7 @@ const Pricing = () => {
               <p className="mt-2 text-4xl font-bold">{plan.price}</p>
               <Link
                 href="/register" // Use the direct path for Next.js routing
-                className="block mt-8 bg-[#427AA1] text-white py-3 px-6 rounded-lg hover:bg-[#679436]"
+                className="block mt-8 bg-[#42A5F5] text-white py-3 px-6 rounded-lg hover:bg-[#0D47A1]"
               >
                 Get Started
               </Link>

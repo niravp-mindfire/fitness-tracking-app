@@ -13,7 +13,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#064789] text-white">
+    <nav className="bg-[#0D47A1] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
@@ -26,17 +26,17 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-4">
-              <Link href="#features" className="hover:text-[#A5BE00]">
+              <Link href="#features" className="hover:text-[#E3F2FD]">
                 Features
               </Link>
-              <Link href="#pricing" className="hover:text-[#A5BE00]">
+              <Link href="#pricing" className="hover:text-[#E3F2FD]">
                 Pricing
               </Link>
-              <Link href="#contact" className="hover:text-[#A5BE00]">
+              <Link href="#contact" className="hover:text-[#E3F2FD]">
                 Contact
               </Link>
               <button
-                className="bg-[#427AA1] py-2 px-4 rounded hover:bg-[#679436]"
+                className="bg-[#42A5F5] py-2 px-4 rounded hover:bg-[#1976D2]"
                 onClick={() => redirect(path.LOGIN)} // Use router.push for navigation
               >
                 Sign In
@@ -47,7 +47,7 @@ const Navbar = () => {
             <button
               onClick={toggleMenu}
               type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-gray-300 hover:bg-[#427AA1] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-gray-300 hover:bg-[#42A5F5] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
             >
               <svg
                 className="h-6 w-6"
@@ -79,7 +79,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile menu */}
-      <div className={`md:hidden ${isOpen ? 'block' : 'hidden'} bg-[#427AA1]`}>
+      <div className={`md:hidden ${isOpen ? 'block' : 'hidden'} bg-[#42A5F5]`}>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           <Link
             href="#features"
@@ -100,7 +100,7 @@ const Navbar = () => {
             Contact
           </Link>
           <button
-            className="block w-full text-left px-3 py-2 rounded-md bg-[#679436] hover:bg-[#427AA1]"
+            className="block w-full text-left px-3 py-2 rounded-md bg-[#679436] hover:bg-[#42A5F5]"
             onClick={() => redirect(path.LOGIN)} // Use router.push for navigation
           >
             Sign In

@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Link from 'next/link';
 import { loginInitialValue } from '@/utils/initialValues';
-import { LoginFormValues } from '@/utils/types';
+import { LoginFormValues } from '@/interfaces/interfaces';
 import Navbar from '@/components/LandingPage/Navbar';
 import { loginSchema } from '@/utils/validationSchema';
 import { path } from '@/utils/path';
@@ -12,6 +12,7 @@ import axiosInstance from '@/utils/axiosInstance';
 import { apiUrl } from '@/utils/apiUrl';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const router = useRouter();
@@ -27,6 +28,10 @@ const Login = () => {
             response?.data?.data?.refreshToken,
           );
           localStorage.setItem('role', response?.data?.data?.role);
+          Cookies.set('authToken', response?.data?.data?.token, {
+            expires: 1,
+            secure: true,
+          });
           router.push(path.DASHBOARD);
         } else {
           toast.error('Something went wrong, Please try again');

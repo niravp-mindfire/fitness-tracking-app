@@ -1,5 +1,3 @@
-// src/app/types.ts
-
 export interface AuthState {
   isAuthenticated: boolean;
   loading: boolean;

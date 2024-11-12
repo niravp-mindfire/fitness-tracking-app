@@ -15,7 +15,7 @@ export const getAllWorkoutPlans = async (req: any, res: Response) => {
       startDate,
       endDate,
     } = req.query;
-    const userId = req.user._id;
+    const userId = req.user.userId;
 
     // Create query object
     const query: any = { userId };
@@ -89,8 +89,8 @@ export const getWorkoutPlanById = async (req: Request, res: Response) => {
 // POST a new workout plan
 export const createWorkoutPlan = async (req: any, res: Response) => {
   const { title, description, exercises, duration } = req.body;
-  const userId = req.user._id;
-
+  const userId = req.user.userId;
+  console.log(req.user);
   try {
     const newWorkoutPlan = new WorkoutPlan({
       userId,
@@ -115,7 +115,7 @@ export const createWorkoutPlan = async (req: any, res: Response) => {
 export const updateWorkoutPlan = async (req: any, res: Response) => {
   const { id } = req.params;
   const { title, description, exercises, duration } = req.body;
-  const userId = req.user._id;
+  const userId = req.user.userId;
 
   try {
     const workoutPlan = await WorkoutPlan.findOneAndUpdate(
@@ -141,7 +141,7 @@ export const updateWorkoutPlan = async (req: any, res: Response) => {
 // DELETE workout plan by ID
 export const deleteWorkoutPlan = async (req: any, res: Response) => {
   const { id } = req.params;
-  const userId = req.user._id;
+  const userId = req.user.userId;
 
   try {
     const workoutPlan = await WorkoutPlan.findOneAndDelete({ _id: id, userId });

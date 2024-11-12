@@ -170,11 +170,11 @@ export const getWorkoutExercises = async (req: Request, res: Response) => {
     search = '',
   } = req.query;
 
-  const searchQuery = search
+  const searchQuery: any = search
     ? {
         $or: [
-          { sets: { $regex: search, $options: 'i' } },
-          { reps: { $regex: search, $options: 'i' } },
+          { 'exerciseId.name': { $regex: search, $options: 'i' } }, // assuming search on exercise name
+          { 'workoutId.notes': { $regex: search, $options: 'i' } }, // assuming search on workout notes
         ],
       }
     : {};
@@ -182,8 +182,8 @@ export const getWorkoutExercises = async (req: Request, res: Response) => {
   try {
     const skip = (Number(page) - 1) * Number(limit);
     const workoutExercises = await WorkoutExercise.find(searchQuery)
-      .populate('workoutId')
-      .populate('exerciseId')
+      .populate('workoutId') // populate only necessary fields
+      .populate('exerciseId') // populate only necessary fields
       .sort({ [String(sortBy)]: sortOrder === 'asc' ? 1 : -1 })
       .skip(skip)
       .limit(Number(limit));

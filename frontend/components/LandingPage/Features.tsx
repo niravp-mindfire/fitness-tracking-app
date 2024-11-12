@@ -10,7 +10,7 @@ const Features = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-lg shadow-md hover:bg-[#A5BE00]"
+              className="bg-white p-6 rounded-lg shadow-md hover:bg-[#E3F2FD]"
             >
               {' '}
               {/* Hover effect */}

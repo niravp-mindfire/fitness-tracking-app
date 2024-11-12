@@ -9,8 +9,7 @@ const axiosInstance = axios.create({
 // Function to refresh the access token
 const refreshAccessToken = async () => {
   try {
-    const refreshToken =
-      typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : '';
+    const refreshToken = localStorage.getItem('refreshToken') || '';
     if (!refreshToken) {
       throw new Error('No refresh token available');
     }
@@ -34,8 +33,7 @@ const refreshAccessToken = async () => {
 // Request interceptor to include the token in requests
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : ''; // Retrieve token from local storage
+    const token = localStorage.getItem('token') || ''; // Retrieve token from local storage
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`; // Set Authorization header
     }
@@ -64,7 +62,6 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest); // Retry the original request with new token
       } catch (refreshError) {
-        alert('here');
         // If refreshing the token fails (e.g., refresh token expired), log the user out
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');

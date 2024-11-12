@@ -1,4 +1,4 @@
-import { ProfileFormValues } from './types';
+import { ProfileFormValues } from '../interfaces/interfaces';
 
 export const registerInitialValue = {
   username: '',
