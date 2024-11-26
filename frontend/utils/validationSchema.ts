@@ -122,3 +122,12 @@ export const FoodItemSchema = Yup.object().shape({
     .required('Fat is required')
     .min(0, 'Fat cannot be negative'),
 });
+
+export const resetPasswordSchema = Yup.object().shape({
+  password: Yup.string()
+    .min(8, 'Password must be at least 8 characters')
+    .required('Password is required'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password'), undefined], 'Passwords must match') // Replace null with undefined
+    .required('Confirm Password is required'),
+});

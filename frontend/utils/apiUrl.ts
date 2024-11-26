@@ -2,6 +2,7 @@ export const apiUrl = {
   REGISTER: '/register',
   LOGIN: '/login',
   FORGET_PASSWORD: '/forget-password',
+  RESET_PASSWORD: '/reset-password',
   UPDATE_PROFILE: '/edit-profile',
   MY_PROFILE: '/my-profile',
   WORKOUTS: '/workouts',
