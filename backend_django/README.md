@@ -1,4 +1,3 @@
-````markdown
 # Fitness Tracker API
 
 This project is a fitness tracking application that allows users to manage their fitness goals, workouts, exercises, meal plans, challenges, nutrition tracking, and progress over time. The API is built using Django Rest Framework, and the front-end interacts with the API to provide a seamless experience for users.
@@ -26,6 +25,7 @@ This project is a fitness tracking application that allows users to manage their
 git clone https://github.com/yourusername/fitness-tracker-api.git
 cd fitness-tracker-api
 ```
+
 ````
 
 ### 2. Create a Virtual Environment
@@ -172,3 +172,4 @@ Feel free to fork and submit pull requests to improve this project. Issues and f
 
 This `README.md` provides all the essential details about your fitness tracker API project. It includes setup instructions, API endpoints, features, technologies used, and guidelines for contributing and testing.
 ```
+````
