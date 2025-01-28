@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import UserProfile, FitnessGoal, Workout, Exercise, WorkoutExercise, WorkoutPlan, WorkoutPlanExercise, Challenge
+from .models import UserProfile, FitnessGoal, Workout, Exercise, WorkoutExercise, WorkoutPlan, WorkoutPlanExercise, Challenge, FoodItem, Nutrition, NutritionMeal, NutritionMealFoodItem, ProgressTracking
 
 class FitnessGoalSerializer(serializers.ModelSerializer):
     class Meta:
@@ -112,3 +112,85 @@ class ChallengeSerializer(serializers.ModelSerializer):
             instance.participants.set(participants)
         instance.save()
         return instance
+    
+
+class FoodItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FoodItem
+        fields = [
+            'id',
+            'name',
+            'calories',
+            'carbohydrates',
+            'proteins',
+            'fats',
+            'created_at',
+            'updated_at'
+        ]
+
+class NutritionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Nutrition
+        fields = [
+            'id',
+            'user',
+            'date',
+            'notes',
+            'created_at',
+            'updated_at'
+        ]
+
+class NutritionMealFoodItemSerializer(serializers.ModelSerializer):
+    food_item = FoodItemSerializer()
+
+    class Meta:
+        model = NutritionMealFoodItem
+        fields = ['id', 'food_item', 'quantity']
+    
+class NutritionMealSerializer(serializers.ModelSerializer):
+    food_items = NutritionMealFoodItemSerializer(many=True, source='food_items.all')
+
+    class Meta:
+        model = NutritionMeal
+        fields = [
+            'id',
+            'nutrition',
+            'meal_type',
+            'food_items',
+            'total_calories',
+            'created_at',
+            'updated_at',
+        ]
+
+
+class NutritionMealCreateUpdateSerializer(serializers.ModelSerializer):
+    food_items = serializers.ListField(
+        child=serializers.DictField(),
+        write_only=True
+    )
+
+    class Meta:
+        model = NutritionMeal
+        fields = [
+            'id',
+            'nutrition',
+            'meal_type',
+            'food_items',
+            'total_calories',
+        ]
+
+    def create(self, validated_data):
+        food_items_data = validated_data.pop('food_items')
+        nutrition_meal = NutritionMeal.objects.create(**validated_data)
+        for item in food_items_data:
+            NutritionMealFoodItem.objects.create(
+                nutrition_meal=nutrition_meal,
+                food_item_id=item['food_item'],
+                quantity=item['quantity']
+            )
+        return nutrition_meal
+    
+class ProgressTrackingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProgressTracking
+        fields = "__all__"

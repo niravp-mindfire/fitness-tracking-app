@@ -1,7 +1,15 @@
 # user_management/urls.py
-from django.urls import path
+from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import RegisterUser, LoginUser, EditProfile, GetMyProfile, ForgetPassword, ResetPassword, GetAllWorkouts, GetWorkoutById, CreateWorkout, EditWorkout, DeleteWorkout, ExerciseListCreateView, ExerciseDetailView, WorkoutExerciseListCreateView, WorkoutExerciseDetailView, WorkoutPlanListCreateView, WorkoutPlanDetailView, ChallengeListCreateView, ChallengeDetailView
+from .views import RegisterUser, LoginUser, EditProfile, GetMyProfile, ForgetPassword, ResetPassword
+from .workout.views import GetAllWorkouts, GetWorkoutById, CreateWorkout, EditWorkout, DeleteWorkout 
+from .exercise.views import ExerciseListCreateView, ExerciseDetailView
+from .workoutexercise.views import WorkoutExerciseListCreateView, WorkoutExerciseDetailView
+from .workoutplans.views import WorkoutPlanListCreateView, WorkoutPlanDetailView
+from .challenges.views import ChallengeListCreateView, ChallengeDetailView
+from .fooditems.views import FoodItemListCreateView, FoodItemDetailView
+from .nutrition.views import NutritionListCreateView, NutritionDetailView, NutritionMealListCreateView, NutritionMealDetailView
+from .progresstracking.views import ProgressTrackingListCreateView, ProgressTrackingDetailView
 
 urlpatterns = [
     path('token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -31,4 +39,16 @@ urlpatterns = [
 
     path('challenges', ChallengeListCreateView.as_view(), name='challenge_list_create'),
     path('challenges/<int:pk>', ChallengeDetailView.as_view(), name='challenge_detail'),
+
+    path('food-items', FoodItemListCreateView.as_view(), name='food_item_list_create'),
+    path('food-items/<int:pk>', FoodItemDetailView.as_view(), name='food_item_detail'),
+
+    path('nutrition', NutritionListCreateView.as_view(), name='nutrition_list_create'),
+    path('nutrition/<int:pk>', NutritionDetailView.as_view(), name='nutrition_detail'),
+
+    path('nutrition-meals/', NutritionMealListCreateView.as_view(), name='nutrition_meal_list_create'),
+    path('nutrition-meals/<int:pk>/', NutritionMealDetailView.as_view(), name='nutrition_meal_detail'),
+
+     path('progress-tracking/', ProgressTrackingListCreateView.as_view(), name='progress-tracking-list-create'),
+    path('progress-tracking/<int:pk>/', ProgressTrackingDetailView.as_view(), name='progress-tracking-detail'),
 ]
